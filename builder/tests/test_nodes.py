@@ -22,7 +22,7 @@ def test_code_node_is_passthrough_with_always_last():
 def test_code_node_fallback_runs_when_body_raises():
     scope = {"vars": {}}
     exec(code_of(code_node("x", "vars['a'] = 1 / 0", "y", fallbacks={"a": "unknown"})), scope)
-    assert scope["vars"]["a"] == "unknown"
+    assert scope["vars"]["a"] == "unknown" and "ZeroDivisionError" in scope["vars"]["x_code_error"]
 
 
 def test_is_true_tests_both_spellings():

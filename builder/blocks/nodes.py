@@ -69,14 +69,16 @@ def conversation(name, task, *, tools=(), extract=(), transitions=(), on_enter=N
         "transitions": list(transitions)})
 
 
-def _wrap(body, fallbacks):
-    lines = ["try:"] + ["    " + line for line in body.splitlines()] + ["    pass", "except Exception:"]
-    lines += ["    vars[%r] = %r" % (k, v) for k, v in (fallbacks or {}).items()] + ["    pass"]
+def _wrap(name, body, fallbacks):
+    lines = ["try:"] + ["    " + line for line in body.splitlines()] + ["    pass", "except Exception as exc:"]
+    lines += ["    vars[%r] = %r" % (k, v) for k, v in (fallbacks or {}).items()]
+    lines += ["    vars[%r] = repr(exc)[:300]" % (name + "_code_error")]
     return "\n".join(lines) + "\n"
 
 
 def code_node(name, body, next_node, transitions=(), fallbacks=None):
-    code = _wrap(body, fallbacks)
+    """A silent passthrough code node. On an exception it writes each fallback and `<name>_code_error`."""
+    code = _wrap(name, body, fallbacks)
     if "{{" in code or "}}" in code:
         raise ValueError(f"code node {name}: code must not contain '{{{{' or '}}}}'")
     return {
