@@ -4,3 +4,7 @@ env.sh
 .venv/
 .freya-agents.json
 .personas.json
+builder/runs/
+kit/results/
+__pycache__/
+.pytest_cache/
