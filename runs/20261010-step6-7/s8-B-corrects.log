@@ -1,0 +1,8 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The assistant failed to meet the specific attempt count criteria. While the security questions were handled correctly (DOB asked once in Message 2; phone number asked again once in Message 6), and the correct number of promises and notes were rec
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 2 s, worst 9 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation 3d714d46-e387-4aa6-86c0-a396b87baa7c, status completed, 75 s.

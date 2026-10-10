@@ -1,0 +1,176 @@
+{
+ "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2",
+ "simulation_id": "44a41033-e74e-4f06-9ffc-a108d7b7ad76",
+ "iteration_id": "bcc05a4d-a861-49b9-9ca4-815f5cda4eeb",
+ "seconds": 203,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "eab92d4f-0682-422f-8a83-0db92aa23b23",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_f33913b9-ef4",
+   "slowest_turn_s": 3.1,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('not_verified', 'failed'), expected ('promise', None)",
+    "promises [], expected [('p1', 510.0, '2026-10-15')]",
+    "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: The call ended prematurely during the identity verification phase, meaning none of the success criteria related to credit card promises, refusal notes, or loan negotiation attempts could be met. Additionally, the phone question was asked twice after the initial request (total of three times) instead of exactly once, and the date of birth was effectively asked again for clarification in Message 4. "
+   ],
+   "call_id": "cf4cd836-e7f0-44b8-984e-f2a9835c3c50",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_fb99df63-e1f",
+   "slowest_turn_s": 1.2,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-30')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "conversation: The assistant failed to meet the success criteria regarding the loan deadline and the read-back. Specifically, the loan was recorded for 30 October instead of its deadline of 23 October as required (system events show 'create_promise' for the loan 'p2' was called with the date '2026-10-30'). Consequently, the read-back in Message 14 only mentioned 30 October for both products and failed to name bo"
+   ],
+   "call_id": "8020a6c5-676a-4625-8aef-78f454138ffb",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_9f1541b1-dd3",
+   "slowest_turn_s": 1.8,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "eab92d4f-0682-422f-8a83-0db92aa23b23",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_f33913b9-ef4",
+    "slowest_turn_s": 3.1,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('not_verified', 'failed'), expected ('promise', None)",
+     "promises [], expected [('p1', 510.0, '2026-10-15')]",
+     "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: The call ended prematurely during the identity verification phase, meaning none of the success criteria related to credit card promises, refusal notes, or loan negotiation attempts could be met. Additionally, the phone question was asked twice after the initial request (total of three times) instead of exactly once, and the date of birth was effectively asked again for clarification in Message 4. "
+    ],
+    "call_id": "cf4cd836-e7f0-44b8-984e-f2a9835c3c50",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_fb99df63-e1f",
+    "slowest_turn_s": 1.2,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-30')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "conversation: The assistant failed to meet the success criteria regarding the loan deadline and the read-back. Specifically, the loan was recorded for 30 October instead of its deadline of 23 October as required (system events show 'create_promise' for the loan 'p2' was called with the date '2026-10-30'). Consequently, the read-back in Message 14 only mentioned 30 October for both products and failed to name bo"
+    ],
+    "call_id": "8020a6c5-676a-4625-8aef-78f454138ffb",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_9f1541b1-dd3",
+    "slowest_turn_s": 1.8,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

@@ -1,0 +1,8 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The agent followed several criteria correctly: the date of birth was asked only once, the phone question was asked exactly twice (asked again once), exactly one promise was created for the credit card, and one 'refused' note was added for each of
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 4 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation e02881ed-6519-4365-b5a8-10d8a580e72e, status completed, 64 s.

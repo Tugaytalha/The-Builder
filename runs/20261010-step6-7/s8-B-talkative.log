@@ -1,0 +1,10 @@
+FAIL PUB-11 medium Multi-product  | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('promise', None)
+       - promises [], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+       - conversation: The call failed to meet any of the success criteria because the agent terminated the call during the identity verification phase. - No products were ever mentioned or offered to the customer. - Consequently, there were no read-backs, confirmation
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 4 s, worst 7 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation e7f73ee1-3f51-45e9-8af3-0db21f7d7223, status completed, 113 s.

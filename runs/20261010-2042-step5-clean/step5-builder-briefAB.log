@@ -1,0 +1,47 @@
+  [Skill] {'skill': 'build-phone-agent', 'args': 'briefs/brief-a.md briefs/brief-b.md'}
+  [Bash] {'command': 'ls -R | head -50 && cat briefs/brief-a.md briefs/brief-b.md', 'description': 'List kit files and read both 
+  [Bash] {'command': 'cat tools/openapi.json docs/workflow-format.md docs/tools-and-code.md examples/base-agent.json', 'descripti
+  [Bash] {'command': 'python3 -c "\nimport json;d=json.load(open(\'tools/openapi.json\'))\nfor p,v in d[\'paths\'].items():\n  fo
+  [Read] {'file_path': '/Users/resit/Desktop/freya-hackathon/The-Builder/kit/docs/workflow-format.md'}
+  [Read] {'file_path': '/Users/resit/Desktop/freya-hackathon/The-Builder/kit/docs/tools-and-code.md'}
+  [Read] {'file_path': '/Users/resit/Desktop/freya-hackathon/The-Builder/kit/examples/base-agent.json'}
+I read both briefs, the tool API, and the docs. Next, I will read the test runner and the practice cases, then write the workflows.
+  [Bash] {'command': 'sed -n 1,200p tools/run_cases.py; python3 -c "\nimport json;d=json.load(open(\'public-test-set.json\'));pri
+  [Bash] {'command': 'python3 -c "\nimport json;d=json.load(open(\'public-test-set.json\'))\nfor c in d:\n  print(c[\'id\'],c[\'b
+  [Bash] {'command': 'head -c 1500 traces/20261010-204216.jsonl; echo; python3 -c "\nimport json\nfor l in open(\'traces/20261010
+I now understand the briefs and the platform. Next, I will write one generator script for both workflows, because Brief B uses most of Brief A.
+  [Bash] {'command': 'mkdir -p out && cat .gitignore 2>/dev/null; cat ../.gitignore 2>/dev/null; ls -a', 'description': 'Check ig
+  [Write] {'file_path': '/Users/resit/Desktop/freya-hackathon/The-Builder/kit/out/build.py', 'content': '"""Build the Brief A and 
+Now I will test the two code snippets locally with the practice data before I save.
+  [Bash] {'command': 'python3 out/build.py && python3 -c "\nimport sys; sys.path.insert(0,\'out\'); import build, json\nfor b in 
+  [Bash] {'command': 'python3 - <<\'EOF\'\np=\'out/build.py\'; s=open(p).read()\ns=s.replace(\'THANKS = "Thank you for your time,
+  [Bash] {'command': 'python3 out/build.py && python3 -c "\nimport sys; sys.path.insert(0,\'out\'); import build, json\nfor b in 
+The code works locally. Now I will save both workflows on the platform.
+  [Bash] {'command': 'for s in brief-a brief-b; do python3 -c "import freya,json,sys; print(json.dumps(freya.save_workflow(sys.ar
+Both workflows are saved. Now I will run the Brief A practice cases.
+  [Bash] {'command': 'python3 tools/run_cases.py 09d001fd-4713-463c-9699-2199dc162d2f --brief A --out results/a1.json 2>&1 | tail
+All 10 Brief A cases passed on the first run. Now I will run the Brief B cases.
+  [Bash] {'command': 'python3 tools/run_cases.py f4df6522-4410-4396-a33f-f22c3ca2ace2 --brief B --out results/b1.json 2>&1 | tail
+Both agents passed every practice customer on the first run, so I did not need to fix anything.
+
+- **Brief A:** `workflow_id` a3974d66-09dd-4b9e-885c-4a1ac76ea363, `agent_id` 09d001fd-4713-463c-9699-2199dc162d2f. 10 of 10 customers passed.
+- **Brief B:** `workflow_id` fd42f2a0-3314-4815-871e-0534612c3950, `agent_id` f4df6522-4410-4396-a33f-f22c3ca2ace2. 3 of 3 customers passed.
+
+Each test set ran only one time. A customer that passes one time can fail on a different run. To check stability, you can run `--reps 3` before you submit.
+
+**How the agents work:**
+- **Fixed rules:** code calculates the dates, deadlines, attempt dates and callback window from `now`. Code also writes the sentence that states the debt. The model does not do this arithmetic.
+- **Call ending:** routes on the tool results end the call for the identity check, the callback, the transfers and a one-product promise. These routes then set the outcome and reason for `close_call`. For refusals, disputes and the other negotiated results, the model selects a named ending, and that ending sets the outcome and reason in code.
+- **Tool results:** each tool result has a short instruction that tells the model what to do next. For example, after one failure the model tries `create_promise` again and does not say that the promise is recorded.
+- **Brief B:** Brief B uses the same build with more rules in the step where the agent gets the promise: one confirmation for all products, `add_note` for each product without a promise, and no notes on a transfer.
+
+**Limits:**
+- No practice customer tests three cases: an unclear answer twice at the start, a refusal to talk before the identity check, and a callback time outside the window.
+- For the unclear answer, the route counts the customer's turns with `greeting.total_turns`. The docs do not say whether this count is correct when the route runs. If it is not, the agent asks one extra time before it ends the call.
+- In Brief A, the call ends as soon as the promise is recorded. If the customer wants a transfer after that, the agent cannot do it.
+
+`python3 out/build.py` makes both workflow files. The files are `out/brief-a.workflow.json` and `out/brief-b.workflow.json`.
+
+The Gmail, Google Calendar, Google Drive and n8n connectors are not authorized, but this task did not need them. If you want to use them, authorize them in the claude.ai connector settings.
+
+done: 21 turns, 727 s, $2.10. Trace: /Users/resit/Desktop/freya-hackathon/The-Builder/kit/traces/20261010-204216.jsonl

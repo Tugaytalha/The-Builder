@@ -1,0 +1,47 @@
+  [Skill] {'skill': 'build-phone-agent', 'args': 'briefs/brief-a.md'}
+  [Bash] {'command': 'ls -R | head -50 && cat briefs/brief-a.md && cat docs/workflow-format.md docs/tools-and-code.md && cat exam
+  [Bash] {'command': 'cat briefs/brief-a.md', 'description': 'Read Brief A'}
+  [Bash] {'command': 'cat docs/workflow-format.md docs/tools-and-code.md && cat examples/base-agent.json', 'description': 'Read f
+  [Read] {'file_path': '/Users/resit/Desktop/freya-hackathon/The-Builder/kit/docs/workflow-format.md'}
+I read the brief and the workflow format. Next, I read the tool and code document and the example agent.
+  [Read] {'file_path': '/Users/resit/Desktop/freya-hackathon/The-Builder/kit/docs/tools-and-code.md'}
+  [Bash] {'command': 'cat examples/base-agent.json; echo; python3 -c "import json;d=json.load(open(\'tools/openapi.json\'));print
+  [Bash] {'command': 'python3 -c "import json;d=json.load(open(\'tools/openapi.json\'));print(json.dumps(d[\'paths\'][\'/close_ca
+  [Bash] {'command': 'python3 -c "\nimport json\nfor c in json.load(open(\'public-test-set.json\')):\n  if c[\'brief\']!=\'A\': c
+  [Bash] {'command': 'echo "FREYA_API_KEY=${FREYA_API_KEY:+set} TEAM=${FREYA_BANK_TEAM_KEY:+set}"; ls -a; sed -n 1,70p freya.py',
+  [Bash] {'command': 'python3 -c "\nimport json;d=json.load(open(\'results/step2-base-briefA.json\'))\nfor r in d[\'rows\']: prin
+I read all the inputs. Now I write the workflow for Brief A. A code step will calculate all dates and amounts, so the agent does not calculate them.
+  [Write] {'file_path': '/tmp/brief_a_build/gen.py', 'content': '"""Generates out/brief-a.workflow.json. Run from the kit folder."
+  [Bash] {'command': 'mkdir -p out && python3 /tmp/brief_a_build/gen.py out/brief-a.workflow.json && python3 -c "\nimport json\nw
+The dates match the brief. I make the calendar shorter: it stops at the deadline. Then I save the workflow.
+  [Edit] {'replace_all': False, 'file_path': '/tmp/brief_a_build/gen.py', 'old_string': "    for i in range(0, 70):\n        d = 
+  [Edit] {'replace_all': False, 'file_path': '/tmp/brief_a_build/gen.py', 'old_string': "        lines.append('- ' + say(d) + ': 
+  [Bash] {'command': 'python3 /tmp/brief_a_build/gen.py out/brief-a.workflow.json && python3 -c "import freya,json,sys; print(jso
+The workflow is valid and saved. Now I run the ten practice customers.
+  [Bash] {'command': 'python3 tools/run_cases.py e1500e24-ac06-4c06-86ac-917bbff3a14a --brief A --out results/brief-a-run1.json 2
+Nine of ten customers passed in the first run. I check why PUB-10 failed.
+  [Bash] {'command': 'python3 -c "\nimport json,freya\nd=json.load(open(\'results/brief-a-run1.json\'))\nr=[x for x in d[\'rows\'
+  [Bash] {'command': 'sed -i \'\' \'s/Hello, I am a digital assistant calling from Freya Bank, and this call is recorded. Am I/He
+I built the Brief A phone agent. All 10 practice customers passed in the last run. That is one run, and the README says one passing run does not prove the agent always passes.
+
+**Test runs:**
+- **Run 1:** 9 of 10 passed. PUB-10 failed, but the agent did the right things: the first `create_promise` failed, the agent tried again, and it said "recorded" only after the second call worked. The judge failed it because the opening line said "this call is recorded" before any promise.
+- **Run 2:** I changed the opening line to "Freya Bank records this call." Then 10 of 10 passed.
+
+**How the agent works:** the call moves through these steps in order: setup, greeting, identity, get the account, take the promise, after the promise, end. The agent moves to the next step only on a tool result.
+- **Code, not the model, decides the facts.** A code step calculates the deadline, the band, the floor amount and the two persuasion offers from `now`. It also makes a calendar that marks each day as allowed, weekend, holiday or after the deadline, and it calculates the callback window.
+- **Each tool result tells the agent what to do next.** After `verify_identity`, `create_promise` and `transfer_to_agent`, a short hook adds one plain instruction to the result.
+- **The final outcome has a safety check.** Before `close_call` is sent, a hook corrects the outcome when the records already show it: a recorded promise, a done transfer, or three wrong answers.
+
+**Files:**
+- `out/brief-a.workflow.json` is the saved workflow.
+- The script that writes it is `/tmp/brief_a_build/gen.py`. It is not in the repo, and the system can delete `/tmp`. Move it into the repo if you want to keep it.
+- The test results are in `results/brief-a-run1.json` and `results/brief-a-run2.json`.
+
+**Not tested yet:** customers who talk in other ways (`--style pieces`, `corrects`, `talkative`, `asks_back` or `in_words`), and several runs per customer with `--reps 3`. The final scoring needs three passes in a row for each customer.
+
+The Gmail, Google Calendar, Google Drive and n8n connectors need authorization in your claude.ai connector settings. This task did not need them.
+
+workflow_id `a02454c0-8fa5-4773-890f-2e07b3d0e97d`, agent_id `e1500e24-ac06-4c06-86ac-917bbff3a14a`, 10 of 10 customers passed in the last run.
+
+done: 22 turns, 602 s, $1.78. Trace: /Users/resit/Desktop/freya-hackathon/The-Builder/kit/traces/20261010-202120.jsonl

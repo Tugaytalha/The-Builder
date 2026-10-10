@@ -1,0 +1,156 @@
+{
+ "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2",
+ "simulation_id": "e7f73ee1-3f51-45e9-8af3-0db21f7d7223",
+ "iteration_id": "8f6c80d6-e14c-447c-a55f-7929e31b121c",
+ "seconds": 113,
+ "passed": 2,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('not_verified', 'declined'), expected ('promise', None)",
+    "promises [], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+    "conversation: The call failed to meet any of the success criteria because the agent terminated the call during the identity verification phase. - No products were ever mentioned or offered to the customer. - Consequently, there were no read-backs, confirmations, or executions of the create_promise tool. - While the call ended properly according to system events (assistant-ended-call), the primary objectives wer"
+   ],
+   "call_id": "abd38742-89e3-40cb-a920-03c46068c622",
+   "tools": [
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_5526ac5e-82c",
+   "slowest_turn_s": 2.9,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "4d1d9c87-53a7-433a-aceb-620f13d6f7ef",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_6852226b-82a",
+   "slowest_turn_s": 4.0,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "4be2d8ee-790f-4991-8e5d-15ca76d70c42",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_1e5f9772-af2",
+   "slowest_turn_s": 7.5,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('not_verified', 'declined'), expected ('promise', None)",
+     "promises [], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+     "conversation: The call failed to meet any of the success criteria because the agent terminated the call during the identity verification phase. - No products were ever mentioned or offered to the customer. - Consequently, there were no read-backs, confirmations, or executions of the create_promise tool. - While the call ended properly according to system events (assistant-ended-call), the primary objectives wer"
+    ],
+    "call_id": "abd38742-89e3-40cb-a920-03c46068c622",
+    "tools": [
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_5526ac5e-82c",
+    "slowest_turn_s": 2.9,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "4d1d9c87-53a7-433a-aceb-620f13d6f7ef",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_6852226b-82a",
+    "slowest_turn_s": 4.0,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "4be2d8ee-790f-4991-8e5d-15ca76d70c42",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_1e5f9772-af2",
+    "slowest_turn_s": 7.5,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

@@ -1,0 +1,14 @@
+{"at": "2026-10-10 20:53:10", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 1, "passed": 10, "total": 10, "seconds": 141, "failed": []}
+{"at": "2026-10-10 20:54:15", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 1, "passed": 3, "total": 3, "seconds": 55, "failed": []}
+{"at": "2026-10-10 21:45:41", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 3, "passed": 8, "total": 10, "seconds": 1623, "failed": ["PUB-06", "PUB-10"]}
+{"at": "2026-10-10 22:05:14", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 3, "passed": 3, "total": 3, "seconds": 1152, "failed": []}
+{"at": "2026-10-10 22:15:39", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 1, "passed": 7, "total": 10, "seconds": 605, "failed": ["PUB-01", "PUB-04", "PUB-10"]}
+{"at": "2026-10-10 22:25:20", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 1, "passed": 7, "total": 10, "seconds": 559, "failed": ["PUB-03", "PUB-06", "PUB-10"]}
+{"at": "2026-10-10 22:34:30", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 1, "passed": 6, "total": 10, "seconds": 350, "failed": ["PUB-04", "PUB-05", "PUB-08", "PUB-10"]}
+{"at": "2026-10-10 22:41:19", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 1, "passed": 9, "total": 10, "seconds": 391, "failed": ["PUB-10"]}
+{"at": "2026-10-10 22:48:25", "agent_id": "09d001fd-4713-463c-9699-2199dc162d2f", "brief": "A", "runs": 1, "passed": 10, "total": 10, "seconds": 406, "failed": []}
+{"at": "2026-10-10 22:51:54", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 1, "passed": 1, "total": 3, "seconds": 203, "failed": ["PUB-12", "PUB-13"]}
+{"at": "2026-10-10 23:10:44", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 1, "passed": 2, "total": 3, "seconds": 75, "failed": ["PUB-12"]}
+{"at": "2026-10-10 23:12:45", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 1, "passed": 2, "total": 3, "seconds": 113, "failed": ["PUB-11"]}
+{"at": "2026-10-10 23:14:21", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 1, "passed": 2, "total": 3, "seconds": 87, "failed": ["PUB-12"]}
+{"at": "2026-10-10 23:15:35", "agent_id": "f4df6522-4410-4396-a33f-f22c3ca2ace2", "brief": "B", "runs": 1, "passed": 2, "total": 3, "seconds": 64, "failed": ["PUB-12"]}
