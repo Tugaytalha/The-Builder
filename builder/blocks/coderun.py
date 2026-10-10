@@ -14,3 +14,24 @@ def run_snippet(code, vars):
     scope = {"vars": dict(vars)}
     exec(code, scope)
     return scope["vars"]
+
+
+def node_code(workflow, name):
+    """The code of a code node, to run with run_snippet in a test."""
+    return workflow["nodes"][name]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"]
+
+
+def tool_code(workflow, tool_name):
+    """The code of a code_exec tool on any node. Run it with run_snippet(code, vars) after setting vars['params']."""
+    for node in workflow["nodes"].values():
+        for tool in node.get("tools", []):
+            if tool["function"]["name"] == tool_name:
+                return tool["function"]["parameters"]["properties"]["code"]["default"]
+    raise KeyError(tool_name)
+
+
+def run_tool(code, vars, params):
+    """Run a code_exec tool's code locally. The platform gives the model's arguments as the global `params`."""
+    scope = {"vars": dict(vars), "params": dict(params)}
+    exec(code, scope)
+    return scope["vars"]

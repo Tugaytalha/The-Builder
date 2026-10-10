@@ -1,0 +1,16 @@
+{
+ "permissions": {
+  "deny": [
+   "Read(../runs/**)",
+   "Read(../eval/**)",
+   "Read(../kit/results/**)",
+   "Read(../kit/briefs/**)",
+   "Read(../kit/public-test-set.json)",
+   "Read(../context/**)",
+   "Read(../submission/**)",
+   "Read(../traces/**)",
+   "Bash(curl:*)",
+   "Bash(wget:*)"
+  ]
+ }
+}

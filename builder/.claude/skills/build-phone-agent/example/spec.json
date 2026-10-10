@@ -1,0 +1,43 @@
+{
+ "vars": {"id": "client_ref", "title": "salutation", "last_name": "family_name", "now": "now"},
+ "holidays": ["2031-03-10", "2031-04-18"],
+ "opening_line": "Good morning, this is the automated assistant of Lumen Energy. Is this {{salutation}} {{family_name}}?",
+ "callback": {"business_days_after_today": [1, 2], "from": "09:00", "to": "17:00"},
+ "identity": {
+  "tool": "verify_identity", "question_field": "question", "answer_field": "reply",
+  "questions": [
+   {"value": "postcode", "ask": "What is the postcode of your address?", "format": "the postcode as said, letters in capitals"},
+   {"value": "birth_year", "ask": "And what is your year of birth?", "format": "four digits"}
+  ],
+  "passed_field": "passed", "correct_field": "correct", "left_field": "tries_left",
+  "refusals_allowed": 1
+ },
+ "account": {"list_field": "items", "id_field": "item_id", "kind_field": "kind", "amount_field": "overdue",
+             "days_field": "days_overdue", "floor_field": "smallest_payment",
+             "kind_words": {"electricity": "electricity bill", "gas": "gas bill"}},
+ "bands": [
+  {"name": "short", "max_days": 20, "deadline_business_days": 5, "offers": [["floor", "deadline"]]},
+  {"name": "long", "max_days": 100000, "deadline_business_days": 3, "offers": [["full", "bd1"], ["floor", "deadline"]]}
+ ],
+ "promise": {"tool": "create_promise", "id_field": "item_id", "amount_field": "sum", "date_field": "pay_on"},
+ "closes": {
+  "close_agreed": ["agreed", "", "Your promise is recorded. Thank you, goodbye."],
+  "close_said_no": ["declined", "said_no", "Thank you for your time. Goodbye."],
+  "close_system_down": ["declined", "system_down", "I am sorry, I could not record the promise. Thank you, goodbye."],
+  "close_handed_over": ["handed_over", "", "A colleague will take over now. Thank you, goodbye."],
+  "close_wrong": ["unverified", "wrong", "I am sorry, I cannot continue without the check. Goodbye."],
+  "close_refused_check": ["unverified", "refused_check", "I understand. I cannot continue without the check. Goodbye."],
+  "close_call_later": ["absent", "call_later", "Thank you, we will call back then. Goodbye."],
+  "close_no_time": ["absent", "no_time", "Thank you for your time. Goodbye."],
+  "close_unsure": ["absent", "unsure", "Thank you for your time. Goodbye."]
+ },
+ "lint": {
+  "pre_identity_nodes": ["opening", "third_party", "identity"],
+  "forbidden_before_identity": ["bill", "money", "amount", "overdue", "payment"],
+  "outcomes": [["agreed", ""], ["declined", "said_no"], ["declined", "system_down"], ["handed_over", ""],
+               ["unverified", "wrong"], ["unverified", "refused_check"], ["absent", "call_later"],
+               ["absent", "no_time"], ["absent", "unsure"]]
+ },
+ "sample_vars": {"client_ref": "c_test", "salutation": "Mx", "family_name": "Doe", "now": "2031-03-05T11:00",
+                 "items": "[{\"item_id\": \"i1\", \"kind\": \"gas\", \"overdue\": 80.5, \"days_overdue\": 25, \"smallest_payment\": 20}]"}
+}
