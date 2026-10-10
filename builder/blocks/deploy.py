@@ -2,6 +2,7 @@
 
     python -m builder.blocks.deploy <run_dir> <slot>
 """
+import fcntl
 import hashlib
 import json
 import sys
@@ -29,7 +30,9 @@ def deploy(run_dir, slot):
         raise GateError(problems)
     run = Path(run_dir)
     text = (run / "workflow.json").read_text()
-    saved = freya.save_workflow(slot, json.loads(text), state_file=str(STATE_FILE))
+    with open(str(STATE_FILE) + ".lock", "w") as lock:   # parallel builds share the state file
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        saved = freya.save_workflow(slot, json.loads(text), state_file=str(STATE_FILE))
     record = {"workflow_id": saved["workflow_id"], "agent_id": saved["agent_id"], "version": saved.get("version", 1),
               "sha256": hashlib.sha256(text.encode()).hexdigest()}
     (run / "deployed.json").write_text(json.dumps(record, indent=1))
