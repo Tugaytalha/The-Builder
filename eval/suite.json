@@ -1,0 +1,7 @@
+[
+ {"name": "brief-a", "brief": "kit/briefs/brief-a.md", "api": "kit/tools/openapi.json", "cases": "kit/public-test-set.json", "case_brief": "A", "set": "dev"},
+ {"name": "brief-ab", "brief": "eval/briefs/brief-ab.md", "api": "kit/tools/openapi.json", "cases": "kit/public-test-set.json", "case_brief": "B", "set": "dev"},
+ {"name": "v2-values-a", "brief": "eval/briefs/v2-values-a.md", "api": "eval/briefs/v2-values-a.openapi.json", "cases": "eval/cases/v2.json", "case_brief": "A", "set": "dev"},
+ {"name": "v1-raw-a", "brief": "eval/briefs/v1-raw-a.md", "api": "kit/tools/openapi.json", "cases": "eval/cases/v1.json", "case_brief": "A", "set": "heldout"},
+ {"name": "v3-raw-b", "brief": "eval/briefs/v3-raw-b.md", "api": "kit/tools/openapi.json", "cases": "eval/cases/v3.json", "case_brief": "B", "set": "heldout"}
+]
