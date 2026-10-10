@@ -1,0 +1,20 @@
+{
+ "openapi": "3.0.3",
+ "info": {"title": "Neutral test API", "version": "1"},
+ "servers": [{"url": "https://api.example.test/v9"}],
+ "paths": {
+  "/check_member": {"post": {"requestBody": {"content": {"application/json": {"schema": {
+   "type": "object",
+   "properties": {
+    "member_id": {"type": "string"},
+    "code": {"type": "string", "description": "The code the member says."},
+    "kind": {"type": "string", "enum": ["a", "b"]}
+   },
+   "required": ["member_id", "code", "kind"]}}}},
+   "responses": {"200": {"content": {"application/json": {"schema": {"type": "object", "properties": {"ok": {"type": "boolean"}}}}}}}}},
+  "/log_visit": {"post": {"requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/Visit"}}}}}}
+ },
+ "components": {"schemas": {"Visit": {"type": "object", "properties": {
+  "member_id": {"type": "string"},
+  "meta": {"type": "object", "properties": {"room": {"type": "string"}}}}}}}
+}
