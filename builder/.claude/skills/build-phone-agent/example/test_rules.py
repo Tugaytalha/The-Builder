@@ -35,6 +35,21 @@ def test_day_after_deadline_is_refused_and_deadline_offered():
     assert "Tuesday 11 March 2031" in v["guide"] and "agreed_date" not in v
 
 
-def test_valid_proposal_is_read_back():
-    v = run_tool(tool_code(WORKFLOW, "customer_said"), setup_vars(), {"kind": "proposes", "date": "2031-03-07", "amount": "50"})
-    assert v["agreed_sum"] == "50.00" and v["agreed_date"] == "2031-03-07"
+def test_valid_proposal_is_read_back_then_recorded_on_confirm():
+    code = tool_code(WORKFLOW, "customer_said")
+    v = run_tool(code, setup_vars(), {"kind": "proposes", "date": "2031-03-07", "amount": "50"})
+    assert "50.00" in v["guide"] and "record_now" not in v
+    v = run_tool(code, v, {"kind": "confirms", "date": "", "amount": ""})
+    assert (v["agreed_item"], v["agreed_sum"], v["agreed_date"], v["record_now"]) == ("i1", 50.0, "2031-03-07", "yes")
+
+
+def test_confirm_without_read_back_records_nothing():
+    v = run_tool(tool_code(WORKFLOW, "customer_said"), setup_vars(), {"kind": "confirms", "date": "", "amount": ""})
+    assert "record_now" not in v
+
+
+def test_question_back_does_not_repeat_the_offer():
+    code = tool_code(WORKFLOW, "customer_said")
+    v = run_tool(code, setup_vars(), {"kind": "refuses", "date": "", "amount": ""})
+    v = run_tool(code, v, {"kind": "other", "date": "", "amount": ""})
+    assert "80.50" not in v["guide"] and "Thursday" not in v["guide"]

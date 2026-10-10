@@ -8,7 +8,7 @@ import json
 from builder.blocks.coderun import with_dates
 from builder.blocks.nodes import (all_of, always, any_of, cond, conversation, field, go, intent, is_true, tts,
                                   workflow, api_node, code_node)
-from builder.blocks.patterns import close_sequence, close_tool, guard_hook, start, state_tool
+from builder.blocks.patterns import close_sequence, close_tool, guard_hook, record_with_retry, start, state_tool
 from builder.blocks.tools import load_api, make_tool
 
 SPEC = json.load(open("spec.json"))
@@ -113,11 +113,10 @@ st = json.loads(vars.get('neg_state'))
 it = st['items'][st['cur']]
 kind = str(params.get('kind') or '')
 def read_back(amount, day):
-    vars['agreed_sum'] = money(amount)
-    vars['agreed_date'] = day
+    it['agreed'] = [round(float(amount), 2), day]
     return ('Read back exactly: ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day))
-            + '. Then ask "Is that right?". After a clear yes, call %(tool)s with %(idf)s ' + it['id'] + ', %(amf)s ' + money(amount)
-            + ', %(daf)s ' + day + '. If the customer changes a value, call customer_said with kind proposes.')
+            + '. Then ask "Is that right?". After a clear yes, call customer_said with kind confirms.'
+            + ' If the customer changes a value, call customer_said with kind proposes.')
 def ok_day(day):
     try:
         d = iso_day(day)
@@ -151,13 +150,20 @@ elif kind == 'proposes':
                  + '. Offer ' + money(it['floor']) + ' on ' + say(iso_day(day)) + '. Then call customer_said.')
     else:
         guide = read_back(amount, day)
+elif kind == 'confirms' and it.get('agreed'):
+    vars['agreed_item'] = it['id']
+    vars['agreed_sum'] = it['agreed'][0]
+    vars['agreed_date'] = it['agreed'][1]
+    vars['record_now'] = 'yes'
+    guide = 'Say: one moment, please.'
 elif kind == 'wants_person':
     guide = 'Call transfer_to_agent now.'
 else:
-    guide = 'Answer in one short sentence, then repeat your last question.'
+    guide = ('Answer in one short sentence. Then ask for a yes or a no to your last proposal. '
+             'Do not say the amount or the day again: an offer counts every time it is said.')
 vars['neg_state'] = json.dumps(st)
 vars['guide'] = guide
-''' % {"tool": P["tool"], "idf": P["id_field"], "amf": P["amount_field"], "daf": P["date_field"]}
+'''
 
 # ---------------------------------------------------------------- tool result lines (post-hooks)
 
@@ -201,15 +207,18 @@ QUESTIONS = " ".join(f"{i + 1}. Ask: \"{q['ask']}\" Send the answer as {q['forma
                      for i, q in enumerate(I["questions"]))
 IDENTITY_TASK = ("The person confirmed they are " + CUSTOMER + ". Check identity before anything else. Ask one question "
                  "at a time. " + QUESTIONS + " Call " + I["tool"] + " for every answer, also when it looks wrong or "
-                 "incomplete. If the answer comes in two parts, join them first. Never tell the right answer.\n"
+                 "incomplete, and also when the same message holds a complaint or a question: send the answer first, then "
+                 "answer the question. If the answer comes in two parts, join them first. Never tell the right answer.\n"
                  "If the customer refuses to answer, call customer_refuses, then explain once that the questions protect "
                  "their account and ask again.")
 
 NEGOTIATE_TASK = ("NEXT STEP (obey it): {{guide}}\n\n"
                   "Identity is verified. You stated the bill and asked a question. Every time the customer answers about "
-                  "paying, call customer_said with kind: accepts (yes to your last proposal), refuses (no, with no day and "
+                  "paying, call customer_said with kind: accepts (yes to your last proposal), confirms (yes to the read-back), "
+                  "refuses (no, with no day and "
                   "no amount), proposes (names a day or an amount; pass date as YYYY-MM-DD and amount as a number), "
-                  "wants_person, or other. Then follow NEXT STEP. Propose only what NEXT STEP says.\n\n"
+                  "wants_person, or other. Then follow NEXT STEP. Propose only what NEXT STEP says. Never say that "
+                  "something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 
 # ---------------------------------------------------------------- tools
@@ -224,16 +233,14 @@ callback["pre_process_code"] = guard_hook(
     "not (str(body.get('day')) in str(vars.get('callback_days')).split(',') and %r <= str(body.get('at'))[:5] <= %r)"
     % (SPEC["callback"]["from"], SPEC["callback"]["to"]))
 said = state_tool("customer_said", "CALL it every time the customer answers about paying.", {
-    "kind": {"type": "string", "enum": ["accepts", "refuses", "proposes", "wants_person", "other"],
-             "description": "What the customer said. One of: accepts, refuses, proposes, wants_person, other."},
+    "kind": {"type": "string", "enum": ["accepts", "confirms", "refuses", "proposes", "wants_person", "other"],
+             "description": "What the customer said. One of: accepts, confirms, refuses, proposes, wants_person, other."},
     "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
     "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}},
     with_dates(NEGOTIATE))
-promise = make_tool(API, P["tool"], baked=BAKED_ID, post_code=PLAIN_POST,
-                    description="Record the promise. CALL it only after the customer said yes to the read-back.")
-promise["pre_process_code"] = guard_hook(   # the bank can record only what the code agreed (spike S1)
-    "str(body.get(%r))[:10] != str(vars.get('agreed_date')) or abs(float(body.get(%r)) - float(vars.get('agreed_sum') or -1)) > 0.001"
-    % (P["date_field"], P["amount_field"]))
+# The engine writes the promise with the values the code agreed (spike S10). The model never calls it.
+promise = make_tool(API, P["tool"], baked={**BAKED_ID, P["id_field"]: "{{agreed_item}}", P["amount_field"]: "{{agreed_sum}}",
+                                           P["date_field"]: "{{agreed_date}}"})
 transfer = make_tool(API, "transfer_to_agent", baked={**BAKED_ID, "team": "desk"}, post_code=PLAIN_POST,
                      description="Hand the call to a person. CALL it when NEXT STEP says so.")
 
@@ -271,12 +278,17 @@ nodes = [
     code_node("prepare", with_dates(PREPARE), "negotiate", fallbacks={"item_count": "0", "account_facts": "No data.",
               "debt_statement": "Thank you.", "guide": "Say you cannot see the account now."},
               transitions=[go("close_system_down", any_of(cond("item_count", "equals", "0")), "no account data")]),
-    conversation("negotiate", NEGOTIATE_TASK, tools=[said, promise, transfer], on_enter=tts("{{debt_statement}}"),
-                 first_entry_only=True, max_turns=30, max_turn_target="close_said_no", transitions=[
-                     go("close_agreed", is_true(P["tool"] + "_response.data.ok"), "promise recorded"),
-                     go("close_system_down", all_of(cond(P["tool"] + "_failure_count", "greater_than", 0)), "promise failed"),
+    conversation("negotiate", NEGOTIATE_TASK, tools=[said, transfer], on_enter=tts("{{debt_statement}}"),
+                 first_entry_only=True, max_turns=30, max_turn_target="end_router", transitions=[
+                     go("record", any_of(cond("record_now", "equals", "yes")), "the customer confirmed the read-back"),
                      go("close_handed_over", is_true("transfer_to_agent_response.data.ok"), "transferred"),
-                     go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up")]),
+                     go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up"),
+                     # the model's own goodbye does not end a call: only an end_call node does
+                     intent("end_router", "The customer says goodbye or wants to end the call")]),
+    # 1 retry: the example brief says to close on a failure; a brief that allows a retry gets attempts=2
+    *record_with_retry("record", promise, 1, "close_agreed", "close_system_down"),
+    code_node("end_router", "pass", "close_said_no",
+              transitions=[go(k, any_of(cond("close_key", "equals", k)), k) for k in SPEC["closes"] if k != "close_said_no"]),
 ] + closes
 
 close = close_tool(API, "close_call", {**BAKED_ID, "result": "{{close_result}}", "code": "{{close_code}}"})

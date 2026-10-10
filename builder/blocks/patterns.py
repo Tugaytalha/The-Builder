@@ -1,5 +1,5 @@
 """Sub-graphs and tool shapes that the platform spikes proved (notes/platform-spikes.md)."""
-from builder.blocks.nodes import code_node, end_node
+from builder.blocks.nodes import api_node, code_node, end_node, go, is_true
 from builder.blocks.tools import make_tool
 
 BLOCKED_URL = "https://blocked.invalid/refused-by-guard"
@@ -47,3 +47,20 @@ def guard_hook(condition_code):
     nothing (spike S1). The condition can read `vars` and `config['body']`. The model sees a failed call."""
     return ("try:\n    body = config.get('body') if isinstance(config.get('body'), dict) else dict()\n"
             "    if " + condition_code + ":\n        config['url'] = %r\nexcept Exception:\n    pass\n" % BLOCKED_URL)
+
+
+def record_with_retry(name, tool, attempts, ok_target, fail_target):
+    """An engine-run write (spike S10): the model never calls the tool, so it cannot skip a retry or send other values.
+    `tool` comes from make_tool with every body field baked from variables the code set (the agreed values).
+    Returns [reset code node `name`, api nodes `name_1` .. `name_<attempts>`]. Route to `name`. A success goes to
+    `ok_target`; when every attempt failed, the call goes to `fail_target`.
+
+    An api_request node leaves `<node>_response.data.ok` and `<node>_failure_count`. The reset node sets each
+    `<node>_response.data.ok` to "pending" first, so a value left from an earlier product does not count."""
+    steps = [f"{name}_{i}" for i in range(1, attempts + 1)]
+    reset = code_node(name, "\n".join(f"vars[{s + '_response.data.ok'!r}] = 'pending'" for s in steps), steps[0])
+    nodes = [reset]
+    for i, step in enumerate(steps):
+        nxt = steps[i + 1] if i + 1 < len(steps) else fail_target
+        nodes.append(api_node(step, tool, nxt, transitions=[go(ok_target, is_true(step + "_response.data.ok"), "recorded")]))
+    return nodes

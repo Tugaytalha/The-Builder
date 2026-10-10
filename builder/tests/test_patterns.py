@@ -49,3 +49,15 @@ def test_patterns_lint_clean():
     w = workflow("start", "Be brief.", nodes, tools=[close_tool(API, "check_member", {"member_id": "{{member_id}}",
                                                                                      "kind": "{{close_kind}}"})])
     assert lint(w, API, {}) == []
+
+
+def test_record_with_retry_chains_attempts_and_resets_results():
+    from builder.blocks.patterns import record_with_retry
+    tool = make_tool(API, "log_visit", baked={"member_id": "{{member_id}}", "meta": "{{meta}}"})
+    nodes = record_with_retry("rec", tool, 2, "done", "failed")
+    assert [n["name"] for n in nodes] == ["rec", "rec_1", "rec_2"]
+    assert nodes[1]["transitions"][0]["target_node"] == "done" and nodes[1]["transitions"][-1]["target_node"] == "rec_2"
+    assert nodes[2]["transitions"][-1]["target_node"] == "failed"
+    scope = {"vars": {"rec_1_response.data.ok": "true"}}
+    exec(nodes[0]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"], scope)
+    assert scope["vars"]["rec_1_response.data.ok"] == "pending"

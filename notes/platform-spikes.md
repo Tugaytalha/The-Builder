@@ -59,6 +59,13 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Result: in the turn in which the model called the tool, its reply was "banana split 1".
 - Verdict: **works**. The prompt is rendered again after a tool result. A state tool can therefore steer the model: the code decides the next step and writes it into a variable that `task_message` shows.
 
+## S10 (extra): what does an engine-run write leave, after a bank error and after a success?
+
+- Workflow: identity on a conversation node, then `get_account`, then two `api_request` nodes `record1` and `record2` with `create_promise` (all fields baked), for practice customer PUB-10, whose first `create_promise` fails.
+- Result: the bank recorded exactly one promise (the second try). `record1` left `record1_response.status = error`, `record1_status_code = 500`, `record1_failure_count = 1` and no `data.ok`. `record2` left `record2_response.data.ok = true`. The keys are named after the node, not the tool. The event shows the function as `api_call`.
+- Background: in the first Brief A build, `create_promise` was a model tool. The bank's 500 arrived as `function_call_error`, the post-hook did not run, the model did not retry, and the call looped on "goodbye" until the turn cap (PUB-10, 0 of 3).
+- Verdict: **works**. Writes with retries are engine-run (`patterns.record_with_retry`).
+
 ## Summary for the blueprint
 
 | Spike | Verdict | Use |
@@ -70,3 +77,4 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | S5 other `now` | works | eval cases can run on other days |
 | S6 initial code node in chat | skipped | empty initial node before setup |
 | S9 tool-written variable in the prompt | works | the state tool writes the next step into a `{{variable}}` of `task_message` |
+| S10 engine-run write with retry | works | `record_with_retry`; results are `<node>_response.*` |
