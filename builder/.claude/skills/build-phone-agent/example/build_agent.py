@@ -8,7 +8,8 @@ import json
 from builder.blocks.coderun import with_dates
 from builder.blocks.nodes import (all_of, always, any_of, cond, conversation, field, go, intent, is_true, tts,
                                   workflow, api_node, code_node)
-from builder.blocks.patterns import close_sequence, close_tool, guard_hook, record_with_retry, start, state_tool
+from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, record_with_retry,
+                                     start, state_tool)
 from builder.blocks.tools import load_api, make_tool
 
 SPEC = json.load(open("spec.json"))
@@ -150,7 +151,10 @@ elif kind == 'proposes':
                  + '. Offer ' + money(it['floor']) + ' on ' + say(iso_day(day)) + '. Then call customer_said.')
     else:
         guide = read_back(amount, day)
-elif kind == 'confirms' and it.get('agreed'):
+elif kind == 'confirms' and not it.get('agreed'):
+    amount, day = it.get('pending') or [it['full'], it['deadline']]
+    guide = read_back(amount, day)
+elif kind == 'confirms':
     vars['agreed_item'] = it['id']
     vars['agreed_sum'] = it['agreed'][0]
     vars['agreed_date'] = it['agreed'][1]
@@ -168,20 +172,22 @@ vars['guide'] = guide
 # ---------------------------------------------------------------- tool result lines (post-hooks)
 
 I = SPEC["identity"]
-VERIFY_POST = r'''
-passed = str(d.get(%(passed)r)).lower() == 'true'
-correct = str(d.get(%(correct)r)).lower() == 'true'
-if passed:
-    d['what_to_do_next'] = 'Both answers are correct.'
-elif str(d.get('ok')).lower() == 'false':
-    d['what_to_do_next'] = 'The answer could not be read. It is not a wrong answer. Ask the same question again.'
-elif correct:
-    d['what_to_do_next'] = 'Correct. Now ask the next security question.'
-elif str(d.get(%(left)r)) == '0':
-    d['what_to_do_next'] = 'The check has failed. Say nothing about the account.'
+QUESTIONS = I["questions"]
+# Runs after the engine-run check; r(field) is the bank's result field (spike S10). Sets the model's next step.
+ID_GUIDE = r'''
+ASKS = %(asks)r
+order = [q for q, ask in ASKS]
+q = str(vars.get('id_question') or '')
+nxt = order[order.index(q) + 1] if q in order and order.index(q) + 1 < len(order) else ''
+if r(%(passed)r) == 'true':
+    vars['id_guide'] = 'Both answers are correct. Say thank you.'
+elif r('ok') == 'false':
+    vars['id_guide'] = 'The answer could not be read. It is not a wrong answer. Ask the same question again.'
+elif r(%(correct)r) == 'true' and nxt:
+    vars['id_guide'] = 'Correct. Now ask: ' + dict(ASKS)[nxt]
 else:
-    d['what_to_do_next'] = 'Wrong answer. Ask the same question again. Give no hint.'
-''' % {"passed": I["passed_field"], "correct": I["correct_field"], "left": I["left_field"]}
+    vars['id_guide'] = 'Say that the answer does not match. Ask the same question again. Give no hint.'
+''' % {"asks": [[q["value"], q["ask"]] for q in QUESTIONS], "passed": I["passed_field"], "correct": I["correct_field"]}
 
 PLAIN_POST = "d['what_to_do_next'] = 'Done. Tell the customer in one sentence.' if str(d.get('ok')).lower() == 'true' else 'It did not work. Say so in one sentence.'"
 
@@ -203,12 +209,12 @@ THIRD_PARTY_TASK = ("The person is not " + CUSTOMER + ". Never say why you are c
                     "with the day as YYYY-MM-DD and the time as HH:MM. If it fails, the time is outside the window: say so "
                     "and ask once for another time. If there is still no time in the window, call transition_to_close_no_time.")
 
-QUESTIONS = " ".join(f"{i + 1}. Ask: \"{q['ask']}\" Send the answer as {q['format']}, with {I['question_field']} {q['value']}."
-                     for i, q in enumerate(I["questions"]))
-IDENTITY_TASK = ("The person confirmed they are " + CUSTOMER + ". Check identity before anything else. Ask one question "
-                 "at a time. " + QUESTIONS + " Call " + I["tool"] + " for every answer, also when it looks wrong or "
-                 "incomplete, and also when the same message holds a complaint or a question: send the answer first, then "
-                 "answer the question. If the answer comes in two parts, join them first. Never tell the right answer.\n"
+IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
+                 "The person confirmed they are " + CUSTOMER + ". Check identity before anything else, one question at a "
+                 "time, in this order: " + " ".join(f"({i + 1}) {q['value']}: \"{q['ask']}\"" for i, q in enumerate(QUESTIONS))
+                 + ". Every time the customer says anything that is part of an answer, call answer_given with the parts said "
+                 "in this message, also when it looks wrong, and also when the same message holds a complaint or a question. "
+                 "Never guess a missing part. Never tell the right answer.\n"
                  "If the customer refuses to answer, call customer_refuses, then explain once that the questions protect "
                  "their account and ask again.")
 
@@ -223,8 +229,9 @@ NEGOTIATE_TASK = ("NEXT STEP (obey it): {{guide}}\n\n"
 
 # ---------------------------------------------------------------- tools
 
-verify = make_tool(API, I["tool"], baked=BAKED_ID, post_code=VERIFY_POST,
-                   description="Check one security answer. CALL it every time the customer answers a security question.")
+answer = answer_tool({q["value"]: q["kind"] for q in QUESTIONS})
+# The engine sends a complete answer (spike S10); the model never calls the identity tool.
+verify = make_tool(API, I["tool"], baked={**BAKED_ID, I["question_field"]: "{{id_question}}", I["answer_field"]: "{{id_answer}}"})
 refuses = state_tool("customer_refuses", "CALL it every time the customer refuses to answer a security question.", {},
                      "vars['id_refusals'] = int(float(vars.get('id_refusals') or 0)) + 1")
 callback = make_tool(API, "schedule_callback", baked=BAKED_ID, post_code=PLAIN_POST,
@@ -255,8 +262,9 @@ party = field("party", "string", "Who answered, from the latest message. custome
               "question.", enum=["customer", "someone_else", "unclear"])
 nodes = [
     start("setup"),
-    code_node("setup", with_dates(SETUP), "opening",
-              fallbacks={"date_facts": "Date facts are not available.", "callback_facts": "", "callback_days": ""}),
+    code_node("setup", with_dates(SETUP) + "\nvars['id_guide'] = 'Wait for the answer to the first question.'", "opening",
+              fallbacks={"date_facts": "Date facts are not available.", "callback_facts": "", "callback_days": "",
+                         "id_guide": "Wait for the answer to the first question."}),
     conversation("opening", OPENING_TASK, on_enter=tts(SPEC["opening_line"]), first_entry_only=True, extract=[party],
                  max_turns=6, max_turn_target="close_unsure", transitions=[
                      go("identity", any_of(cond("party", "equals", "customer")), "the customer confirmed"),
@@ -267,12 +275,18 @@ nodes = [
     conversation("third_party", THIRD_PARTY_TASK, tools=[callback], max_turns=10, max_turn_target="close_no_time", transitions=[
         go("close_call_later", is_true("schedule_callback_response.data.ok"), "callback booked"),
         {**intent("close_no_time", "no callback time inside the window"), "is_tool_call": True}]),
-    conversation("identity", IDENTITY_TASK, tools=[verify, refuses], first_entry_only=True,
-                 on_enter=tts("Thank you. First I need to ask two security questions. " + I["questions"][0]["ask"]),
-                 max_turns=16, max_turn_target="close_refused_check", transitions=[
-                     go("fetch_account", is_true(I["tool"] + "_response.data." + I["passed_field"]), "identity passed"),
-                     go("close_wrong", any_of(cond(I["tool"] + "_response.data." + I["left_field"], "equals", "0")), "check failed"),
-                     go("close_refused_check", any_of(cond("id_refusals", "greater_than", I["refusals_allowed"])), "refused")]),
+    # The first entry speaks a fixed line; every return from the check speaks the next step (on_enter llm).
+    *[conversation(node, IDENTITY_TASK, tools=[answer, refuses], first_entry_only=(node == "identity"),
+                   on_enter=tts("Thank you. First I need to ask two security questions. " + QUESTIONS[0]["ask"])
+                   if node == "identity" else {"type": "llm"},
+                   max_turns=16, max_turn_target="close_refused_check", transitions=[
+                       go("id_check", any_of(cond("id_send", "equals", "yes")), "a complete answer"),
+                       go("close_refused_check", any_of(cond("id_refusals", "greater_than", I["refusals_allowed"])), "refused")])
+      for node in ("identity", "identity_next")],
+    *identity_check("id_check", verify, "identity_next", [
+        go("fetch_account", is_true("id_check_check_response.data." + I["passed_field"]), "identity passed"),
+        go("close_wrong", any_of(cond("id_check_check_response.data." + I["left_field"], "equals", "0")), "check failed")],
+        ID_GUIDE),
     api_node("fetch_account", make_tool(API, "get_account", baked=BAKED_ID), "prepare",
              mapping=[("data." + A["list_field"], A["list_field"])]),
     code_node("prepare", with_dates(PREPARE), "negotiate", fallbacks={"item_count": "0", "account_facts": "No data.",

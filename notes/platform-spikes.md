@@ -66,6 +66,13 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Background: in the first Brief A build, `create_promise` was a model tool. The bank's 500 arrived as `function_call_error`, the post-hook did not run, the model did not retry, and the call looped on "goodbye" until the turn cap (PUB-10, 0 of 3).
 - Verdict: **works**. Writes with retries are engine-run (`patterns.record_with_retry`).
 
+## S11 (extra): engine-run identity check with answers in pieces
+
+- Workflow: `identity` and `identity_next` conversation nodes with `patterns.answer_tool`, a route on `id_send` to `patterns.identity_check` (engine-run `verify_identity`), and back to `identity_next` (`on_enter` llm, task starts with `NEXT STEP: {{id_guide}}`).
+- Customer lines: "14 March.", "1988.", "44", "71" (practice customer PUB-01).
+- Result: the agent asked "What is the year?", then "Correct. What are the last four digits…", then "What are the rest of the digits?". The bank got exactly `1988-03-14` and `4471`, both verified, 0 wrong answers. In eval round 1, the model-called tool sent `1900-03-14` and `44` for the same speech style and the case failed.
+- Verdict: **works**. `identity_next` with `on_enter` llm speaks after an engine-run step.
+
 ## Summary for the blueprint
 
 | Spike | Verdict | Use |
@@ -78,3 +85,4 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | S6 initial code node in chat | skipped | empty initial node before setup |
 | S9 tool-written variable in the prompt | works | the state tool writes the next step into a `{{variable}}` of `task_message` |
 | S10 engine-run write with retry | works | `record_with_retry`; results are `<node>_response.*` |
+| S11 engine-run identity check | works | `answer_tool` + `identity_check`; the model never calls the identity tool |

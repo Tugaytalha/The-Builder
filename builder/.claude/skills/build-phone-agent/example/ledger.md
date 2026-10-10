@@ -4,8 +4,8 @@
 | R2 | Ask for the person; only a clear yes or own name counts; at most twice, then absent / unsure | §2 | route | opening: party enum, opening.total_turns > 1 |
 | R3 | Someone else: callback on business day 1 or 2 after today, 09:00–17:00 | §3 | tool | third_party: schedule_callback with guard_hook on callback_days |
 | R4 | No time in the window: absent / no_time | §3 | route | third_party: transition_to_close_no_time |
-| R5 | Postcode, then year of birth, each answer to verify_identity | §4 | prompt | identity task; verify post-hook |
-| R6 | Two wrong answers close as unverified / wrong | §4 | route | identity: tries_left equals 0 |
+| R5 | Postcode, then year of birth, each answer to verify_identity | §4 | code | answer_given joins parts; id_check sends each complete answer |
+| R6 | Two wrong answers close as unverified / wrong | §4 | route | id_check_after: tries_left equals 0 |
 | R7 | Two refusals close as unverified / refused_check | §5 | code | customer_refuses counts id_refusals; route > 1 |
 | R8 | After identity call get_account and state each item | §6 | code | fetch_account, prepare debt_statement |
 | R9 | Business days and holidays | §7 | code | setup: datelib with spec holidays |

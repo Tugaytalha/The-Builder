@@ -6,8 +6,8 @@
  "identity": {
   "tool": "verify_identity", "question_field": "question", "answer_field": "reply",
   "questions": [
-   {"value": "postcode", "ask": "What is the postcode of your address?", "format": "the postcode as said, letters in capitals"},
-   {"value": "birth_year", "ask": "And what is your year of birth?", "format": "four digits"}
+   {"value": "postcode", "ask": "What is the postcode of your address?", "kind": ["text", 0]},
+   {"value": "birth_year", "ask": "And what is your year of birth?", "kind": ["digits", 4]}
   ],
   "passed_field": "passed", "correct_field": "correct", "left_field": "tries_left",
   "refusals_allowed": 1

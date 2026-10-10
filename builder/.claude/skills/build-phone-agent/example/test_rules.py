@@ -43,9 +43,9 @@ def test_valid_proposal_is_read_back_then_recorded_on_confirm():
     assert (v["agreed_item"], v["agreed_sum"], v["agreed_date"], v["record_now"]) == ("i1", 50.0, "2031-03-07", "yes")
 
 
-def test_confirm_without_read_back_records_nothing():
+def test_confirm_without_read_back_gives_the_read_back_first():
     v = run_tool(tool_code(WORKFLOW, "customer_said"), setup_vars(), {"kind": "confirms", "date": "", "amount": ""})
-    assert "record_now" not in v
+    assert "record_now" not in v and v["guide"].startswith("Read back")
 
 
 def test_question_back_does_not_repeat_the_offer():
@@ -53,3 +53,10 @@ def test_question_back_does_not_repeat_the_offer():
     v = run_tool(code, setup_vars(), {"kind": "refuses", "date": "", "amount": ""})
     v = run_tool(code, v, {"kind": "other", "date": "", "amount": ""})
     assert "80.50" not in v["guide"] and "Thursday" not in v["guide"]
+
+
+def test_identity_guide_after_a_correct_first_answer_asks_the_second_question():
+    v = run_snippet(node_code(WORKFLOW, "id_check_after"), {"id_question": "postcode", "id_check_check_response.status": "success",
+                                                          "id_check_check_response.data.correct": "true",
+                                                          "id_check_check_response.data.passed": "false"})
+    assert v["id_guide"] == "Correct. Now ask: And what is your year of birth?"

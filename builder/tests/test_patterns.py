@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from builder.blocks.lint import lint
-from builder.blocks.nodes import always, conversation, workflow
+from builder.blocks.nodes import always, conversation, go, is_true, workflow
 from builder.blocks.patterns import BLOCKED_URL, close_sequence, close_tool, guard_hook, start, state_tool
 from builder.blocks.tools import load_api, make_tool
 
@@ -61,3 +61,45 @@ def test_record_with_retry_chains_attempts_and_resets_results():
     scope = {"vars": {"rec_1_response.data.ok": "true"}}
     exec(nodes[0]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"], scope)
     assert scope["vars"]["rec_1_response.data.ok"] == "pending"
+
+
+def _answer(v, **p):
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import answer_tool
+    code = answer_tool({"birth": ["date", 0], "pin": ["digits", 4], "word": ["text", 0]})["function"]["parameters"]["properties"]["code"]["default"]
+    return run_tool(code, v, {"question": "", "day": "", "month": "", "year": "", "digits": "", "text": "", **p})
+
+
+def test_answer_tool_joins_a_date_in_two_parts():
+    v = _answer({}, question="birth", day="14", month="March")
+    assert "id_send" not in v and "year" in v["id_guide"]
+    v = _answer(v, question="birth", year="1988")
+    assert (v["id_question"], v["id_answer"], v["id_send"]) == ("birth", "1988-03-14", "yes")
+
+
+def test_answer_tool_joins_digits_and_replaces_a_full_new_answer():
+    v = _answer({}, question="pin", digits="44")
+    assert "id_send" not in v
+    v = _answer(v, question="pin", digits="71")
+    assert v["id_answer"] == "4471"
+    v = _answer({**v, "id_send": "no"}, question="pin", digits="12")
+    v = _answer(v, question="pin", digits="9904")
+    assert v["id_answer"] == "9904" and v["id_send"] == "yes"
+
+
+def test_answer_tool_never_guesses_a_year():
+    v = _answer({}, question="birth", day="5", month="12")
+    assert "id_send" not in v
+
+
+def test_identity_check_chain_lints_clean():
+    from builder.blocks.patterns import identity_check
+    tool = make_tool(API, "check_member", baked={"member_id": "{{member_id}}", "code": "{{id_answer}}", "kind": "{{id_question}}"})
+    chain = identity_check("idc", tool, "ask", [go("bye", is_true("idc_check_response.data.ok"), "passed")],
+                           "vars['id_guide'] = 'Correct.' if r('ok') == 'true' else 'Ask again.'")
+    scope = {"vars": {"idc_check_response.status": "success", "idc_check_response.data.ok": "true"}}
+    exec(chain[2]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"], scope)
+    assert scope["vars"]["id_guide"] == "Correct."
+    nodes = [start("ask"), conversation("ask", "{{id_guide}}", transitions=[go("idc", is_true("id_send"), "send"), always("bye")])]
+    w = workflow("start", "Be brief.", nodes + chain + close_sequence("bye", {"x": "y"}, "Bye."))
+    assert lint(w, API, {}) == [] and [n["name"] for n in chain] == ["idc", "idc_check", "idc_after"]
