@@ -7,6 +7,7 @@ gate. This file then deploys the last workflow if it changed, exports the deploy
 submission/<slot>.workflow.json, and ends the trace. A watchdog stops the agent at 27 minutes.
 """
 import asyncio
+import dataclasses
 import hashlib
 import json
 import os
@@ -50,7 +51,10 @@ async def run_agent(run_dir, trace, deadline):
     prompt = (f"Use the build-phone-agent skill. Run folder: {run_dir}. Slot: {run_dir.name.rsplit('-', 2)[0]}. "
               f"Time left: {minutes} minutes.")
     commands = {}
+    transcript = open(run_dir / "agent.jsonl", "a")   # every message, for debugging; the trace is the summary
     async for message in query(prompt=prompt, options=options):
+        transcript.write(trace.redact(json.dumps({"type": type(message).__name__, **dataclasses.asdict(message)}, default=str)) + "\n")
+        transcript.flush()
         if isinstance(message, AssistantMessage):
             trace.log("model_call", model=message.model, purpose=_purpose(message))
             for block in message.content:
