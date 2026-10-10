@@ -52,6 +52,13 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Verdict: chat skips the code of the **initial** node only.
 - Consequence: every blueprint starts with an empty initial code node `start`, then the setup code node. Chat smoke tests then see the same variables as a simulation.
 
+## S9 (extra): does a variable that a state tool writes reach the model in the same turn?
+
+- Workflow: `task_message` starts with `GUIDANCE (obey it in every reply): {{guide}}`. The setup node sets `guide` to "Reply normally.". The state tool `note_refusal` sets `guide` to "Say exactly these words: banana split <count>".
+- Call: `8f75adf8-3e90-4d65-affb-9bd213133514`.
+- Result: in the turn in which the model called the tool, its reply was "banana split 1".
+- Verdict: **works**. The prompt is rendered again after a tool result. A state tool can therefore steer the model: the code decides the next step and writes it into a variable that `task_message` shows.
+
 ## Summary for the blueprint
 
 | Spike | Verdict | Use |
@@ -62,3 +69,4 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | S4 line before close | fails | goodbye in `end_call` `spoken_message`; `close_call` as an `end_of_call` tool |
 | S5 other `now` | works | eval cases can run on other days |
 | S6 initial code node in chat | skipped | empty initial node before setup |
+| S9 tool-written variable in the prompt | works | the state tool writes the next step into a `{{variable}}` of `task_message` |
