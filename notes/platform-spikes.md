@@ -23,7 +23,9 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Workflow: tool `note_refusal` (`code_exec`, top-level param `event` with no default) whose code increments `vars['refusals']`. Transition `refusals greater_than 1` to an `api_request` close node.
 - Call: `5e8661a8-c9a2-4e4b-b51b-51bef138e631`.
 - Result: after the second "no", `refusals` was 2, and the route to `close` fired in the same turn.
-- Finding: the model's argument is **not** in `vars['event']`. It is in `vars['note_refusal_args.event']` (the code read `vars.get('event')` and got `None`). Code in a `code_exec` tool must read `vars.get('<tool>_args.<param>')`.
+- Finding: the model's argument is **not** in `vars['event']`. While the code runs, the arguments are in a global dict named `params` (`params['event']`). The engine writes `vars['<tool>_args.<param>']` only after the code ended (call `6c0eb395-9d21-420b-abb2-c3bd0558e629`, follow-up spike S7). Code in a `code_exec` tool must read `params.get('<param>')`.
+- A `code_exec` tool always returns `{"status": "success", "data": null}` to the model. Assigning `_result` or `result`, or printing, changes nothing (spike S8, call `7ace8294-2ec6-4960-9f13-05ecf98fcfca`). So a state tool cannot tell the model what to say. Its effect must come from the variables it writes: a route on them, or a node whose fixed line uses them.
+- Other globals in the sandbox: `vars`, `params`, `_json`, `_sys`, `_tools`, `_traceback`, `_result`, `_error`.
 - Verdict: **works**.
 
 ## S4: does an `api_request` node's `on_enter` line come before its `close_call`?
@@ -55,7 +57,7 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | Spike | Verdict | Use |
 |---|---|---|
 | S1 guard hook | works | `guard_hook` blocks a write that breaks a rule; tell the model in the prompt what a failure means |
-| S2 state tool | works | `state_tool` keeps counts per call; read params from `<tool>_args.<param>` |
+| S2 state tool | works | `state_tool` keeps counts per call; read the model's arguments from the global `params` |
 | S3 chat past identity | works | smoke tests may go past identity on practice customers |
 | S4 line before close | fails | goodbye in `end_call` `spoken_message`; `close_call` as an `end_of_call` tool |
 | S5 other `now` | works | eval cases can run on other days |
