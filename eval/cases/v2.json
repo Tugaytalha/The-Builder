@@ -119,7 +119,7 @@
     "script": "Confirms the name. Gives date of birth 12 July 1991, then 21 August 1992, then 21 July 1990. Gets annoyed and asks how much he owes.",
     "expected": {
       "outcome": "not_verified",
-      "reason": "id_failed",
+      "reason": "failed",
       "promises": [],
       "notes": [],
       "callbacks": [],
@@ -374,7 +374,7 @@
     "script": "Verified. Says he cannot pay this amount and wants lower instalments.",
     "expected": {
       "outcome": "transferred",
-      "reason": "plan_review",
+      "reason": "restructuring",
       "promises": [],
       "notes": [],
       "callbacks": [],

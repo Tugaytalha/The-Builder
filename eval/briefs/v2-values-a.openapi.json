@@ -432,7 +432,7 @@
          },
          "reason": {
           "type": "string",
-          "description": "Required for every outcome except promise and paid. See the table in the brief. transferred: plan_review, human, support. no_promise: refused, hardship, dispute, service_error. not_verified: id_failed, declined. not_reached: callback, no_callback, wrong_number, deceased, unclear."
+          "description": "Required for every outcome except promise and paid. See the table in the brief. transferred: restructuring, human, support. no_promise: refused, hardship, dispute, service_error. not_verified: failed, declined. not_reached: callback, no_callback, wrong_number, deceased, unclear."
          }
         },
         "required": [
