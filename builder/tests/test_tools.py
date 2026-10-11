@@ -67,3 +67,19 @@ def test_kit_api_builds_all_tools():
     assert len(api) == 7
     for name in api:
         assert make_tool(api, name, baked={"customer_id": "{{customer_id}}"})["function"]["name"] == name
+
+
+def test_swagger_2_host_and_base_path_give_the_url(tmp_path):
+    # review: a Swagger 2 tool API (host + basePath, no servers) failed every gate
+    p = tmp_path / "x.json"
+    p.write_text(json.dumps({"swagger": "2.0", "host": "api.example.test", "basePath": "/v2", "schemes": ["https"],
+                             "paths": {"/pay": {"post": {"parameters": [{"in": "body", "name": "body", "schema": {
+                                 "type": "object", "properties": {"amount": {"type": "number"}}, "required": ["amount"]}}]}}}}))
+    api = load_api(str(p))
+    assert api["pay"]["url"] == "https://api.example.test/v2/pay" and api["pay"]["required"] == ["amount"]
+
+
+def test_a_route_with_a_slash_gives_a_tool_name_without_one(tmp_path):
+    p = tmp_path / "x.json"
+    p.write_text(json.dumps({"servers": [{"url": "https://a.test"}], "paths": {"/v1/promises/create": {"post": {}}}}))
+    assert list(load_api(str(p))) == ["v1_promises_create"]

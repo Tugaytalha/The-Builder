@@ -10,7 +10,7 @@ Import it in `build_agent.py`. `PYTHONPATH` already points at the repository.
 
 | Module | Use |
 |---|---|
-| `tools.load_api(path)` | Reads the tool API file. Returns operation name → `url`, `method`, `fields` (name → schema), `required`, `response`. |
+| `tools.load_api(path)` | Reads the tool API file. Returns operation name (the route without its first `/`; any other `/` becomes `_`) → `url`, `method`, `fields` (name → schema), `required`, `response`. OpenAPI 3 or Swagger 2. |
 | `tools.make_tool(api, name, baked=..., post_code=..., description=...)` | An `api_call` tool. `baked` maps a body field to a fixed value or a `"{{variable}}"` the workflow sets. Every other field is filled by the model (its type, description and enum come from the API file). `post_code` runs in the post-hook with `d` = the API's JSON body; set `d['what_to_do_next']`. |
 | `tools.field_values(api, name, field)` | The enum of a field, or `[]`. |
 | `nodes.conversation / code_node / api_node / end_node / workflow` | Valid nodes. `code_node` wraps the code in `try`, writes the `fallbacks` and `<node>_code_error` on an exception, and refuses `{{` or `}}`. `workflow` refuses an unknown target or a duplicate name. |
