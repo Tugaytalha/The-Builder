@@ -14,13 +14,13 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt        # Wind
 
 ## Setup from scratch
 
-Tested from a fresh copy of the repository on Windows (`git clone`, Python 3.14) and on Linux (Ubuntu 24.04, Python 3.12). macOS runs the same code paths as Linux but was not re-tested for this guide.
+Tested from a fresh copy of the repository on Windows (`git clone`, Python 3.14), on Linux (Ubuntu 24.04, Python 3.12) and on macOS (Python 3.12).
 
 **1. Install**
 
 | | macOS / Linux (bash, zsh) | Windows (PowerShell) |
 |---|---|---|
-| Python 3.10 or newer (tested on 3.12 and 3.14) | `python3 --version` (Ubuntu and Debian also need `sudo apt install python3-venv`) | `python --version` |
+| Python 3.10 or newer (tested on 3.12 and 3.14) | `python3 --version` (Ubuntu and Debian also need `sudo apt install python3-venv`. The macOS `python3` is 3.9, which is too old: pip then says `No matching distribution found for claude-agent-sdk`. Use `brew install python@3.12` and `python3.12`, or `uv venv -p 3.12 .venv`) | `python --version` |
 | Clone | `git clone https://github.com/Tugaytalha/The-Builder.git && cd The-Builder` | the same |
 | Virtual environment | `python3 -m venv .venv` | `python -m venv .venv` |
 | Dependencies | `.venv/bin/pip install -r requirements.txt` | `.venv\Scripts\pip install -r requirements.txt` |
@@ -49,7 +49,7 @@ PY -c "import claude_agent_sdk, pathlib; print(pathlib.Path(claude_agent_sdk.__f
 **4. Check that it works** (all three should succeed, none starts a build):
 
 ```
-PY -m pytest -q builder/tests eval             # 159 tests pass
+PY -m pytest -q builder/tests eval             # all tests pass (171 today)
 PY eval/contamination.py                       # "0 leaks", exit code 0
 PY -c "from builder.blocks.check import freya; ws = freya.workspace_id(); print(freya.api('GET', '/api/v2/workflow', workspaceId=ws, limit=100)['total'])"
                                                # prints a number; the workspace limit is 200 workflows
