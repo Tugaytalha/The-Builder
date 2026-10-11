@@ -205,8 +205,7 @@ def test_negotiation_final_read_back_waits_for_one_confirmation():
 
 def test_negotiation_unfinished_message_changes_nothing():
     v = _neg({}, 1, item="a", kind="no")
-    before = v["neg_state"]
     v = _neg(v, 2, item="a", kind="unfinished")
-    assert v["guide"] == 'SAY: "Sorry, please go on."' and v["neg_state"].replace('"shown": "1"', "") is not None
+    assert v["guide"] == 'SAY: "Sorry, please go on."' 
     v = _neg(v, 3, item="a", kind="no")                 # the second refusal still counts as the second, not the third
     assert v["guide"] == 'SAY: "Could you pay b?"'
