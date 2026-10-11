@@ -69,14 +69,20 @@ def test_a_read_that_fails_with_a_server_error_is_tried_again():
     assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True} and len(calls) == 3
 
 
-def test_a_write_is_never_tried_again():
+def test_a_write_is_tried_again_only_after_a_503():
+    # round 6: "POST /api/v2/simulations -> 503: API key validation is temporarily unavailable": nothing was created
     from run_cases_at import retry_reads
     import pytest
+    calls = []
 
     def api(method, path, body=None, **params):
-        raise RuntimeError(f"{method} {path} -> 503: error code: 503")
-    with pytest.raises(RuntimeError):
+        calls.append(method)
+        if len(calls) == 1:
+            raise RuntimeError(f"{method} {path} -> 503: API key validation is temporarily unavailable")
+        raise RuntimeError(f"{method} {path} -> 500: Internal server error")
+    with pytest.raises(RuntimeError, match="500"):
         retry_reads(api, wait=lambda s: None)("POST", "/x")
+    assert len(calls) == 2
 
 
 def test_a_score_run_that_wrote_no_result_runs_once_more(tmp_path):

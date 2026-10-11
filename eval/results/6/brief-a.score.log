@@ -16,3 +16,21 @@ Traceback (most recent call last):
   File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 19, in api
     raise RuntimeError(f"{method} {path} -> {e.code}: {e.read().decode()[:1500]}") from None
 RuntimeError: GET /api/v2/simulations/75305604-ce8c-4324-b44e-3b31b319b4da -> 500: {"success":false,"data":{"message":"Internal server error","result":{"requestId":"94faadf3-11de-4081-aed2-61fd30b3403c"}}}
+Traceback (most recent call last):
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 84, in <module>
+    main(sys.argv[1:])
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 80, in main
+    run_cases.main()
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 67, in main
+    rows, sim_id, it_id, status, took, med = run_once(a.agent_id, cases, ids)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 88, in run_once
+    sim_id, it_id, status = freya.run_simulation(agent_id, f"cases {time.strftime('%H:%M:%S')}", {ids[c["id"]]: sessions[c["id"]] for c in cases})
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 91, in run_simulation
+    sim = api("POST", "/api/v2/simulations", {
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 38, in wrapped
+    out = api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 62, in wrapped
+    return api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 19, in api
+    raise RuntimeError(f"{method} {path} -> {e.code}: {e.read().decode()[:1500]}") from None
+RuntimeError: POST /api/v2/simulations -> 503: {"success":false,"data":{"message":"API key validation is temporarily unavailable. Retry shortly.","result":null}}

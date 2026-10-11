@@ -55,14 +55,15 @@ def unstick(api, now=time.time):
 def retry_reads(api, wait=time.sleep, tries=6):
     """Wrap freya.api. A GET that fails with a server error (500, 502, 503, 504: seen in rounds 5b, 5c and 6) or a network
     error (round 6: DNS) is tried again;
-    a write is never repeated."""
+    a write is tried again only after a 503 (refused before anything was written)."""
     def wrapped(method, path, body=None, **params):
         for i in range(tries):
             try:
                 return api(method, path, body, **params)
             except (RuntimeError, urllib.error.URLError) as e:
                 server_or_dns = isinstance(e, urllib.error.URLError) or re.search(r"-> 50[0234]", str(e))
-                if method != "GET" or i == tries - 1 or not server_or_dns:
+                refused = re.search(r"-> 503", str(e))      # a 503 is refused before anything is written
+                if i == tries - 1 or not (refused or (method == "GET" and server_or_dns)):
                     raise
                 print(f"{method} {path} failed ({str(e)[-30:]}), trying again", flush=True)
                 wait(10 * (i + 1))
