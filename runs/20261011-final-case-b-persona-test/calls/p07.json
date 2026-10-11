@@ -1,0 +1,61 @@
+{
+ "vars": {
+  "customerNumber": "92030487",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Yıldız Pratik kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Tasarım diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Pratik kartımın borcu ne kadar?",
+   "agent": "Yıldız Pratik isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Dört iki beş üç.",
+   "agent": "Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Sıfır sıfır dört iki beş üç.",
+   "agent": "Son altı hanesi aynı olan birden fazla kartınız var. Kart numaranızı söyler misiniz?"
+  },
+  {
+   "customer": "Beş dört beş sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+   "agent": "Sonu dört iki beş üç ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 12.500 Türk Lirası, ödenmesi gereken minimum tutar 5.000 Türk Lirası, kalan toplam borcunuz 11.500 Türk Lirası, kalan minimum ödeme tutarınız 4.000 Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "dabe0ea2-991d-46e4-9f3c-1c4cea8a0c96",
+ "events": [
+  "USER: Merhaba, Yıldız Pratik kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"92030487\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"545000******4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******6184\", \"cardNumberLast4\": \"6184\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******8870\", \"cardNumberLast4\": \"8870\", \"productName\": \"Yıldız Tasarım\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 4, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0332\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0332\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******4253\\\", \\\"cardNumberLast4\\\": \\\"4253\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"545000******4253\\\", \\\"cardNumberLast4\\\": \\\"4253\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"540000******6184\\\", \\\"cardNumberLast4\\\": \\\"6184\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"540000******8870\\\", \\\"cardNumberLast4\\\": \\\"8870\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0",
+  "  [node] cards_prep",
+  "  [node] choose_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Tasarım diyebilirsiniz.",
+  "USER: Yıldız Pratik kartımın borcu ne kadar?",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Yıldız Pratik\"}",
+  "ASSISTANT: Yıldız Pratik isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?",
+  "USER: Dört iki beş üç.",
+  "  [tool] card_said {\"digits\": \"4253\", \"kind\": \"card\", \"name\": \"\"}",
+  "ASSISTANT: Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?",
+  "USER: Sıfır sıfır dört iki beş üç.",
+  "  [tool] card_said {\"digits\": \"004253\", \"kind\": \"card\", \"name\": \"\"}",
+  "ASSISTANT: Son altı hanesi aynı olan birden fazla kartınız var. Kart numaranızı söyler misiniz?",
+  "USER: Beş dört beş sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+  "  [tool] card_said {\"digits\": \"54500000000004253\", \"kind\": \"card\", \"name\": \"\"}",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"545000******4253\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5450********4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Pratik\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 12500, \"minPayment\": 5000, \"remainingDebt\": 11500, \"remainingMinPayment\": 4000, \"currentPeriodExpense\": 0, \"totalDebt\": 11500, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"92030487\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"ilgaz.guler@freyabank.example\", \"ttsEmail\": \"ilgaz.guler@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0365\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0365\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"ilgaz.guler@freyabank.example\\\", \\\"ttsEmail\\\": \\\"ilgaz.guler@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu dört iki beş üç ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 12.500 Türk Lirası, ödenmesi gereken minimum tutar 5.000 Türk Lirası, kalan toplam borcunuz 11.500 Türk Lirası, kalan minimum ödeme tutarınız 4.000 Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+ ]
+}

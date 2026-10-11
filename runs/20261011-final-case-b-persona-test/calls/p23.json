@@ -1,0 +1,92 @@
+{
+ "vars": {
+  "customerNumber": "95960044",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Premium kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Premium diyebilirsiniz."
+  },
+  {
+   "customer": "Premium kartım, borcu ne kadar?",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Kartlarınız: Yıldız Pratik ve Yıldız Premium."
+  },
+  {
+   "customer": "Yıldız Premium kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Sonu üç bir sıfır iki ile biten Yıldız Premium kartınıza ait 16 Ekim 2026 tarihinde kesilen ekstre Dolar borcunuz 375 Dolar, kalan toplam borcunuz 375 Dolar, ödenmesi gereken minimum tutar 150 Dolar. Euro borcunuz 551 Euro 85 sent, kalan toplam borcunuz 551 Euro 85 sent, ödenmesi gereken minimum tutar 220 Euro 75 sent. Türk Lirası ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 26 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, teşekkürler. Ekstre kesim tarihimi değiştirmek istiyorum.",
+   "agent": "Ekstre kesim tarihinizin ayın kaçıncı haftasında olmasını istersiniz?\n\nHesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Sonu üç bir sıfır iki ile biten Yıldız Premium kartınız ile sonu üç bir sıfır bir ile biten Yıldız Pratik kartınızın hesap kesim tarihi her ayın 3. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 16 Kasım 2026, son ödeme tarihiniz 26 Kasım 2026. Hesap kesim tarihinizi değiştirmek ister misiniz?"
+  },
+  {
+   "customer": "Hangi haftalar seçilebilir, sayar mısınız?",
+   "agent": "Ayın birinci, ikinci, üçüncü veya dördüncü haftasını seçebilirsiniz."
+  },
+  {
+   "customer": "Ayın birinci haftası olsun.",
+   "agent": "Bu değişiklik kartınızın bağlı olduğu Yıldız Pratik kartınızı da etkileyecek. Yeni hesap kesim haftanız her ayın 1. haftası olacak. Yeni hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026 olacak. Onaylıyor musunuz?"
+  },
+  {
+   "customer": "Evet",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "c546948d-e7c1-4302-aef4-5a380a4b8dd2",
+ "events": [
+  "USER: Merhaba, Premium kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"95960044\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******3101\", \"cardNumberLast4\": \"3101\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******3102\", \"cardNumberLast4\": \"3102\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 2, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0294\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0294\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******3101\\\", \\\"cardNumberLast4\\\": \\\"3101\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"540000******3102\\\", \\\"cardNumberLast4\\\": \\\"3102\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Premium\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 2, \\\"exitState\\\": \\\"MULTI_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] choose_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Premium diyebilirsiniz.",
+  "USER: Premium kartım, borcu ne kadar?",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Premium kartım\"}",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Kartlarınız: Yıldız Pratik ve Yıldız Premium.",
+  "USER: Yıldız Premium kartımın borcunu öğrenmek istiyorum.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Yıldız Premium\"}",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******3102\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********3102\", \"cardNumberLast4\": \"3102\", \"productName\": \"Yıldız Premium\", \"statementDate\": \"16.10.2026\", \"lastPayDate\": \"26.10.2026\", \"nextStatementDate\": \"16.11.2026\", \"nextLastPayDate\": \"26.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 5200, \"minPayment\": 2080, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 375, \"minPayment\": 150, \"remainingDebt\": 375, \"remainingMinPayment\": 150, \"currentPeriodExpense\": 0, \"totalDebt\": 375, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 551.85, \"minPayment\": 220.75, \"remainingDebt\": 551.85, \"remainingMinPayment\": 220.75, \"currentPeriodExpense\": 0, \"totalDebt\": 551.85, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"95960044\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"tarik.yildirim@freyabank.example\", \"ttsEmail\": \"tarik.yildirim@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0311\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0311\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"tarik.yildirim@freyabank.example\\\", \\\"ttsEmail\\\": \\\"tarik.yildirim@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu üç bir sıfır iki ile biten Yıldız Premium kartınıza ait 16 Ekim 2026 tarihinde kesilen ekstre Dolar borcunuz 375 Dolar, kalan toplam borcunuz 375 Dolar, ödenmesi gereken minimum tutar 150 Dolar. Euro borcunuz 551 Euro 85 sent, kalan toplam borcunuz 551 Euro 85 sent, ödenmesi gereken minimum tutar 220 Euro 75 sent. Türk Lirası ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 26 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, teşekkürler. Ekstre kesim tarihimi değiştirmek istiyorum.",
+  "ASSISTANT: Ekstre kesim tarihinizin ayın kaçıncı haftasında olmasını istersiniz?",
+  "  [tool] after_said {\"kind\": \"week_change\", \"week\": \"\"}",
+  "  [node] week_get",
+  "  [api] statement.week.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******3102\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"540000******3102\", \"cardNumberLast4\": \"3102\", \"productName\": \"Yıldız Premium\", \"statementWeek\": 3, \"statementDay\": 16, \"statementDate\": \"16.10.2026\", \"lastPayDate\": \"26.10.2026\", \"nextStatementDate\": \"16.11.2026\", \"nextLastPayDate\": \"26.11.2026\", \"relationType\": \"C\", \"relatedCardNumber\": \"540000******3101\", \"relatedCardProductName\": \"Yıldız Pratik\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0304\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0304\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cardNumber\\\": \\\"540000******3102\\\", \\\"cardNumberLast4\\\": \\\"3102\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Premium\\\", \\\"statementWeek\\\": 3, \\\"statementDay\\\": 16, \\\"statementDate\\\": \\\"16.10.2026\\\", \\\"lastPayDate\\\": \\\"26.10.2026\\\", \\\"nextStatementDate\\\": \\\"16.11.2026\\\", \\\"nextLastPayDate\\\": \\\"26.11.2026\\\", \\\"relationType\\\": \\\"C\\\", \\\"relatedCardNumber\\\": \\\"540000******3101\\\", \\\"relatedCardProductName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] week_prep",
+  "  [node] week_talk",
+  "ASSISTANT: Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Sonu üç bir sıfır iki ile biten Yıldız Premium kartınız ile sonu üç bir sıfır bir ile biten Yıldız Pratik kartınızın hesap kesim tarihi her ayın 3. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 16 Kasım 2026, son ödeme tarihiniz 26 Kasım 2026. Hesap kesim tarihinizi değiştirmek ister misiniz?",
+  "USER: Hangi haftalar seçilebilir, sayar mısınız?",
+  "ASSISTANT: Ayın birinci, ikinci, üçüncü veya dördüncü haftasını seçebilirsiniz.",
+  "USER: Ayın birinci haftası olsun.",
+  "  [tool] week_said {\"kind\": \"week\", \"week\": \"1\"}",
+  "  [node] week_decide",
+  "  [api] statement.week.decide {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******3102\", \"statementDay\": 16, \"newStatementWeek\": 1}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"statementDate\": \"05.11.2026\", \"statementDueDate\": \"15.11.2026\", \"statementDay\": 5, \"responseCode\": 0, \"responseMessage\": \"Success\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0305\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0305\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"statementDate\\\": \\\"05.11.2026\\\", \\\"statementDueDate\\\": \\\"15.11.2026\\\", \\\"statementDay\\\": 5, \\\"responseCode\\\": 0, \\\"responseMessage\\\": \\\"Success\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] decide_prep",
+  "  [node] week_confirm",
+  "ASSISTANT: Bu değişiklik kartınızın bağlı olduğu Yıldız Pratik kartınızı da etkileyecek. Yeni hesap kesim haftanız her ayın 1. haftası olacak. Yeni hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026 olacak. Onaylıyor musunuz?",
+  "USER: Evet",
+  "  [tool] week_said {\"kind\": \"yes\", \"week\": \"\"}",
+  "  [node] week_write",
+  "  [node] week_write_1",
+  "  [api] statement.week.change {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******3102\", \"statementDay\": 16, \"newStatementWeek\": 1}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"responseCode\": 0, \"responseMessage\": \"00\", \"statementWeek\": \"1\", \"statementDay\": \"5\", \"exitState\": \"OK\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0308\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0308\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"responseCode\\\": 0, \\\"responseMessage\\\": \\\"00\\\", \\\"statementWeek\\\": \\\"1\\\", \\\"statementDay\\\": \\\"5\\\", \\\"exitState\\\": \\\"OK\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] close_week_done",
+  "  [node] close_week_done_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sonu üç bir sıfır iki ile biten Yıldız Premium kartınızın hesap kesim haftası her ayın 1. haftası olarak değiştirildi. Yeni hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026. Sizi ana menüye yönlendiriyorum."
+ ]
+}

@@ -1,0 +1,87 @@
+{
+ "vars": {
+  "customerNumber": "96158684",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu bir bir bir sıfır ile biten Yıldız Miles kartınıza ait 9 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 10.000 Türk Lirası, kalan toplam borcunuz 5.000 Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Dolar ve Euro borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 19 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Hesap kesim tarihimi değiştirmek istiyorum.",
+   "agent": "Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Yıldız Miles kartınızın hesap kesim tarihi her ayın 2. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 9 Kasım 2026, son ödeme tarihiniz 19 Kasım 2026. Hesap kesim tarihinizi değiştirmek ister misiniz?"
+  },
+  {
+   "customer": "Evet, değiştirmek istiyorum.",
+   "agent": "Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?"
+  },
+  {
+   "customer": "Ayın yirmisi olsun.",
+   "agent": "Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?"
+  },
+  {
+   "customer": "2. hafta.",
+   "agent": "Kartınızın hesap kesim tarihi zaten her ayın 2. haftası, bir değişiklik gerekmiyor. Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?"
+  },
+  {
+   "customer": "4. hafta.",
+   "agent": "Yeni hesap kesim haftanız her ayın 4. haftası olacak. Yeni hesap kesim tarihiniz 23 Kasım 2026, son ödeme tarihiniz 3 Aralık 2026 olacak. Onaylıyor musunuz?"
+  },
+  {
+   "customer": "Hayır, vazgeçtim.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "5a7c235b-c82b-4574-a50b-345ca4499c89",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"96158684\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1110\", \"cardNumberLast4\": \"1110\", \"productName\": \"Yıldız Miles\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0033\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0033\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******1110\\\", \\\"cardNumberLast4\\\": \\\"1110\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Miles\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 1, \\\"exitState\\\": \\\"1_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******1110\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********1110\", \"cardNumberLast4\": \"1110\", \"productName\": \"Yıldız Miles\", \"statementDate\": \"09.10.2026\", \"lastPayDate\": \"19.10.2026\", \"nextStatementDate\": \"09.11.2026\", \"nextLastPayDate\": \"19.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 10000, \"minPayment\": 4000, \"remainingDebt\": 5000, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 5000, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0034\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0034\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cardNumber\\\": \\\"5400********",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"96158684\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"kerem.aksoy@freyabank.example\", \"ttsEmail\": \"kerem.aksoy@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0042\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0042\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"kerem.aksoy@freyabank.example\\\", \\\"ttsEmail\\\": \\\"kerem.aksoy@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu bir bir bir sıfır ile biten Yıldız Miles kartınıza ait 9 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 10.000 Türk Lirası, kalan toplam borcunuz 5.000 Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Dolar ve Euro borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 19 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Hesap kesim tarihimi değiştirmek istiyorum.",
+  "  [tool] after_said {\"kind\": \"week_change\", \"week\": \"\"}",
+  "  [node] week_get",
+  "  [api] statement.week.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******1110\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"540000******1110\", \"cardNumberLast4\": \"1110\", \"productName\": \"Yıldız Miles\", \"statementWeek\": 2, \"statementDay\": 9, \"statementDate\": \"09.10.2026\", \"lastPayDate\": \"19.10.2026\", \"nextStatementDate\": \"09.11.2026\", \"nextLastPayDate\": \"19.11.2026\", \"relationType\": \"\", \"relatedCardNumber\": \"\", \"relatedCardProductName\": \"\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0035\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0035\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cardNumber\\\": \\\"540000******1110\\\", \\\"cardNumberLast4\\\": \\\"1110\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Miles\\\", \\\"statementWeek\\\": 2, \\\"statementDay\\\": 9, \\\"statementDate\\\": \\\"09.10.2026\\\", \\\"lastPayDate\\\": \\\"19.10.2026\\\", \\\"nextStatementDate\\\": \\\"09.11.2026\\\", \\\"nextLastPayDate\\\": \\\"19.11.2026\\\", \\\"relationType\\\": \\\"\\\", \\\"relatedCardNumber\\\": \\\"\\\", \\\"relatedCardProductName\\\": \\\"\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] week_prep",
+  "  [node] week_talk",
+  "ASSISTANT: Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Yıldız Miles kartınızın hesap kesim tarihi her ayın 2. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 9 Kasım 2026, son ödeme tarihiniz 19 Kasım 2026. Hesap kesim tarihinizi değiştirmek ister misiniz?",
+  "USER: Evet, değiştirmek istiyorum.",
+  "  [tool] week_said {\"kind\": \"yes\", \"week\": \"\"}",
+  "ASSISTANT: Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?",
+  "USER: Ayın yirmisi olsun.",
+  "  [tool] week_said {\"kind\": \"unclear\", \"week\": \"\"}",
+  "ASSISTANT: Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?",
+  "USER: 2. hafta.",
+  "  [tool] week_said {\"kind\": \"week\", \"week\": \"2\"}",
+  "ASSISTANT: Kartınızın hesap kesim tarihi zaten her ayın 2. haftası, bir değişiklik gerekmiyor. Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?",
+  "USER: 4. hafta.",
+  "  [tool] week_said {\"kind\": \"week\", \"week\": \"4\"}",
+  "  [node] week_decide",
+  "  [api] statement.week.decide {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******1110\", \"statementDay\": 9, \"newStatementWeek\": 4}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"statementDate\": \"23.11.2026\", \"statementDueDate\": \"03.12.2026\", \"statementDay\": 23, \"responseCode\": 0, \"responseMessage\": \"Success\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0038\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0038\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"statementDate\\\": \\\"23.11.2026\\\", \\\"statementDueDate\\\": \\\"03.12.2026\\\", \\\"statementDay\\\": 23, \\\"responseCode\\\": 0, \\\"responseMessage\\\": \\\"Success\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] decide_prep",
+  "  [node] week_confirm",
+  "ASSISTANT: Yeni hesap kesim haftanız her ayın 4. haftası olacak. Yeni hesap kesim tarihiniz 23 Kasım 2026, son ödeme tarihiniz 3 Aralık 2026 olacak. Onaylıyor musunuz?",
+  "USER: Hayır, vazgeçtim.",
+  "  [tool] week_said {\"kind\": \"no\", \"week\": \"\"}",
+  "  [node] close_menu",
+  "  [node] close_menu_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye yönlendiriyorum."
+ ]
+}

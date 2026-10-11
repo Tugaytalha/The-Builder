@@ -1,0 +1,63 @@
+{
+ "vars": {
+  "customerNumber": "97917292",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu dokuz sıfır sıfır dokuz ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 9.600 Türk Lirası, ödenmesi gereken minimum tutar 3.840 Türk Lirası, kalan toplam borcunuz 7.100 Türk Lirası, kalan minimum ödeme tutarınız 1.340 Türk Lirası. Euro borcunuz 315 Euro 60 sent, kalan toplam borcunuz 315 Euro 60 sent, ödenmesi gereken minimum tutar 126 Euro 24 sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Bu ne biçim borç ya! Rezalet, bu kadar para olur mu? Dolandırıyorsunuz bizi!",
+   "agent": "Sizi anlıyorum. Size yardımcı olmak için buradayım. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Sizi dolandırıcı banka! Bu faizler de ne böyle, soygun bu!",
+   "agent": "Size bu konuda yardımcı olamıyorum. Sizi ana menüye aktarmamı ister misiniz?"
+  },
+  {
+   "customer": "Saçma sapan robot! Hiç anlamıyorsun, bu tutar rezalet, kabul etmiyorum!",
+   "agent": "Sizi anlıyorum. Size yardımcı olmak için buradayım. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Bu banka tam bir dolandırıcılık! Bu borcu ben ödemem, kesinlikle ödemem!",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "b8914c77-d7bc-4ca3-a254-1280edb40ad7",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97917292\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******9009\", \"cardNumberLast4\": \"9009\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0142\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0142\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******9009\\\", \\\"cardNumberLast4\\\": \\\"9009\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Platinum\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 1, \\\"exitState\\\": \\\"1_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******9009\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********9009\", \"cardNumberLast4\": \"9009\", \"productName\": \"Yıldız Platinum\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 9600, \"minPayment\": 3840, \"remainingDebt\": 7100, \"remainingMinPayment\": 1340, \"currentPeriodExpense\": 0, \"totalDebt\": 7100, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 315.6, \"minPayment\": 126.24, \"remainingDebt\": 315.6, \"remainingMinPayment\": 126.24, \"currentPeriodExpense\": 0, \"totalDebt\": 315.6, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"gui",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"97917292\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"batu.sonmez@freyabank.example\", \"ttsEmail\": \"batu.sonmez@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0151\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0151\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"batu.sonmez@freyabank.example\\\", \\\"ttsEmail\\\": \\\"batu.sonmez@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu dokuz sıfır sıfır dokuz ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 9.600 Türk Lirası, ödenmesi gereken minimum tutar 3.840 Türk Lirası, kalan toplam borcunuz 7.100 Türk Lirası, kalan minimum ödeme tutarınız 1.340 Türk Lirası. Euro borcunuz 315 Euro 60 sent, kalan toplam borcunuz 315 Euro 60 sent, ödenmesi gereken minimum tutar 126 Euro 24 sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Bu ne biçim borç ya! Rezalet, bu kadar para olur mu? Dolandırıyorsunuz bizi!",
+  "  [tool] after_said {\"kind\": \"angry\", \"week\": \"\"}",
+  "ASSISTANT: Sizi anlıyorum. Size yardımcı olmak için buradayım. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Sizi dolandırıcı banka! Bu faizler de ne böyle, soygun bu!",
+  "  [tool] after_said {\"kind\": \"outside\", \"week\": \"\"}",
+  "ASSISTANT: Size bu konuda yardımcı olamıyorum. Sizi ana menüye aktarmamı ister misiniz?",
+  "USER: Saçma sapan robot! Hiç anlamıyorsun, bu tutar rezalet, kabul etmiyorum!",
+  "  [tool] after_said {\"kind\": \"angry\", \"week\": \"\"}",
+  "ASSISTANT: Sizi anlıyorum. Size yardımcı olmak için buradayım. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Bu banka tam bir dolandırıcılık! Bu borcu ben ödemem, kesinlikle ödemem!",
+  "  [tool] after_said {\"kind\": \"dispute\", \"week\": \"\"}",
+  "  [node] close_dispute",
+  "  [node] close_dispute_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Bu konuda size müşteri temsilcimiz yardımcı olacak, sizi aktarıyorum."
+ ]
+}

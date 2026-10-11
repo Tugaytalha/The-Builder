@@ -1,0 +1,34 @@
+{
+ "vars": {
+  "customerNumber": "97526380",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Hello, I want to know my credit card debt, do you speak English?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Sorry, I don't speak Turkish. Can you speak English, please? My credit card debt.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "cb6d2e49-572e-4ee9-b5ae-3e5db695300d",
+ "events": [
+  "USER: Hello, I want to know my credit card debt, do you speak English?",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97526380\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1101\", \"cardNumberLast4\": \"1101\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1102\", \"cardNumberLast4\": \"1102\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1103\", \"cardNumberLast4\": \"1103\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******1101\\\", \\\"cardNumberLast4\\\": \\\"1101\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Premium\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"540000******1102\\\", \\\"cardNumberLast4\\\": \\\"1102\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Fly\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"540000******1103\\\", \\\"cardNumberLast4\\\": \\\"1103\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Platinum\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 3, \\\"exitState\\\": \\\"MULTI_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] choose_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz.",
+  "USER: Sorry, I don't speak Turkish. Can you speak English, please? My credit card debt.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"not_turkish\", \"name\": \"\"}",
+  "  [node] close_not_turkish",
+  "  [node] close_not_turkish_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye aktarıyorum."
+ ]
+}

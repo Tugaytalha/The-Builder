@@ -1,0 +1,43 @@
+{
+ "vars": {
+  "customerNumber": "95004361",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borç bilgimi öğrenmek istiyorum.",
+   "agent": "Sonu iki sıfır sıfır sıfır ile biten Yıldız Premium kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 12.000 Türk Lirası, ödenmesi gereken minimum tutar 4.800 Türk Lirası, kalan toplam borcunuz 9.500 Türk Lirası, kalan minimum ödeme tutarınız 2.000 Türk Lirası. Euro borcunuz 85 Euro 20 sent, kalan toplam borcunuz 85 Euro 20 sent, ödenmesi gereken minimum tutar 34 Euro 10 sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Bu borç yanlış, ben geçen hafta ödeme yaptım, görünmüyor.",
+   "agent": "Konuyu inceleyebilmemiz için sizi müşteri temsilcimize aktarıyorum."
+  }
+ ],
+ "ended": true,
+ "callId": "602c34fd-2e2c-47ef-bb9d-4cd89f73cb18",
+ "events": [
+  "USER: Merhaba, borç bilgimi öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"95004361\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******2000\", \"cardNumberLast4\": \"2000\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0088\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0088\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******2000\\\", \\\"cardNumberLast4\\\": \\\"2000\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Premium\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 1, \\\"exitState\\\": \\\"1_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******2000\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********2000\", \"cardNumberLast4\": \"2000\", \"productName\": \"Yıldız Premium\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 12000, \"minPayment\": 4800, \"remainingDebt\": 9500, \"remainingMinPayment\": 2000, \"currentPeriodExpense\": 0, \"totalDebt\": 9500, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 85.2, \"minPayment\": 34.1, \"remainingDebt\": 85.2, \"remainingMinPayment\": 34.1, \"currentPeriodExpense\": 0, \"totalDebt\": 85.2, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"95004361\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"melis.ucar@freyabank.example\", \"ttsEmail\": \"melis.ucar@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0097\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0097\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"melis.ucar@freyabank.example\\\", \\\"ttsEmail\\\": \\\"melis.ucar@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu iki sıfır sıfır sıfır ile biten Yıldız Premium kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 12.000 Türk Lirası, ödenmesi gereken minimum tutar 4.800 Türk Lirası, kalan toplam borcunuz 9.500 Türk Lirası, kalan minimum ödeme tutarınız 2.000 Türk Lirası. Euro borcunuz 85 Euro 20 sent, kalan toplam borcunuz 85 Euro 20 sent, ödenmesi gereken minimum tutar 34 Euro 10 sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Bu borç yanlış, ben geçen hafta ödeme yaptım, görünmüyor.",
+  "ASSISTANT: Konuyu inceleyebilmemiz için sizi müşteri temsilcimize aktarıyorum.",
+  "  [tool] after_said {\"kind\": \"dispute\", \"week\": \"\"}",
+  "  [node] close_dispute",
+  "  [node] close_dispute_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Bu konuda size müşteri temsilcimiz yardımcı olacak, sizi aktarıyorum."
+ ]
+}

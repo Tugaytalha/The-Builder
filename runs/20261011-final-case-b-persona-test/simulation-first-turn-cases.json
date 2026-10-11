@@ -1,0 +1,52 @@
+{
+ "status": "completed",
+ "ids": {
+  "88d1461a-6ad4-4b4f-adf8-5ca9fef9e9e1": "92311921",
+  "46286f8c-600b-417c-97c9-da67602827f5": "92335586",
+  "1607e1f7-0ba8-4c72-8a09-d5ff3b8e0b3c": "93821776",
+  "49fa2009-e8e4-45d4-ad35-c7c388bf08bc": "96026000",
+  "5271c6e6-ce46-4883-b5ed-326616c105b9": "97073972"
+ },
+ "runs": {
+  "49fa2009-e8e4-45d4-ad35-c7c388bf08bc": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu bir iki beş sıfır ile biten Yıldız Premium kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz 1.250 Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+    "user: Anladım, toplam borcum ne kadar demi",
+    "assistant: Toplam borç tutarınızı az önce belirttim. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+    "user: Tamam, zahmet olmazsa ekstreyi e-",
+    "assistant: Ekstrenizi onur nokta sezer et freyabank nokta example adresine göndermemi ister misiniz?",
+    "user: Evet.",
+    "assistant: Ekstreniz kayıtlı e-posta adresinize gönderildi. Sizi ana menüye yönlendiriyorum."
+   ]
+  },
+  "5271c6e6-ce46-4883-b5ed-326616c105b9": {
+   "status": null,
+   "messages": [
+    "assistant: Şu anda işleminizi gerçekleştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+   ]
+  },
+  "1607e1f7-0ba8-4c72-8a09-d5ff3b8e0b3c": {
+   "status": null,
+   "messages": [
+    "assistant: Ekstre borcunu sorgulayabileceğiniz uygun bir kredi kartınız bulunmuyor. Sizi ana menüye aktarıyorum."
+   ]
+  },
+  "46286f8c-600b-417c-97c9-da67602827f5": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu sekiz beş sıfır bir ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 18.500 Türk Lirası, ödenmesi gereken minimum tutar 7.400 Türk Lirası. Dolar borcunuz 650 Dolar, kalan toplam borcunuz 650 Dolar, ödenmesi gereken minimum tutar 260 Dolar. Euro borcunuz 380 Euro, kalan toplam borcunuz 380 Euro, ödenmesi gereken minimum tutar 152 Euro. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim.",
+    "user: Selam, tamamdır sağ ol. Bayağı da birikmiş ya borçlar, her yerden bir şeyler gelmiş. Bu ekstre detaylarını benim kayıtlı e-posta adresime gönderebilir misin? Şöyle bir detaylıca bakayım neler yapmışım.",
+    "assistant: Şu anda işleminizi gerçekleştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+   ]
+  },
+  "88d1461a-6ad4-4b4f-adf8-5ca9fef9e9e1": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu bir sekiz dokuz altı ile biten Yıldız Premium kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+    "user: Anladım, çok teşekkür ederim. Kart",
+    "assistant: Sizi ana menüye yönlendiriyorum."
+   ]
+  }
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "vars": {
+  "customerNumber": "92460108",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu sekiz beş sıfır sıfır ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 18.500 Türk Lirası, ödenmesi gereken minimum tutar 7.400 Türk Lirası. Dolar borcunuz 650 Dolar, kalan toplam borcunuz 650 Dolar, ödenmesi gereken minimum tutar 260 Dolar. Euro borcunuz 380 Euro, kalan toplam borcunuz 380 Euro, ödenmesi gereken minimum tutar 152 Euro. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Kredi kartı faiz oranı ne kadar?",
+   "agent": "Bu konuyla ilgili bilgi veremiyorum. Başka bir işlem yapmak ister misiniz?\n\nSize bu konuda yardımcı olamıyorum. Sizi ana menüye aktarmamı ister misiniz?"
+  },
+  {
+   "customer": "Hayır, devam edelim.",
+   "agent": "Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Ekstremi mail olarak gönderebilir misiniz?",
+   "agent": "Ekstrenizi ece.demir@freyabank.example adresine göndermemi ister misiniz?"
+  },
+  {
+   "customer": "Evet.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "b431cedb-5b95-4b5e-b9fc-7c5e904eab1f",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"92460108\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******8500\", \"cardNumberLast4\": \"8500\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0066\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0066\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******8500\\\", \\\"cardNumberLast4\\\": \\\"8500\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 1, \\\"exitState\\\": \\\"1_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******8500\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********8500\", \"cardNumberLast4\": \"8500\", \"productName\": \"Yıldız Pratik\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 18500, \"minPayment\": 7400, \"remainingDebt\": 18500, \"remainingMinPayment\": 7400, \"currentPeriodExpense\": 0, \"totalDebt\": 18500, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 650, \"minPayment\": 260, \"remainingDebt\": 650, \"remainingMinPayment\": 260, \"currentPeriodExpense\": 0, \"totalDebt\": 650, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 380, \"minPayment\": 152, \"remainingDebt\": 380, \"remainingMinPayment\": 152, \"currentPeriodExpense\": 0, \"totalDebt\": 380, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"gu",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"92460108\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"ece.demir@freyabank.example\", \"ttsEmail\": \"ece.demir@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0075\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0075\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"ece.demir@freyabank.example\\\", \\\"ttsEmail\\\": \\\"ece.demir@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu sekiz beş sıfır sıfır ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 18.500 Türk Lirası, ödenmesi gereken minimum tutar 7.400 Türk Lirası. Dolar borcunuz 650 Dolar, kalan toplam borcunuz 650 Dolar, ödenmesi gereken minimum tutar 260 Dolar. Euro borcunuz 380 Euro, kalan toplam borcunuz 380 Euro, ödenmesi gereken minimum tutar 152 Euro. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Kredi kartı faiz oranı ne kadar?",
+  "ASSISTANT: Bu konuyla ilgili bilgi veremiyorum. Başka bir işlem yapmak ister misiniz?",
+  "  [tool] after_said {\"kind\": \"outside\", \"week\": \"\"}",
+  "ASSISTANT: Size bu konuda yardımcı olamıyorum. Sizi ana menüye aktarmamı ister misiniz?",
+  "USER: Hayır, devam edelim.",
+  "  [tool] after_said {\"kind\": \"stay\", \"week\": \"\"}",
+  "ASSISTANT: Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Ekstremi mail olarak gönderebilir misiniz?",
+  "  [tool] after_said {\"kind\": \"email\", \"week\": \"\"}",
+  "  [node] email_confirm",
+  "ASSISTANT: Ekstrenizi ece nokta demir et freyabank nokta example adresine göndermemi ister misiniz?",
+  "USER: Evet.",
+  "  [tool] email_said {\"kind\": \"yes\"}",
+  "  [node] send_pdf",
+  "  [node] send_pdf_1",
+  "  [api] statement.pdf.send {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******8500\", \"customerNo\": \"92460108\", \"currencyType\": \"TL\", \"emailAddress\": \"ece.demir@freyabank.example\", \"statementDate\": \"05.10.2026\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"exitState\": \"DONE\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0076\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0076\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"exitState\\\": \\\"DONE\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] close_email_sent",
+  "  [node] close_email_sent_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Ekstreniz kayıtlı e-posta adresinize gönderildi. Sizi ana menüye yönlendiriyorum."
+ ]
+}

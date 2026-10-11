@@ -1,0 +1,31 @@
+{
+ "vars": {
+  "customerNumber": "97116902",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, seyahat kartımın borcu ne kadar?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Uçuşla ilgili olan.",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Kartlarınız: Yıldız Pratik ve Yıldız Fly."
+  }
+ ],
+ "ended": true,
+ "callId": "6c444e37-af97-4c56-909a-865583500bcb",
+ "events": [
+  "USER: Merhaba, seyahat kartımın borcu ne kadar?",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97116902\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1601\", \"cardNumberLast4\": \"1601\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1602\", \"cardNumberLast4\": \"1602\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 2, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0599\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0599\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******1601\\\", \\\"cardNumberLast4\\\": \\\"1601\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Pratik\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}, {\\\"cardNumber\\\": \\\"540000******1602\\\", \\\"cardNumberLast4\\\": \\\"1602\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Fly\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 2, \\\"exitState\\\": \\\"MULTI_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] choose_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz.",
+  "USER: Uçuşla ilgili olan.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Uçuşla ilgili olan\"}",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Kartlarınız: Yıldız Pratik ve Yıldız Fly."
+ ]
+}

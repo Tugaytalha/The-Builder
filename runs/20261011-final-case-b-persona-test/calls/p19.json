@@ -1,0 +1,49 @@
+{
+ "vars": {
+  "customerNumber": "94896459",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu yedi sıfır sıfır yedi ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 14.250 Türk Lirası 35 kuruş, ödenmesi gereken minimum tutar 5.700 Türk Lirası 14 kuruş. Dolar borcunuz 812 Dolar 45 sent, kalan toplam borcunuz 812 Dolar 45 sent, ödenmesi gereken minimum tutar 324 Dolar 98 sent. Euro borcunuz 563 Euro 20 sent, kalan toplam borcunuz 563 Euro 20 sent, ödenmesi gereken minimum tutar 225 Euro 28 sent. İngiliz Sterlini borcunuz 347 İngiliz Sterlini 85 peni, kalan toplam borcunuz 347 İngiliz Sterlini 85 peni, ödenmesi gereken minimum tutar 139 İngiliz Sterlini 14 peni. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Dolar kısmını tekrar eder misiniz?",
+   "agent": "Dolar borcunuzu ve minimum ödeme tutarınızı tekrar edebilirim. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Hepsi bu, teşekkür ederim.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "2b450faf-deb6-457c-886c-7a7628aeaa43",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] list_cards",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"94896459\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******7007\", \"cardNumberLast4\": \"7007\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0174\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0174\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"cards\\\": [{\\\"cardNumber\\\": \\\"540000******7007\\\", \\\"cardNumberLast4\\\": \\\"7007\\\", \\\"productName\\\": \\\"Y\\\\u0131ld\\\\u0131z Platinum\\\", \\\"status\\\": \\\"A\\\", \\\"isMainCard\\\": true}], \\\"validCardsCount\\\": 1, \\\"exitState\\\": \\\"1_CARD\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] get_balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******7007\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********7007\", \"cardNumberLast4\": \"7007\", \"productName\": \"Yıldız Platinum\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 14250.35, \"minPayment\": 5700.14, \"remainingDebt\": 14250.35, \"remainingMinPayment\": 5700.14, \"currentPeriodExpense\": 0, \"totalDebt\": 14250.35, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 812.45, \"minPayment\": 324.98, \"remainingDebt\": 812.45, \"remainingMinPayment\": 324.98, \"currentPeriodExpense\": 0, \"totalDebt\": 812.45, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 563.2, \"minPayment\": 225.28, \"remainingDebt\": 563.2, \"remainingMinPayment\": 225.28, \"currentPeriodExpense\": 0, \"totalDebt\": 563.2, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 347.85, \"minPayment\": 139.14, \"remainingDebt\": 347.85, \"remainingMinPayment\": 139.14, \"currentPeriodExpense\": 0, \"totalDebt\": 347.85, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtP",
+  "  [node] reading",
+  "  [node] contact_get",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"94896459\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"nil.avci@freyabank.example\", \"ttsEmail\": \"nil.avci@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0183\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0183\", \"rootCause\": null, \"errorOrigin\": null}}, \"code\": \"1\", \"ok\": \"true\", \"raw\": \"{\\\"communicationType\\\": \\\"Both\\\", \\\"ibanCountryCode\\\": \\\"90\\\", \\\"ibanAreaCode\\\": \\\"500\\\", \\\"ibanPhoneNum\\\": \\\"0000000\\\", \\\"ibanEmail\\\": \\\"nil.avci@freyabank.example\\\", \\\"ttsEmail\\\": \\\"nil.avci@freyabank.example\\\", \\\"commGramType\\\": \\\"A\\\", \\\"exitState\\\": \\\"Done\\\"}\"}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer_prep",
+  "  [node] after",
+  "ASSISTANT: Sonu yedi sıfır sıfır yedi ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz 14.250 Türk Lirası 35 kuruş, ödenmesi gereken minimum tutar 5.700 Türk Lirası 14 kuruş. Dolar borcunuz 812 Dolar 45 sent, kalan toplam borcunuz 812 Dolar 45 sent, ödenmesi gereken minimum tutar 324 Dolar 98 sent. Euro borcunuz 563 Euro 20 sent, kalan toplam borcunuz 563 Euro 20 sent, ödenmesi gereken minimum tutar 225 Euro 28 sent. İngiliz Sterlini borcunuz 347 İngiliz Sterlini 85 peni, kalan toplam borcunuz 347 İngiliz Sterlini 85 peni, ödenmesi gereken minimum tutar 139 İngiliz Sterlini 14 peni. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Dolar kısmını tekrar eder misiniz?",
+  "  [tool] after_said {\"kind\": \"repeat\", \"week\": \"\"}",
+  "ASSISTANT: Dolar borcunuzu ve minimum ödeme tutarınızı tekrar edebilirim. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Hepsi bu, teşekkür ederim.",
+  "  [tool] after_said {\"kind\": \"done\", \"week\": \"\"}",
+  "  [node] close_menu",
+  "  [node] close_menu_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye yönlendiriyorum."
+ ]
+}
