@@ -85,7 +85,7 @@ def case_text(root):
     for path in files:
         rel, kind = path.relative_to(root).as_posix(), path.suffix.lower()
         if kind in TEXT:
-            body = path.read_text(errors="replace")
+            body = path.read_text(encoding="utf-8", errors="replace")
         elif kind == ".docx":
             body = docx_text(path)
         elif kind == ".xlsx":

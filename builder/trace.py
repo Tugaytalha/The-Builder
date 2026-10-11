@@ -20,7 +20,7 @@ class Trace:
     def log(self, kind, **fields):
         at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         line = self.redact(json.dumps({"at": at, "kind": kind, **fields}, default=str))
-        with open(self.path, "a") as f:
+        with open(self.path, "a", encoding="utf-8") as f:
             f.write(line + "\n")
         text = " ".join(f"{k}={v}" for k, v in fields.items())
         print(self.redact(f"{at} {kind} {text}"), flush=True)

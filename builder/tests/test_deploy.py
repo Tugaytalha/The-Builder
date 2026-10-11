@@ -29,3 +29,25 @@ def test_run_script_flags_absent_word(monkeypatch):
     monkeypatch.setattr(smoke, "chat", lambda wid, v, lines: ["Hello, I call about your debt.", "Fine."])
     problems = smoke.run_script("w", {"opening": {"absent": ["debt"]}, "turns": [{"say": "Who?", "any": ["fine"]}]})
     assert len(problems) == 1 and "debt" in problems[0]
+
+
+def test_lock_makes_a_second_holder_wait(tmp_path):
+    # flock on macOS and Linux, msvcrt on Windows: one holder at a time, whichever starts first
+    import threading
+    import time
+    order = []
+
+    def hold(name, seconds):
+        with open(tmp_path / "state.lock", "w") as lock:
+            deploy._lock(lock)
+            order.append(("in", name))
+            time.sleep(seconds)
+            order.append(("out", name))
+    first = threading.Thread(target=hold, args=("a", 0.6))
+    second = threading.Thread(target=hold, args=("b", 0))
+    first.start()
+    time.sleep(0.2)
+    second.start()
+    first.join()
+    second.join()
+    assert order == [("in", "a"), ("out", "a"), ("in", "b"), ("out", "b")]

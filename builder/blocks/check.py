@@ -5,11 +5,13 @@
 Run folder contract: brief.md, tool_api.json, ledger.md, spec.json, build_agent.py, workflow.json and an
 optional test_rules.py.
 """
+import _thread
 import json
 import os
 import signal
 import subprocess
 import sys
+import threading
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -68,6 +70,7 @@ def _days(sample_now):
     return [d.isoformat() + "T11:00" for d in days]
 
 
+UTF8_ENV = {"PYTHONUTF8": "1"} if sys.platform == "win32" else {}     # Windows reads files in a legacy code page
 SNIPPET_TIMEOUT_S = 10     # one code node on one day; the platform stops code at 10 s too
 RULES_TIMEOUT_S = 120
 
@@ -78,6 +81,16 @@ class SnippetTimeout(BaseException):     # not an Exception: the node's own `exc
 
 def _run_with_timeout(code, vars):
     """run_snippet, stopped after SNIPPET_TIMEOUT_S: an endless loop must not hang the gate."""
+    if not hasattr(signal, "SIGALRM"):      # Windows has no SIGALRM: a timer interrupts the main thread instead
+        timer = threading.Timer(SNIPPET_TIMEOUT_S, _thread.interrupt_main)
+        timer.start()
+        try:
+            return run_snippet(code, vars)
+        except KeyboardInterrupt:
+            raise SnippetTimeout(f"no end after {SNIPPET_TIMEOUT_S} s (time limit)")
+        finally:
+            timer.cancel()
+
     def stop(signum, frame):
         raise SnippetTimeout(f"no end after {SNIPPET_TIMEOUT_S} s (time limit)")
     old = signal.signal(signal.SIGALRM, stop)
@@ -115,7 +128,7 @@ def _rules_tests(run):
         return []
     try:
         r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "test_rules.py"], cwd=run,
-                           capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(REPO)}, timeout=RULES_TIMEOUT_S)
+                           capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(REPO), **UTF8_ENV}, timeout=RULES_TIMEOUT_S)
     except subprocess.TimeoutExpired:
         return [f"test_rules: no end after {RULES_TIMEOUT_S} s (time limit)"]
     return [] if r.returncode == 0 else ["test_rules: " + line for line in r.stdout.splitlines()[-20:]]
@@ -135,10 +148,10 @@ def run_checks(run_dir, dry_run=True):
     if not (run / "ledger.md").exists():
         out["ledger"] = ["ledger.md is missing"]
     else:
-        out["ledger"] = ledger_problems((run / "ledger.md").read_text())
+        out["ledger"] = ledger_problems((run / "ledger.md").read_text(encoding="utf-8"))
     try:
-        spec = json.loads((run / "spec.json").read_text())
-        workflow = json.loads((run / "workflow.json").read_text())
+        spec = json.loads((run / "spec.json").read_text(encoding="utf-8"))
+        workflow = json.loads((run / "workflow.json").read_text(encoding="utf-8"))
         api = load_api(str(run / "tool_api.json"))
     except (OSError, ValueError) as exc:
         out["lint"] = [f"cannot load the run files: {exc}"]

@@ -61,7 +61,7 @@ def run_script(workflow_id, script):
 
 
 if __name__ == "__main__":
-    found = run_script(sys.argv[1], json.load(open(sys.argv[2])))
+    found = run_script(sys.argv[1], json.load(open(sys.argv[2], encoding="utf-8")))
     for p in found:
         print("PROBLEM " + p)
     print("smoke: " + ("OK" if not found else f"{len(found)} problems"))

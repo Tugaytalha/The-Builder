@@ -27,21 +27,21 @@ def _line_tokens(line):
 
 
 def find_leaks(builder_dir, briefs, allowed):
-    wanted = set().union(*(brief_tokens(Path(b).read_text()) for b in briefs)) - allowed if briefs else set()
+    wanted = set().union(*(brief_tokens(Path(b).read_text(encoding="utf-8")) for b in briefs)) - allowed if briefs else set()
     leaks = []
     for path in sorted(builder_dir.rglob("*")):
         rel = path.relative_to(builder_dir).as_posix()
         if not path.is_file() or path.suffix not in (".py", ".md", ".json") or any(rel.startswith(s + "/") for s in SKIP):
             continue
-        for n, line in enumerate(path.read_text().splitlines(), 1):
+        for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             for token in sorted(_line_tokens(line) & wanted):
                 leaks.append(f"{path}:{n}: {token}")
     return leaks
 
 
 def allowed_tokens():
-    docs = " ".join(p.read_text() for p in (REPO / "kit" / "docs").glob("*.md"))
-    ops = {p.strip("/") for p in json.load(open(REPO / "kit" / "tools" / "openapi.json"))["paths"]}
+    docs = " ".join(p.read_text(encoding="utf-8") for p in (REPO / "kit" / "docs").glob("*.md"))
+    ops = {p.strip("/") for p in json.load(open(REPO / "kit" / "tools" / "openapi.json", encoding="utf-8"))["paths"]}
     return brief_tokens(docs) | set(re.findall(WORD, docs)) | ops
 
 

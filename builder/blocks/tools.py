@@ -45,7 +45,7 @@ def _request_body(spec, op):
 
 def load_api(path):
     """Operation name -> {"url", "method", "fields", "required", "response"}. A "/" inside a route becomes "_"."""
-    spec = json.load(open(path))
+    spec = json.load(open(path, encoding="utf-8"))
     base = _base_url(spec)
     api = {}
     for route, methods in (spec.get("paths") or {}).items():

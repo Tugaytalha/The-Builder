@@ -166,13 +166,13 @@ def test_build_takes_a_case_folder_and_a_mock_url(repo, monkeypatch):
     tmp_path, exported = repo
     case = tmp_path / "in" / "Bank-Case"
     case.mkdir()
-    (case / "BRIEF.md").write_text("Kural: kimlik önce.")
+    (case / "BRIEF.md").write_text("Kural: kimlik önce.", encoding="utf-8")
     fetched = []
     monkeypatch.setattr(build, "fetch_api", lambda url: fetched.append(url) or {"openapi": "3.0.0", "paths": {}})
     seen = {}
 
     async def agent(run_dir, trace, deadline):
-        seen["brief"] = (run_dir / "brief.md").read_text()
+        seen["brief"] = (run_dir / "brief.md").read_text(encoding="utf-8")
         seen["api"] = json.loads((run_dir / "tool_api.json").read_text())
         seen["slot"] = run_dir.name
         return None

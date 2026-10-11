@@ -48,9 +48,22 @@ def _purpose(message, redact):
     return "thinking"
 
 
+def _agent_python():
+    """The Python the agent's shell runs as $BUILDER_PYTHON. On Windows the shell cannot split a path with spaces
+    with a space in a folder name), so it gets the short DOS-style path with forward slashes."""
+    if sys.platform != "win32":
+        return sys.executable
+    import ctypes
+    buffer = ctypes.create_unicode_buffer(32768)
+    short = buffer.value if ctypes.windll.kernel32.GetShortPathNameW(sys.executable, buffer, len(buffer)) else sys.executable
+    return short.replace("\\", "/")
+
+
 # FREYA_BANK_TEAM_KEY is for the eval scripts only: the build agent does not get it.
 AGENT_ENV = {"BASH_DEFAULT_TIMEOUT_MS": "600000", "BASH_MAX_TIMEOUT_MS": "900000", "CLAUDE_CODE_DISABLE_BACKGROUND_TASKS": "1",
-             "PYTHONPATH": str(REPO), "BUILDER_PYTHON": sys.executable, "FREYA_BANK_TEAM_KEY": ""}
+             "PYTHONPATH": str(REPO), "BUILDER_PYTHON": _agent_python(), "FREYA_BANK_TEAM_KEY": ""}
+if sys.platform == "win32":
+    AGENT_ENV["PYTHONUTF8"] = "1"      # the agent's scripts read and write UTF-8, not the legacy code page
 
 
 async def run_agent(run_dir, trace, deadline):
@@ -65,7 +78,7 @@ async def run_agent(run_dir, trace, deadline):
     prompt = (f"Use the build-phone-agent skill. Run folder: {run_dir}. Slot: {run_dir.name.rsplit('-', 2)[0]}. "
               f"It is {utc(time.time())} UTC now. Time left: {minutes} minutes: the build stops at {utc(deadline)} UTC.")
     commands = {}
-    transcript = open(run_dir / "agent.jsonl", "a")   # every message, for debugging; the trace is the summary
+    transcript = open(run_dir / "agent.jsonl", "a", encoding="utf-8")   # every message, for debugging; the trace is the summary
     async for message in query(prompt=prompt, options=options):
         transcript.write(trace.redact(json.dumps({"type": type(message).__name__, **dataclasses.asdict(message)}, default=str)) + "\n")
         transcript.flush()
@@ -110,12 +123,12 @@ def _inputs(brief, api, run_dir):
         shutil.copy(api, run_dir / "tool_api.json")
         return
     shutil.copytree(brief, run_dir / "case")
-    (run_dir / "brief.md").write_text(case_text(brief))
+    (run_dir / "brief.md").write_text(case_text(brief), encoding="utf-8")
     mock = str(api).rstrip("/")
     spec = fetch_api(mock + "/openapi.json")
     if not spec.get("servers") and not spec.get("host"):
         spec["servers"] = [{"url": mock}]
-    (run_dir / "tool_api.json").write_text(json.dumps(spec, indent=1, ensure_ascii=False))
+    (run_dir / "tool_api.json").write_text(json.dumps(spec, indent=1, ensure_ascii=False), encoding="utf-8")
 
 
 def run(brief, api, agent=run_agent):
@@ -137,7 +150,7 @@ def run(brief, api, agent=run_agent):
         trace.log("agent_error", message=repr(exc)[:1000])
 
     workflow_file, deployed_file = run_dir / "workflow.json", run_dir / "deployed.json"
-    deployed = json.loads(deployed_file.read_text()) if deployed_file.exists() else None
+    deployed = json.loads(deployed_file.read_text(encoding="utf-8")) if deployed_file.exists() else None
     changed = workflow_file.exists() and (not deployed or deployed.get("sha256") != _sha(workflow_file))
     if changed and deployed and time.time() - t0 > LATE_S:
         trace.log("late_skip", message="no time for the gate and a deploy", kept="the last deployed version")
@@ -166,7 +179,7 @@ def run(brief, api, agent=run_agent):
                 trace.log("end", seconds=round(time.time() - t0))
                 return 1
             time.sleep(EXPORT_WAIT_S)
-    nodes, tools = _counts(json.loads(out.read_text()).get("workflow", {}))
+    nodes, tools = _counts(json.loads(out.read_text(encoding="utf-8")).get("workflow", {}))
     trace.log("created", workflow_id=deployed["workflow_id"], agent_id=deployed["agent_id"], nodes=nodes, tools=tools,
               export=str(out))
     trace.log("end", seconds=round(time.time() - t0))
@@ -174,6 +187,8 @@ def run(brief, api, agent=run_agent):
 
 
 if __name__ == "__main__":
+    if sys.platform == "win32":
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")     # the console code page cannot print every character
     if len(sys.argv) != 3:
         sys.exit(__doc__)
     target = sys.argv[2] if sys.argv[2].startswith("http") else Path(sys.argv[2]).resolve()

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from builder.blocks import datelib
 
-DATES_SOURCE = Path(datelib.__file__).read_text()
+DATES_SOURCE = Path(datelib.__file__).read_text(encoding="utf-8")
 
 
 def with_dates(body):
