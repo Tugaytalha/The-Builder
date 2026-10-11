@@ -7,6 +7,7 @@ optional test_rules.py.
 """
 import json
 import os
+import signal
 import subprocess
 import sys
 from datetime import date, timedelta
@@ -67,15 +68,41 @@ def _days(sample_now):
     return [d.isoformat() + "T11:00" for d in days]
 
 
+SNIPPET_TIMEOUT_S = 10     # one code node on one day; the platform stops code at 10 s too
+RULES_TIMEOUT_S = 120
+
+
+class SnippetTimeout(BaseException):     # not an Exception: the node's own `except Exception` must not catch it
+    pass
+
+
+def _run_with_timeout(code, vars):
+    """run_snippet, stopped after SNIPPET_TIMEOUT_S: an endless loop must not hang the gate."""
+    def stop(signum, frame):
+        raise SnippetTimeout(f"no end after {SNIPPET_TIMEOUT_S} s (time limit)")
+    old = signal.signal(signal.SIGALRM, stop)
+    signal.alarm(SNIPPET_TIMEOUT_S)
+    try:
+        return run_snippet(code, vars)
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, old)
+
+
 def snippet_problems(workflow, sample_vars):
     """Run the code nodes in workflow order, once per day. Report each distinct crash once, with its first day."""
-    first_seen = {}
+    first_seen, slow = {}, set()
     for now in _days(sample_vars.get("now")):
         vars = {**sample_vars, "now": now}
         for name, code in _code_nodes(workflow):
+            if name in slow:
+                continue                    # one time limit per node is enough: the gate must end in time
             try:
-                vars = run_snippet(code, vars)
+                vars = _run_with_timeout(code, vars)
                 error = vars.pop(name + "_code_error", None)
+            except SnippetTimeout as exc:
+                error = repr(exc)
+                slow.add(name)
             except Exception as exc:
                 error = repr(exc)
             if error:
@@ -86,8 +113,11 @@ def snippet_problems(workflow, sample_vars):
 def _rules_tests(run):
     if not (run / "test_rules.py").exists():
         return []
-    r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "test_rules.py"],
-                       cwd=run, capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(REPO)})
+    try:
+        r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "test_rules.py"], cwd=run,
+                           capture_output=True, text=True, env={**os.environ, "PYTHONPATH": str(REPO)}, timeout=RULES_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        return [f"test_rules: no end after {RULES_TIMEOUT_S} s (time limit)"]
     return [] if r.returncode == 0 else ["test_rules: " + line for line in r.stdout.splitlines()[-20:]]
 
 
