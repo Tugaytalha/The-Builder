@@ -79,6 +79,13 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Result: the values were 0 ("Hello?"), 1, 2, 3, one per customer message.
 - Verdict: **works**. State code can tell turns apart, so it knows which line it chose in an earlier turn (and the model spoke).
 
+## S13 (extra): two tool calls in one model message, and a list parameter
+
+- Evidence: round 2, A+B, PUB-13, call ada7bb09. The model called `customer_said` twice in one message (p1 and p2). Both calls started at 22.94 s and ended at 23.91 s and 24.13 s. The p2 update was lost: the agent offered p2 again and recorded the wrong day.
+- Result: the platform runs the calls of one message at the same time. Each reads the variables from before the message; the last write wins.
+- Test: the A+B build with `customer_said(answers=[...])` on the chat route. PUB-13: one call with two entries, bank p1 300 on 30 Oct and p2 900 on 23 Oct (expected). PUB-12: one call with three entries, bank one promise and two `refused` notes (expected).
+- Verdict: **parallel calls lose updates; a list parameter works**. A state tool takes every answer of one message in one call.
+
 ## Summary for the blueprint
 
 | Spike | Verdict | Use |
@@ -93,3 +100,4 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | S10 engine-run write with retry | works | `record_with_retry`; results are `<node>_response.*` |
 | S11 engine-run identity check | works | `answer_tool` + `identity_check`; the model never calls the identity tool |
 | S12 turn counter in tool code | works | the state tool plans one line per turn from the whole state |
+| S13 two calls in one message | lose an update | one state-tool call per message, with a list parameter (`answers`) |
