@@ -27,10 +27,11 @@ Every call gives the phone agent two variables:
 ## Inputs
 
 - `README.md`: the pack overview: what each folder is, the two variables.
-- `sources/emails/`: the bank's mail threads with our team, as received, with their attachments in `attachments/` (three versions of the analysis document).
-- `sources/documents/`: the documents the bank handed over: flow drawing, current phone-menu announcements, abbreviations, FAQ, two versions of the data models, service examples and the IVR integration document.
-- `sources/meetings/`: excerpts from the recordings of meetings with the bank, and the meeting notes.
-- `test-environment/`: the bank's test customers (`test-customers.md`, `test-customers.json`) your mock must serve, and the rules of the test environment.
+- `statement-debt-call-flow.pdf`: a call-flow drawing of the step.
+- `sources/emails/`: mail threads between the bank and our team, with the bank's analysis documents in `attachments/`.
+- `sources/documents/`: what the bank handed over: the phone-menu prompt sheet, the service contract and a page from the bank's website.
+- `sources/meetings/`: transcript excerpts from meetings with the bank.
+- `test-environment/`: the bank's test customers (`test-customers.md`, `test-customers.json`) your mock must serve.
 - `example-scenarios.md`: six example conversations (two ordinary, two edge, two adversarial) of the kind we score with. The rest stay hidden.
 - `cloudflare-mock/`: how to run and deploy a Worker, with a one-endpoint example. The bank's services you write yourself.
 

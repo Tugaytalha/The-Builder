@@ -1,6 +1,6 @@
 From: Deniz Arı <deniz@freya.example>
 To: Selin Aydın <selin.aydin@freyabank.example>
-Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan@freya.example>
+Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan.er@freya.example>
 Date: Tue, 29 Sep 2026 09:18
 Subject: RE: Statement debt - questions after reading the 2 Sep analysis
 
@@ -18,7 +18,7 @@ Deniz
 From: Burcu Tan <burcu.tan@freyabank.example>
 Date: Mon, 28 Sep 2026 17:52
 To: Deniz Arı <deniz@freya.example>; Selin Aydın <selin.aydin@freyabank.example>
-Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Ozan Er <ozan@freya.example>
+Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Ozan Er <ozan.er@freya.example>
 Subject: RE: Statement debt - questions after reading the 2 Sep analysis
 
 Hi Deniz,
@@ -39,7 +39,7 @@ Burcu
 From: Kerem Yalçın <kerem.yalcin@freyabank.example>
 Date: Fri, 25 Sep 2026 16:40
 To: Deniz Arı <deniz@freya.example>; Selin Aydın <selin.aydin@freyabank.example>
-Cc: Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan@freya.example>
+Cc: Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan.er@freya.example>
 Subject: RE: Statement debt - questions after reading the 2 Sep analysis
 
 Hi Deniz,
@@ -60,7 +60,7 @@ Kerem
 From: Selin Aydın <selin.aydin@freyabank.example>
 Date: Fri, 25 Sep 2026 11:05
 To: Deniz Arı <deniz@freya.example>
-Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan@freya.example>
+Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan.er@freya.example>
 Subject: RE: Statement debt - questions after reading the 2 Sep analysis
 
 Hi Deniz,
@@ -73,7 +73,7 @@ Selin
 From: Deniz Arı <deniz@freya.example>
 Date: Thu, 24 Sep 2026 14:27
 To: Selin Aydın <selin.aydin@freyabank.example>
-Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan@freya.example>
+Cc: Kerem Yalçın <kerem.yalcin@freyabank.example>; Burcu Tan <burcu.tan@freyabank.example>; Ozan Er <ozan.er@freya.example>
 Subject: Statement debt - questions after reading the 2 Sep analysis
 
 Hi Selin,
