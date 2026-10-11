@@ -66,8 +66,9 @@ def test_record_with_retry_chains_attempts_and_resets_results():
 def _answer(v, **p):
     from builder.blocks.coderun import run_tool
     from builder.blocks.patterns import answer_tool
-    code = answer_tool({"birth": ["date", 0], "pin": ["digits", 4], "word": ["text", 0]})["function"]["parameters"]["properties"]["code"]["default"]
-    return run_tool(code, v, {"question": "", "day": "", "month": "", "year": "", "digits": "", "text": "", **p})
+    code = answer_tool({"birth": ["date", 0], "pin": ["digits", 4], "word": ["text", 0], "postcode": ["alnum", 6]}
+                       )["function"]["parameters"]["properties"]["code"]["default"]
+    return run_tool(code, v, {"question": "", "day": "", "month": "", "year": "", "digits": "", "chars": "", "text": "", **p})
 
 
 def test_answer_tool_joins_a_date_in_two_parts():
@@ -85,6 +86,19 @@ def test_answer_tool_joins_digits_and_replaces_a_full_new_answer():
     v = _answer({**v, "id_send": "no"}, question="pin", digits="12")
     v = _answer(v, question="pin", digits="9904")
     assert v["id_answer"] == "9904" and v["id_send"] == "yes"
+
+
+def test_answer_tool_joins_letters_and_digits_in_parts():
+    # a postcode or a reference said in two parts: the second part was lost with the text kind (Tugay, persona lines)
+    v = _answer({}, question="postcode", chars="s w 1 a")
+    assert "id_send" not in v and "2 more" in v["id_guide"]
+    v = _answer(v, question="postcode", chars="1a")
+    assert (v["id_answer"], v["id_send"]) == ("SW1A1A", "yes")
+
+
+def test_answer_tool_reads_spoken_letters_and_digits():
+    v = _answer({}, question="postcode", chars="S W one A double A")
+    assert v["id_answer"] == "SW1AAA"
 
 
 def test_answer_tool_resets_the_refusal_count():

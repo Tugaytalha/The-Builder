@@ -87,6 +87,24 @@ new_digits = ''.join(ch for ch in str(params.get('digits') or '') if ch.isdigit(
 if new_digits:
     have = mine.get('digits') or ''
     mine['digits'] = new_digits if (len(new_digits) >= kind[1] or not have) else have + new_digits
+WORDS = {'zero': '0', 'oh': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7',
+         'eight': '8', 'nine': '9'}
+def chars_of(x):
+    """'S W one A double A' -> 'SW1AAA': upper case, no spaces, spoken digits and 'double' / 'triple' read."""
+    out, times = '', 1
+    for w in str(x or '').replace(',', ' ').replace('-', ' ').split():
+        lw = w.lower()
+        if lw in ('double', 'triple'):
+            times = 2 if lw == 'double' else 3
+            continue
+        w = ''.join(c for c in WORDS.get(lw, w) if c.isalnum()).upper()
+        if w:
+            out, times = out + w[0] * times + w[1:], 1
+    return out
+new_chars = chars_of(params.get('chars'))
+if new_chars:
+    have = mine.get('chars') or ''
+    mine['chars'] = new_chars if (len(new_chars) >= kind[1] or not have) else have + new_chars
 if str(params.get('text') or '').strip():
     mine['text'] = str(params.get('text')).strip()
 answer, missing = '', ''
@@ -102,6 +120,12 @@ elif kind[0] == 'digits':
         answer = have
     else:
         missing = 'the rest of the digits (' + str(kind[1] - len(have)) + ' more)'
+elif kind[0] == 'alnum':
+    have = mine.get('chars') or ''
+    if len(have) >= kind[1]:
+        answer = have
+    else:
+        missing = 'the rest of the letters and digits (' + str(kind[1] - len(have)) + ' more)'
 else:
     answer = mine.get('text') or ''
     missing = '' if answer else 'the answer'
@@ -123,7 +147,7 @@ vars['id_refusals'] = 0     # refusals count in a row: an answer ends the row
 def answer_tool(questions):
     """The model reports the parts of an identity answer; the code joins them over several turns and says when an
     answer is complete. `questions` maps each question value (as the tool API names it) to ["date", 0],
-    ["digits", <count>] or ["text", 0]. A part given after a partial answer is joined to it. On a complete answer it sets id_question, id_answer and id_send = "yes".
+    ["digits", <count>], ["alnum", <count>] (letters and digits, such as a postcode or a reference) or ["text", 0]. A part given after a partial answer is joined to it. On a complete answer it sets id_question, id_answer and id_send = "yes".
     Every turn it writes id_guide, the next step for the model, and sets id_refusals to 0: a customer who asks back
     and then answers has not refused twice."""
     names = list(questions)
@@ -133,6 +157,8 @@ def answer_tool(questions):
         "month": {"type": "string", "description": "Month the customer said in this message, as a word or digits, or empty."},
         "year": {"type": "string", "description": "Year the customer said in this message, four digits, or empty. Never guess it."},
         "digits": {"type": "string", "description": "Digits the customer said in this message, digits only, or empty."},
+        "chars": {"type": "string", "description": "Letters and digits the customer said in this message for a code such as "
+                  "a postcode or a reference, as said ('S W one A'), or empty."},
         "text": {"type": "string", "description": "Any other kind of answer, as said, or empty."}},
         ANSWER_CODE % (questions,))
 
