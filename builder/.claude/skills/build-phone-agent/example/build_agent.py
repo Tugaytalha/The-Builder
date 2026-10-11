@@ -8,8 +8,8 @@ import json
 from builder.blocks.coderun import with_dates
 from builder.blocks.nodes import (all_of, always, any_of, cond, conversation, field, go, intent, is_true, tts,
                                   workflow, api_node, code_node)
-from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, start, state_tool,
-                                     write_loop)
+from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, negotiation_tool,
+                                     start, state_tool, write_loop)
 from builder.blocks.tools import load_api, make_tool
 
 SPEC = json.load(open("spec.json"))
@@ -111,92 +111,60 @@ vars['guide'] = 'Wait for the answer. Say nothing new.'
 
 P = SPEC["promise"]
 # The state tool: the model reports what the customer said, the code decides the next step (spikes S2, S9).
-# The state tool: the model reports what the customer said about one item; the code decides what to say next
-# (spikes S2, S9). The state is kept per item. One message can answer for several items: the model then calls the
-# tool once per item, in the same turn. So the code does not answer each call on its own. After every call it plans
-# the next line from the whole state: the first item, in account order, that has a line not yet spoken. A line shown
-# in an earlier turn counts as spoken (the node's turn counter tells the turns apart), so no offer is said twice.
-# The guide holds only the words to say, in quotes: an instruction in it would be read aloud.
-NEGOTIATE = HELPERS + r'''
-st = json.loads(vars.get('neg_state'))
-items = st['items']
-turn = str(vars.get(%(turns)r))
-for x in items:
-    if x.get('shown') and x.get('shown') != turn:
-        x['line'], x['shown'] = '', ''
-want = str(params.get('item') or '')
-picked = [i for i, x in enumerate(items) if x['id'] == want and x['status'] == 'open']
-it = items[picked[0]] if picked else ([x for x in items if x['status'] == 'open'] or items)[0]
-kind = str(params.get('kind') or '')
-def read_back(amount, day):
+# The brief's policy for one item. patterns.negotiation_tool adds the engine: the state per item, several answers in
+# one turn, one line per turn, no line said twice, and the end (spikes S2, S9, S12). The lines are only words for the
+# customer: the engine puts them in quotes after SAY.
+POLICY = HELPERS + r'''
+def read_back(it, amount, day):
     it['agreed'] = [round(float(amount), 2), day]
     return money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '. Is that right?'
-def ok_day(day):
+def ok_day(it, day):
     try:
         d = iso_day(day)
     except Exception:
         return False
     return is_business_day(d, HOLIDAYS) and vars.get('today_iso') <= day <= it['deadline']
-if kind == 'refuses':
-    it.pop('agreed', None)
-    it['used'] = it['used'] + 1
-    if it['used'] <= len(it['offers']):
-        amount, day = it['offers'][it['used'] - 1]
-        it['pending'] = [amount, day]
-        it['line'] = 'Could you pay ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?'
-    else:
-        it['status'], it['line'] = 'stopped', ''
-elif kind == 'accepts' or (kind == 'confirms' and not it.get('agreed')):
-    amount, day = it.get('pending') or [it['full'], it['deadline']]
-    it['line'] = read_back(amount, day)
-elif kind == 'proposes':
-    it.pop('agreed', None)
-    pending = it.get('pending') or [it['full'], it['deadline']]
-    amount = float(params.get('amount') or pending[0])
-    day = str(params.get('date') or pending[1])[:10]
-    if not ok_day(day):
-        it['pending'] = [amount, it['deadline']]
-        it['line'] = ('The latest business day I can record for your ' + it['word'] + ' is ' + say(iso_day(it['deadline']))
-                      + '. Could you pay ' + money(amount) + ' on that day?')
-    elif amount < it['floor'] - 0.001 or amount > it['full'] + 0.001:
-        it['pending'] = [it['floor'], day]
-        it['line'] = ('The amount must be from ' + money(it['floor']) + ' to ' + money(it['full']) + '. Could you pay '
-                      + money(it['floor']) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?')
-    else:
-        it['line'] = read_back(amount, day)
-elif kind == 'confirms':
-    it['status'], it['line'] = 'agreed', ''
-elif kind == 'wants_person':
-    vars['guide'] = 'Call transfer_to_agent now.'
-# Plan the next line from the whole state.
-open_items = [x for x in items if x['status'] == 'open']
-todo = [x for x in open_items if x.get('line') and x.get('shown') in ('', None, turn)]
-if kind == 'wants_person':
-    pass
-elif todo:
-    todo[0]['shown'] = turn
-    vars['guide'] = 'SAY: "' + todo[0]['line'] + '"'
-elif open_items:
-    nx = open_items[0]
-    if not nx.get('asked'):
-        nx['asked'] = 'yes'
-        nx['line'] = 'Could you settle ' + money(nx['full']) + ' for your ' + nx['word'] + ' by ' + say(iso_day(nx['deadline'])) + '?'
-        nx['shown'] = turn
-        vars['guide'] = 'SAY: "' + nx['line'] + '"'
-    else:
-        vars['guide'] = 'SAY: "Could you answer with a yes or a no?"'
-else:
-    writes = [dict(fields=dict(%(idf)s=x['id'], %(amf)s=x['agreed'][0], %(daf)s=x['agreed'][1]), status='pending')
-              for x in items if x['status'] == 'agreed']
-    if writes:
-        vars['promise_writes_list'] = json.dumps(writes)
-        vars['record_now'] = 'yes'
-        vars['guide'] = 'SAY: "One moment, please."'
-    else:
-        vars['close_key'] = 'close_said_no'
-        vars['guide'] = 'SAY: "I understand."'
-vars['neg_state'] = json.dumps(st)
-''' % {"idf": P["id_field"], "amf": P["amount_field"], "daf": P["date_field"], "turns": "negotiate.total_turns"}
+def decide(it, kind, amount, day):
+    if kind == 'refuses':
+        it.pop('agreed', None)
+        it['used'] = it['used'] + 1
+        if it['used'] > len(it['offers']):
+            it['status'] = 'stopped'
+            return ''
+        it['pending'] = it['offers'][it['used'] - 1]
+        return 'Could you pay ' + money(it['pending'][0]) + ' for your ' + it['word'] + ' on ' + say(iso_day(it['pending'][1])) + '?'
+    if kind == 'accepts' or (kind == 'confirms' and not it.get('agreed')):
+        amount, day = it.get('pending') or [it['full'], it['deadline']]
+        return read_back(it, amount, day)
+    if kind == 'proposes':
+        it.pop('agreed', None)
+        pending = it.get('pending') or [it['full'], it['deadline']]
+        amount = pending[0] if amount is None else amount
+        day = day or pending[1]
+        if not ok_day(it, day):
+            it['pending'] = [amount, it['deadline']]
+            return ('The latest business day I can record for your ' + it['word'] + ' is ' + say(iso_day(it['deadline']))
+                    + '. Could you pay ' + money(amount) + ' on that day?')
+        if amount < it['floor'] - 0.001 or amount > it['full'] + 0.001:
+            it['pending'] = [it['floor'], day]
+            return ('The amount must be from ' + money(it['floor']) + ' to ' + money(it['full']) + '. Could you pay '
+                    + money(it['floor']) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?')
+        return read_back(it, amount, day)
+    if kind == 'confirms':
+        it['status'] = 'agreed'
+        return ''
+    if kind == 'wants_person':
+        vars['negotiation_action'] = 'transfer'
+        vars['guide'] = 'Call transfer_to_agent now.'
+    return ''
+def first_ask(it):
+    return 'Could you settle ' + money(it['full']) + ' for your ' + it['word'] + ' by ' + say(iso_day(it['deadline'])) + '?'
+def finish(items):
+    agreed = [x for x in items if x['status'] == 'agreed']
+    if agreed:
+        return [dict(%(idf)s=x['id'], %(amf)s=x['agreed'][0], %(daf)s=x['agreed'][1]) for x in agreed]
+    return 'close_said_no'
+''' % {"idf": P["id_field"], "amf": P["amount_field"], "daf": P["date_field"]}
 
 # After the promise writes: a code node picks the close from the statuses.
 AFTER_WRITES = '''
@@ -256,12 +224,9 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
 
 NEGOTIATE_TASK = ("NEXT STEP: {{guide}}\n\n"
                   "Identity is verified. You stated the bill. Every time the customer answers about paying, call "
-                  "customer_said with the item and the kind: accepts (yes to your last proposal), confirms (a clear yes to "
-                  "the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence), "
-                  "refuses (no, with no day and no amount), proposes (names a day or an amount; date as YYYY-MM-DD, amount "
-                  "as a number), wants_person, or other. If one message answers for several items, call customer_said "
-                  "once per item. Then say the words in NEXT STEP after SAY, word for word, and nothing else about "
-                  "amounts or days. Never say that something is recorded: the call says it at the end.\n\n"
+                  "customer_said with the item and the kind. If one message answers for several items, call customer_said "
+                  "once per item. Then say the words in NEXT STEP after SAY, word for word, and nothing else about amounts "
+                  "or days. Never say that something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 
 # ---------------------------------------------------------------- tools
@@ -276,13 +241,13 @@ callback = make_tool(API, "schedule_callback", baked=BAKED_ID, post_code=PLAIN_P
 callback["pre_process_code"] = guard_hook(
     "not (str(body.get('day')) in str(vars.get('callback_days')).split(',') and %r <= str(body.get('at'))[:5] <= %r)"
     % (SPEC["callback"]["from"], SPEC["callback"]["to"]))
-said = state_tool("customer_said", "CALL it every time the customer answers about paying.", {
-    "item": {"type": "string", "description": "The item id this answer is about (see ACCOUNT), or empty for the one you asked about."},
-    "kind": {"type": "string", "enum": ["accepts", "confirms", "refuses", "proposes", "wants_person", "other"],
-             "description": "What the customer said. One of: accepts, confirms, refuses, proposes, wants_person, other."},
-    "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
-    "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}},
-    with_dates(NEGOTIATE))
+said = negotiation_tool("negotiate", {
+    "accepts": "yes to your last proposal.",
+    "confirms": "a clear yes to the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence.",
+    "refuses": "no, with no day and no amount.",
+    "proposes": "names a day or an amount.",
+    "wants_person": "asks for a person.",
+    "other": "anything else."}, with_dates(POLICY), "promise_writes_list")
 transfer = make_tool(API, "transfer_to_agent", baked={**BAKED_ID, "team": "desk"}, post_code=PLAIN_POST,
                      description="Hand the call to a person. CALL it when NEXT STEP says so.")
 

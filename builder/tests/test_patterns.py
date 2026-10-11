@@ -123,3 +123,67 @@ def test_write_loop_writes_each_pending_item_then_finishes():
     body = nodes["pw_rec_1"]["pre_actions"][0]["function"]["parameters"]["properties"]["body"]["properties"]
     assert body["member_id"]["default"] == "{{pw_member_id}}"
     assert nodes["pw"]["transitions"][0]["target_node"] == "after" and nodes["pw_rec_2"]["transitions"][-1]["target_node"] == "pw_failed"
+
+
+POLICY = """
+def decide(it, kind, amount, day):
+    if kind == 'yes':
+        it['status'] = 'agreed'
+        return ''
+    if kind == 'no':
+        it['offers'] = it.get('offers', 0) + 1
+        if it['offers'] > 1:
+            it['status'] = 'stopped'
+            return ''
+        return 'Could you pay half for ' + it['id'] + '?'
+    if kind == 'human':
+        vars['negotiation_action'] = 'transfer'
+    return ''
+def first_ask(it):
+    return 'Could you pay ' + it['id'] + '?'
+def finish(items):
+    return [dict(pid=x['id']) for x in items if x['status'] == 'agreed'] or 'close_no'
+"""
+
+
+def _neg(v, turn, **p):
+    import json as _json
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    tool = negotiation_tool("talk", {"yes": "agrees", "no": "refuses", "human": "wants a person"}, POLICY, "writes_list")
+    code = tool["function"]["parameters"]["properties"]["code"]["default"]
+    if "neg_state" not in v:
+        v = {"neg_state": _json.dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"}]})}
+    return run_tool(code, {**v, "talk.total_turns": turn}, {"item": "", "kind": "", "date": "", "amount": "", **p})
+
+
+def test_negotiation_two_answers_in_one_turn_say_the_first_product_first():
+    v = _neg({}, 1, item="b", kind="no")
+    v = _neg(v, 1, item="a", kind="no")
+    assert v["guide"] == 'SAY: "Could you pay half for a?"'
+    v = _neg(v, 2, item="a", kind="yes")               # next turn: b's line from turn 1 was never said, so say it now
+    assert v["guide"] == 'SAY: "Could you pay half for b?"'
+
+
+def test_negotiation_never_says_a_line_twice_and_finishes_with_writes():
+    v = _neg({}, 1, item="a", kind="no")
+    v = _neg(v, 2, item="a", kind="human_question")    # an answer that changes nothing
+    assert v["guide"] == 'SAY: "Could you answer with a yes or a no?"'
+    v = _neg(v, 3, item="a", kind="yes")
+    assert v["guide"] == 'SAY: "Could you pay b?"'    # b was never asked
+    v = _neg(v, 4, item="b", kind="no")
+    v = _neg(v, 5, item="b", kind="no")
+    assert v["record_now"] == "yes" and __import__("json").loads(v["writes_list"]) == [{"fields": {"pid": "a"}, "status": "pending"}]
+
+
+def test_negotiation_without_promise_routes_to_the_policy_close():
+    v = _neg({}, 1, item="a", kind="no")
+    v = _neg(v, 2, item="a", kind="no")
+    v = _neg(v, 3, item="b", kind="no")
+    v = _neg(v, 4, item="b", kind="no")
+    assert v["close_key"] == "close_no" and "record_now" not in v
+
+
+def test_negotiation_action_stops_the_plan():
+    v = _neg({}, 1, item="a", kind="human")
+    assert v["negotiation_action"] == "transfer" and "guide" not in v

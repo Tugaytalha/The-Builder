@@ -169,3 +169,75 @@ def write_loop(name, api, tool_name, fields, baked, attempts, done_target):
                       fallbacks={name + "_more": "no"}),
             *record_with_retry(name + "_rec", tool, attempts, name + "_ok", name + "_failed"),
             code_node(name + "_ok", mark("ok"), name), code_node(name + "_failed", mark("failed"), name)]
+
+
+NEGOTIATION_ENGINE = r'''
+import json
+st = json.loads(vars.get('neg_state'))
+items = st['items']
+turn = str(vars.get(%(turns)r))
+for x in items:
+    if x.get('shown') and x.get('shown') != turn:
+        x['line'], x['shown'] = '', ''      # shown in an earlier turn: it was said
+    elif x.get('shown') == turn:
+        x['shown'] = ''                     # chosen earlier in this turn: plan again
+want = str(params.get('item') or '')
+open_items = [x for x in items if x.get('status') == 'open']
+picked = [x for x in open_items if str(x.get('id')) == want]
+it = picked[0] if picked else (open_items or items)[0]
+amount = params.get('amount')
+amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
+day = str(params.get('date') or '')[:10]
+line = decide(it, str(params.get('kind') or ''), amount, day)
+it['line'] = line or ''
+it['shown'] = ''
+if vars.get('close_key') or vars.get('negotiation_action'):
+    pass
+else:
+    open_items = [x for x in items if x.get('status') == 'open']
+    todo = [x for x in open_items if x.get('line')]
+    if todo:
+        todo[0]['shown'] = turn
+        vars['guide'] = 'SAY: "' + todo[0]['line'] + '"'
+    elif open_items:
+        nx = open_items[0]
+        if not nx.get('asked'):
+            nx['asked'], nx['line'], nx['shown'] = 'yes', first_ask(nx), turn
+            vars['guide'] = 'SAY: "' + nx['line'] + '"'
+        else:
+            vars['guide'] = 'SAY: "Could you answer with a yes or a no?"'
+    else:
+        end = finish(items)
+        if isinstance(end, list) and end:
+            vars[%(list_var)r] = json.dumps([dict(fields=f, status='pending') for f in end])
+            vars['record_now'] = 'yes'
+            vars['guide'] = 'SAY: "One moment, please."'
+        else:
+            vars['close_key'] = str(end or '')
+vars['neg_state'] = json.dumps(st)
+'''
+
+
+def negotiation_tool(node, kinds, policy, list_var):
+    """The state tool of the negotiation node. The model reports what the customer said about one product; the brief's
+    policy decides for that product; the engine plans the next line from the whole state.
+
+    `kinds` maps each kind value to its description for the model. `policy` is code that defines, using any helpers:
+      decide(it, kind, amount, day) -> the exact words to say next about product `it` ('' for none). It updates `it`:
+          set it['status'] to something other than 'open' when the product is finished. To end the talk or act at once,
+          set vars['close_key'] or vars['negotiation_action'] (and vars['guide']).
+      first_ask(it) -> the words of the first question about a product nobody asked about yet.
+      finish(items) -> when no product is open: a list of write-field dicts (one per promise, written by the write loop
+          `list_var`), or the close key to route to.
+    The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
+    one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
+    the tool once per product, and the last call's guide is said. A line shown in an earlier turn of `node` counts as
+    spoken (spike S12), so no line is said twice. The guide holds only words in quotes."""
+    engine = NEGOTIATION_ENGINE % {"turns": node + ".total_turns", "list_var": list_var}
+    return state_tool("customer_said", "CALL it every time the customer answers about paying, once per product.", {
+        "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
+        "kind": {"type": "string", "enum": list(kinds),
+                 "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())},
+        "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
+        "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}},
+        policy + "\n" + engine)
