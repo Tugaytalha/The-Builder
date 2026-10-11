@@ -1,5 +1,7 @@
 # Handoff (Sun 11 Oct 2026, 15:30 UTC)
 
+**Update 11 Oct, 16:00 UTC:** the final changed. It is one case in Turkish: a folder of documents plus our own mock on Cloudflare Workers, with one `submission.json`. `notes/hidden-runbook.md` has the new steps. The builder takes `{case_folder} {mock_url}` since commit 62e6be9. The "two hidden briefs" text below is out of date.
+
 Read this first in a new session. Then read `notes/hidden-runbook.md` (what to do at 17:00 UTC) and `notes/eval-log.md` (one row per round, with every root cause).
 
 ## Names
