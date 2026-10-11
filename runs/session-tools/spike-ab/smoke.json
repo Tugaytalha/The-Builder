@@ -1,0 +1,3 @@
+{"variables": {"customer_id": "c_smoke_1", "first_name": "Daniel", "last_name": "Reyes", "title": "Mr", "now": "2026-10-14T11:00"},
+ "opening": {"absent": ["collections", "debt", "payment", "loan", "credit card"]},
+ "turns": [{"say": "No, this is his wife. What is this about?", "absent": ["collections", "debt", "payment", "loan", "credit card"]}]}

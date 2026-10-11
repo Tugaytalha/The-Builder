@@ -1,0 +1,182 @@
+{
+ "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
+ "simulation_id": "aae274df-1051-4d9d-add5-afcd9a23d5bc",
+ "iteration_id": "934925c5-669c-4ab2-a18d-fdf4ff739e71",
+ "seconds": 643,
+ "passed": 0,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('promise', None)",
+    "the call was not closed with close_call",
+    "conversation: Call ended but analysis never arrived (300s)"
+   ],
+   "call_id": "2f1ca9cf-bff1-4a8b-9076-015961f9a7ec",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise"
+   ],
+   "customer_id": "c_9dce3c40-85a",
+   "slowest_turn_s": 19.8,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "conversation: - The phone question was only asked once ([Message 4]), failing the criterion that it be 'asked again once'. - The date of birth was asked exactly once ([Message 2]), which met that specific requirement. - Exactly one promise was recorded for the credit card ([System Event: create_promise for p1]). - Refusal notes were logged for both the personal loan ([System Event: add_note for p2]) and the car"
+   ],
+   "call_id": "351c3f2f-1af0-45ec-bdf8-2d5c47043f5b",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_99a4a098-791",
+   "slowest_turn_s": 13.6,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-23')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "notes [('p2', 'service_error')], expected []",
+    "conversation: - The credit card was recorded for 23 October instead of the required 30 October. - The personal loan promise was not successfully recorded because the API call failed (the agent confirmed this in Message 10). - The read-back in Message 8 only mentioned 23 October for both debts, rather than naming both dates (30 October and 23 October) as required."
+   ],
+   "call_id": "9f6923fc-39a3-4102-a6d0-9540d1e63bf7",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_0820eaf1-41b",
+   "slowest_turn_s": 32.0,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('promise', None)",
+     "the call was not closed with close_call",
+     "conversation: Call ended but analysis never arrived (300s)"
+    ],
+    "call_id": "2f1ca9cf-bff1-4a8b-9076-015961f9a7ec",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise"
+    ],
+    "customer_id": "c_9dce3c40-85a",
+    "slowest_turn_s": 19.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: - The phone question was only asked once ([Message 4]), failing the criterion that it be 'asked again once'. - The date of birth was asked exactly once ([Message 2]), which met that specific requirement. - Exactly one promise was recorded for the credit card ([System Event: create_promise for p1]). - Refusal notes were logged for both the personal loan ([System Event: add_note for p2]) and the car"
+    ],
+    "call_id": "351c3f2f-1af0-45ec-bdf8-2d5c47043f5b",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_99a4a098-791",
+    "slowest_turn_s": 13.6,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-23')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "notes [('p2', 'service_error')], expected []",
+     "conversation: - The credit card was recorded for 23 October instead of the required 30 October. - The personal loan promise was not successfully recorded because the API call failed (the agent confirmed this in Message 10). - The read-back in Message 8 only mentioned 23 October for both debts, rather than naming both dates (30 October and 23 October) as required."
+    ],
+    "call_id": "9f6923fc-39a3-4102-a6d0-9540d1e63bf7",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_0820eaf1-41b",
+    "slowest_turn_s": 32.0,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

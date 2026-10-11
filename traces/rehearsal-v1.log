@@ -1,137 +1,114 @@
-2026-10-11T12:50:30Z start brief=/Users/resit/orca/workspaces/The-Builder/mola/eval/briefs/v1-raw-a.md tool_api=/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/openapi.json model=claude-opus-5-5 run_dir=/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030
-2026-10-11T12:50:34Z model_call model=claude-opus-5-5 purpose=Skill {"skill": "build-phone-agent", "args": "Run folder: /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-
-2026-10-11T12:50:37Z model_call model=claude-opus-5-5 purpose=Bash {"command": "date -u +%H:%M; cd /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030 && l
-2026-10-11T12:50:38Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:50:39Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent && cat freya.md; 
-2026-10-11T12:50:40Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:50:41Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/freya.md"}
-2026-10-11T12:50:41Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/example/build_agen
-2026-10-11T12:50:43Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/example && cat sp
-2026-10-11T12:50:45Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:50:45Z model_call model=claude-opus-5-5 purpose=I read the brief, the API and the platform notes. Now I read the example tests, and then I write the
-2026-10-11T12:50:45Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/example/test_rules
-2026-10-11T12:50:46Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder && sed -n 1,400p blocks/patterns.py | grep -n \"de
-2026-10-11T12:50:48Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:50:48Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/blocks/patterns.py", "offset": 52, "limit": 300}
-2026-10-11T12:51:26Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:51:27Z model_call model=claude-opus-5-5 purpose=Bash {"command": "date -u +%H:%M; cd /Users/resit/orca/workspaces/The-Builder/mola/builder && sed -n 1,80p blocks/datelib.py 
-2026-10-11T12:51:29Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:51:29Z model_call model=claude-opus-5-5 purpose=Bash {"command": "sed -n 1,40p blocks/datelib.py"}
-2026-10-11T12:51:30Z model_call model=claude-opus-5-5 purpose=Now I write the ledger and the spec.
-2026-10-11T12:51:50Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/ledger.md", "content"
-2026-10-11T12:51:52Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:52:06Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/spec.json", "content"
-2026-10-11T12:52:43Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:52:44Z model_call model=claude-opus-5-5 purpose=Bash {"command": "date -u +%H:%M; cd /Users/resit/orca/workspaces/The-Builder/mola/builder && grep -n \"^def \" blocks/nodes.
-2026-10-11T12:54:01Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/build_agent.py", "con
-2026-10-11T12:54:05Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:54:06Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030 && date -u +%H:%M &&
-2026-10-11T12:54:07Z test command=cd /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030 && date -u +%H:%M && $BUILDER_PYTHON build_agent.py && $BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -40 output=12:54
-wrote workflow.json: 59 nodes
-ledger: 
-  - ledger R3: unknown mechanism 'fixed-line + prompt'
-  - ledger R8: unknown mechanism 'code + tool'
-  - ledger R11: unknown mechanism 'fixed-line + route'
-  - ledger R13: unknown mechanism 'code + prompt'
-  - ledger R14: unknown mechanism 'route + fixed-line'
-  - ledger R16: unknown mechanism 'code + route'
-  - ledger R25: unknown mechanism 'code + prompt'
-  - ledger R42: unknown mechanism 'code + fixed-line'
-lint: OK
-snippets: OK
-rules_tests: OK
-dry_run: OK
-2026-10-11T12:54:08Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:54:10Z model_call model=claude-opus-5-5 purpose=Bash {"command": "sed -i '' -e 's/| fixed-line + prompt |/| fixed-line |/' -e 's/| code + tool |/| tool |/' -e 's/| fixed-lin
-2026-10-11T12:54:13Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:54:13Z model_call model=claude-opus-5-5 purpose=The build passes lint, snippets and the dry run. Now I write the rule tests.
-2026-10-11T12:54:40Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/test_rules.py", "cont
-2026-10-11T12:54:42Z model_call model=claude-opus-5-5 purpose=Bash {"command": "date -u +%H:%M && $BUILDER_PYTHON -m pytest -q test_rules.py 2>&1 | tail -40"}
-2026-10-11T12:54:47Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:54:48Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030
-2026-10-11T12:54:49Z model_call model=claude-opus-5-5 purpose=Bash {"command": "$BUILDER_PYTHON build_agent.py && $BUILDER_PYTHON -m pytest -q test_rules.py 2>&1 | tail -3 && $BUILDER_PYT
-2026-10-11T12:54:51Z test command=$BUILDER_PYTHON build_agent.py && $BUILDER_PYTHON -m pytest -q test_rules.py 2>&1 | tail -3 && $BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -8; date -u +%H:%M output=wrote workflow.json: 59 nodes
-...................                                                      [100%]
-19 passed in 0.12s
+2026-10-11T14:49:42Z start brief=/Users/resit/orca/workspaces/The-Builder/mola/eval/briefs/v1-raw-a.md tool_api=/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/openapi.json model=claude-opus-5-5 run_dir=/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942
+2026-10-11T14:49:46Z model_call model=claude-opus-5-5 purpose=Skill {"skill": "build-phone-agent", "args": "Run folder: /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-
+2026-10-11T14:49:49Z model_call model=claude-opus-5-5 purpose=Bash {"command": "date -u +%H:%M; cd /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942
+2026-10-11T14:49:51Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/brief.md"}
+2026-10-11T14:49:51Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/tool_api.json"}
+2026-10-11T14:49:53Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/freya.md"}
+2026-10-11T14:49:54Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/example/build
+2026-10-11T14:49:55Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder/.claude/skills/build-phone-agent/example; cat
+2026-10-11T14:49:57Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:49:57Z model_call model=claude-opus-5-5 purpose=I read the brief, the tool API, and the example. Now I check the library functions, then I write the
+2026-10-11T14:49:59Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder; ls builder/blocks/; grep -n \"^def \\|^    \
+2026-10-11T14:50:00Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:50:01Z model_call model=claude-opus-5-5 purpose=Grep {"pattern": "^def |^    \"\"\"", "path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/builder/blocks/patt
+2026-10-11T14:50:03Z model_call model=claude-opus-5-5 purpose=Glob {"pattern": "**/blocks/patterns.py", "path": "/Users/resit/orca/workspaces/The-Builder/mola"}
+2026-10-11T14:50:05Z model_call model=claude-opus-5-5 purpose=Grep {"pattern": "^def negotiation_tool", "path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/blocks/patterns
+2026-10-11T14:51:00Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:51:00Z model_call model=claude-opus-5-5 purpose=I write the ledger, the spec, and the generator now.
+2026-10-11T14:51:17Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/ledger.md", "co
+2026-10-11T14:51:19Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:51:32Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/spec.json", "co
+2026-10-11T14:51:33Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:51:34Z model_call model=claude-opus-5-5 purpose=Grep {"pattern": "^def ", "path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/blocks/datelib.py", "output_mod
+2026-10-11T14:51:38Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:52:50Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/build_agent.py"
+2026-10-11T14:52:53Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:52:54Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cd /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942 && date -u +%H:
+2026-10-11T14:52:55Z test command=cd /Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942 && date -u +%H:%M && $BUILDER_PYTHON build_agent.py && $BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -30 output=14:52
+wrote workflow.json: 57 nodes
 ledger: OK
 lint: OK
 snippets: OK
 rules_tests: OK
 dry_run: OK
-12:54
-2026-10-11T12:54:52Z model_call model=claude-opus-5-5 purpose=All checks pass. Now I deploy, and I start the reviewer at the same time.
-2026-10-11T12:54:53Z model_call model=claude-opus-5-5 purpose=Bash {"command": "$BUILDER_PYTHON -m builder.blocks.deploy . v1-raw-a 2>&1 | tail -10"}
-2026-10-11T12:54:55Z model_call model=claude-opus-5-5 purpose=Agent {"subagent_type": "reviewer", "description": "Review phone-agent build", "prompt": "Review the phone-agent build in the 
-2026-10-11T12:54:57Z test command=$BUILDER_PYTHON -m builder.blocks.deploy . v1-raw-a 2>&1 | tail -10 output={"workflow_id": "cb3af8e9-cfc3-49d6-a0cc-e60148320917", "agent_id": "2936f16e-c36d-4049-a6d9-10874b2baa3e", "version": 8, "sha256": "bf74eae2412c32d728710f26eab32f4139ddc1357b990e369605f9d4653e4ec8"}
-2026-10-11T12:54:59Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/brief.md"}
-2026-10-11T12:55:00Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/ledger.md"}
-2026-10-11T12:55:00Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/tool_api.json"}
-2026-10-11T12:55:03Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/spec.json"}
-2026-10-11T12:55:03Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/build_agent.py"}
-2026-10-11T12:55:43Z model_call model=claude-opus-5-5 purpose=Grep {"pattern": "\"name\": \"(id_check|fetch_account|promise_writes|book_callback|do_transfer)[^\"]*\"|record_now|close_reas
-2026-10-11T12:55:47Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/workflow.json", "offs
-2026-10-11T12:55:54Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-125030/workflow.json", "offs
-2026-10-11T12:56:42Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:56:42Z model_call model=claude-opus-5-5 purpose=The reviewer found 3 defects. I fix all three now.
-2026-10-11T12:56:46Z model_call model=claude-opus-5-5 purpose=Bash {"command": "$BUILDER_PYTHON - <<'EOF'\nimport json\ns = json.load(open(\"spec.json\"))\ns[\"closes\"][\"close_deceased\
-2026-10-11T12:56:51Z test command=$BUILDER_PYTHON - <<'EOF'
-import json
-s = json.load(open("spec.json"))
-s["closes"]["close_deceased"][2] = "I am sorry for your loss. Thank you for your time, goodbye."
-s["closes"]["close_account_error output=159:    if day < today:
-455:              transitions=[go("close_account_error", any_of(cond("item_count", "equals", "0")), "no account data")]),
-wrote workflow.json: 61 nodes
-ledger: OK
+2026-10-11T14:52:58Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:52:58Z model_call model=claude-opus-5-5 purpose=The checks pass. Now I write the rule tests with dates I computed by hand.
+2026-10-11T14:53:23Z model_call model=claude-opus-5-5 purpose=Write {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/test_rules.py",
+2026-10-11T14:53:24Z model_call model=claude-opus-5-5 purpose=Bash {"command": "$BUILDER_PYTHON -m pytest -q test_rules.py 2>&1 | tail -30; date -u +%H:%M"}
+2026-10-11T14:53:26Z model_call model=claude-opus-5-5 purpose=All 18 tests pass. I run the checks again and deploy.
+2026-10-11T14:53:27Z model_call model=claude-opus-5-5 purpose=Bash {"command": "$BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -8 && $BUILDER_PYTHON -m builder.blocks.deploy .
+2026-10-11T14:53:42Z test command=$BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -8 && $BUILDER_PYTHON -m builder.blocks.deploy . v1-raw-a 2>&1 | tail -8 output=ledger: OK
 lint: OK
 snippets: OK
 rules_tests: OK
 dry_run: OK
-12:56
-2026-10-11T12:56:53Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:56:57Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cat >> test_rules.py <<'EOF'\n\n\ndef test_past_day_offers_today():\n    v = said(setup_vars(), 1, kind=\"p
-2026-10-11T12:57:12Z test command=cat >> test_rules.py <<'EOF'
+{"workflow_id": "cb3af8e9-cfc3-49d6-a0cc-e60148320917", "agent_id": "2936f16e-c36d-4049-a6d9-10874b2baa3e", "version": 17, "sha256": "15f1ead1e03fea2726e037cf3d1a94b8d78a87ea5f4b0381b0c512d501f61bbc"}
+2026-10-11T14:53:44Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:53:44Z model_call model=claude-opus-5-5 purpose=The deploy worked. I start the reviewer now, and I check the smoke script format at the same time.
+2026-10-11T14:53:46Z model_call model=claude-opus-5-5 purpose=Agent {"subagent_type": "reviewer", "description": "Review phone-agent build", "prompt": "Review the build in /Users/res
+2026-10-11T14:53:47Z model_call model=claude-opus-5-5 purpose=Grep {"pattern": "absent|any|json.load|turns|vars", "path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/block
+2026-10-11T14:53:49Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/brief.md"}
+2026-10-11T14:53:49Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/ledger.md"}
+2026-10-11T14:53:50Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/tool_api.json"}
+2026-10-11T14:53:50Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/workflow.json"}
+2026-10-11T14:53:54Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/workflow.json", 
+2026-10-11T14:54:22Z model_call model=claude-opus-5-5 purpose=Grep {"pattern": "\"(text|default)\": \"[^\"]{0,600}", "path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/ru
+2026-10-11T14:54:25Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/workflow.json", 
+2026-10-11T14:54:26Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/workflow.json", 
+2026-10-11T14:54:29Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/workflow.json", 
+2026-10-11T14:54:30Z model_call model=claude-opus-5-5 purpose=Read {"file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-144942/workflow.json", 
+2026-10-11T14:55:29Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:55:29Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:55:29Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-1
+2026-10-11T14:55:32Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-1
+2026-10-11T14:55:37Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-1
+2026-10-11T14:55:40Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-1
+2026-10-11T14:55:44Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-1
+2026-10-11T14:55:48Z model_call model=claude-opus-5-5 purpose=Now I add tests for the two fixes, then I build, check, and deploy again.
+2026-10-11T14:55:50Z model_call model=claude-opus-5-5 purpose=Bash {"command": "cat >> test_rules.py <<'EOF'\n\n\ndef test_callback_day_and_time_in_two_messages_are_joined():\n    t 
+2026-10-11T14:56:24Z test command=cat >> test_rules.py <<'EOF'
 
 
-def test_past_day_offers_today():
-    v = said(setup_vars(), 1, kind="proposes", date="2026-10-12", amount="100")
-    assert "today or later" in v["guide"] and "today, W output=....................                                                     [100%]
+def test_callback_day_and_time_in_two_messages_are_joined():
+    t = tool_code(WORKFLOW, "time_named")
+    v = run_tool(t, setup_vars(), {"day": "2026-10-15", "at": ""}) output=wrote workflow.json: 57 nodes
+....................                                                     [100%]
 20 passed in 0.14s
 ledger: OK
 lint: OK
 snippets: OK
 rules_tests: OK
 dry_run: OK
-{"workflow_id": "cb3af8e9-cfc3-49d6-a0cc-e60148320917", "agent_id": "2936f16e-c36d-4049-a6d9-10874b2baa3e", "version": 9, "sha256": "cea2d94cb722713af8cb1f1244187b6b3398c564c267e4cc3451301c229d1547"}
-3:    python -m builder.blocks.smoke <workflow_id> <script.json>
-5:Script: {"variables": {...}, "opening": {"absent": [...], "any": [...]},
-6:         "turns": [{"say": "...", "absent": [...], "any": [...]}]}
-8:import json
-18:    """Send "Hello?" and then each line. Returns one reply per message sent."""
-29:            replies.append(ENDED)  # the chat route answers 502 on the turn that ends the call
-37:    return replies
-40:def _turn_problems(label, reply, rule):
-2026-10-11T12:57:14Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:57:14Z model_call model=claude-opus-5-5 purpose=Version 9 is deployed. Now I run the three smoke scripts.
-2026-10-11T12:57:17Z model_call model=claude-opus-5-5 purpose=Bash {"command": "rm smoke.json && V='\"variables\": {\"customer_id\": \"c_smoke_1\", \"first_name\": \"Ana\", \"last_name\":
-2026-10-11T12:57:42Z test command=rm smoke.json && V='"variables": {"customer_id": "c_smoke_1", "first_name": "Ana", "last_name": "Silva", "title": "Ms", "now": "2026-10-14T11:00"}' && F='["collections", "debt", "payment", "credit car output=== smoke_a
+{"workflow_id": "cb3af8e9-cfc3-49d6-a0cc-e60148320917", "agent_id": "2936f16e-c36d-4049-a6d9-10874b2baa3e", "version": 18, "sha256": "695794b56b3211fadf4c2f255c103e7447b76294ebe667fba64a57a22ee99417"}
+14:56
+2026-10-11T14:56:33Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:56:33Z model_call model=claude-opus-5-5 purpose=Version 18 is deployed. I update the ledger row and run the three smoke scripts.
+2026-10-11T14:56:34Z model_call model=claude-opus-5-5 purpose=Edit {"replace_all": false, "file_path": "/Users/resit/orca/workspaces/The-Builder/mola/builder/runs/v1-raw-a-20261011-1
+2026-10-11T14:56:37Z model_call model=claude-opus-5-5 purpose=Bash {"command": "V='{\"customer_id\":\"c_smoke\",\"first_name\":\"Ana\",\"title\":\"Ms\",\"last_name\":\"Silva\",\"now\
+2026-10-11T14:57:26Z test command=V='{"customer_id":"c_smoke","first_name":"Ana","title":"Ms","last_name":"Silva","now":"2026-10-14T11:00"}'
+F='["collections","debt","payment","credit card","loan"]'
+echo "{\"variables\":$V,\"opening\" output=== smoke.json
 agent 0: Hello, this is the digital assistant of Freya Bank, and we record this call. Am I speaking with Ms Silva?
+agent 1: I am the digital assistant of Freya Bank. Am I speaking with Ms Silva?
 smoke: OK
-== smoke_b
+== smoke_b.json
 agent 0: Hello, this is the digital assistant of Freya Bank, and we record this call. Am I speaking with Ms Silva?
 agent 1: I can speak about it with Ms Silva only. When can she be reached?
 smoke: OK
-== smoke_c
+== smoke_c.json
 agent 0: Hello, this is the digital assistant of Freya Bank, and we record this call. Am I speaking with Ms Silva?
 agent 1: I am Freya Bank's digital assistant. Am I speaking with Ms Silva?
 smoke: OK
-12:57
-2026-10-11T12:57:51Z model_call model=claude-opus-5-5 purpose=thinking
-2026-10-11T12:57:51Z model_call model=claude-opus-5-5 purpose=I built the agent for slot v1-raw-a, deployed it (version 9), and every check passes.
-
-- **Checks:**
-2026-10-11T12:57:51Z agent_done turns=28 seconds=440 cost_usd=2.4047074000000004 error=False
-2026-10-11T12:57:56Z created workflow_id=cb3af8e9-cfc3-49d6-a0cc-e60148320917 agent_id=2936f16e-c36d-4049-a6d9-10874b2baa3e nodes=61 tools=13 export=/Users/resit/orca/workspaces/The-Builder/mola/submission/v1-raw-a.workflow.json
-2026-10-11T12:57:56Z end seconds=446
-real 446.51
-user 12.90
-sys 2.08
+14:57
+2026-10-11T14:57:30Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:57:30Z model_call model=claude-opus-5-5 purpose=Bash {"command": "$BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -6"}
+2026-10-11T14:57:38Z test command=$BUILDER_PYTHON -m builder.blocks.check . 2>&1 | tail -6 output=ledger: OK
+lint: OK
+snippets: OK
+rules_tests: OK
+dry_run: OK
+2026-10-11T14:57:58Z model_call model=claude-opus-5-5 purpose=thinking
+2026-10-11T14:57:58Z model_call model=claude-opus-5-5 purpose=The agent is built and deployed (version 18), and every check passes. I finished at 14:57 UTC, 17 mi
+2026-10-11T14:57:58Z agent_done turns=32 seconds=495 cost_usd=2.2342473000000003 error=False
+2026-10-11T14:58:03Z created workflow_id=cb3af8e9-cfc3-49d6-a0cc-e60148320917 agent_id=2936f16e-c36d-4049-a6d9-10874b2baa3e nodes=57 tools=12 export=/Users/resit/orca/workspaces/The-Builder/mola/submission/v1-raw-a.workflow.json
+2026-10-11T14:58:03Z end seconds=500

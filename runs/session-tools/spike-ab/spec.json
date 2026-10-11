@@ -1,0 +1,66 @@
+{
+ "vars": {"id": "customer_id", "title": "title", "last_name": "last_name", "now": "now"},
+ "holidays": ["2026-10-26", "2026-11-11", "2026-11-26", "2026-12-25", "2027-01-01"],
+ "opening_line": "Hello, this is the digital assistant of Freya Bank, and we record this call. Am I speaking with {{title}} {{last_name}}?",
+ "callback": {"from": "10:00", "to": "19:00"},
+ "identity": {
+  "tool": "verify_identity", "question_field": "field", "answer_field": "answer",
+  "questions": [
+   {"value": "date_of_birth", "ask": "What is your date of birth?", "kind": ["date", 0]},
+   {"value": "phone_last4", "ask": "What are the last four digits of the phone number on file?", "kind": ["digits", 4]}
+  ],
+  "passed_field": "all_verified", "correct_field": "verified", "left_field": "wrong_answers_left",
+  "hint_field": "hint", "swapped_hint": "day_month_swapped",
+  "refusals_allowed": 1
+ },
+ "account": {"list_field": "products", "id_field": "product_id", "kind_field": "type", "amount_field": "past_due",
+             "days_field": "days_late", "card_field": "card_last4",
+             "floor_fields": {"credit_card": "minimum_payment", "personal_loan": "instalment_amount", "car_loan": "instalment_amount"},
+             "kind_words": {"credit_card": "credit card ending ", "personal_loan": "personal loan", "car_loan": "car loan"}},
+ "bands": [
+  {"name": "early", "max_days": 7, "deadline_business_days": 12, "attempts": 1},
+  {"name": "late", "max_days": 45, "deadline_business_days": 7, "attempts": 2}
+ ],
+ "promise": {"tool": "create_promise", "id_field": "product_id", "amount_field": "amount", "date_field": "date", "attempts": 2},
+ "note": {"tool": "add_note", "id_field": "product_id", "reason_field": "reason", "attempts": 2},
+ "transfer": {"tool": "transfer_to_agent", "queue_field": "queue"},
+ "lines": {
+  "first_ask_one": "Can you make this payment today?",
+  "first_ask_many": "Can you pay all of them today?",
+  "confirm_q": "Do you confirm?",
+  "text_sms": "You will receive a text message confirming this promise.",
+  "paid": "Payments can take one business day to appear.",
+  "sympathy": "I am sorry to hear that. Would you like me to connect you with our customer support team?",
+  "person_first": "I can help you with most questions. Can I help you first?",
+  "change_promise": "You can change a recorded promise in the mobile app."
+ },
+ "closes": {
+  "close_promise": ["promise", "", "Your promise is recorded. You will receive a text message confirming this promise. Thank you for your time. Goodbye."],
+  "close_paid": ["paid", "", "Payments can take one business day to appear. Thank you for your time. Goodbye."],
+  "close_restructuring": ["transferred", "restructuring", "I will connect you with a colleague now. Thank you, goodbye."],
+  "close_human": ["transferred", "human", "I will connect you with a colleague now. Thank you, goodbye."],
+  "close_support": ["transferred", "support", "I will connect you with our customer support team now. Thank you, goodbye."],
+  "close_refused": ["no_promise", "refused", "Thank you for your time. Goodbye."],
+  "close_hardship": ["no_promise", "hardship", "Thank you for your time. Take care. Goodbye."],
+  "close_dispute": ["no_promise", "dispute", "I understand. Thank you for your time. Goodbye."],
+  "close_service_error": ["no_promise", "service_error", "I am sorry, I could not record the promise. Thank you for your time. Goodbye."],
+  "close_failed": ["not_verified", "failed", "I am sorry, I cannot continue. Please use the mobile app or visit a branch. Thank you, goodbye."],
+  "close_declined": ["not_verified", "declined", "I understand. I cannot continue without the security questions. Thank you, goodbye."],
+  "close_callback": ["not_reached", "callback", "Thank you, we will call back then. Goodbye."],
+  "close_no_callback": ["not_reached", "no_callback", "Thank you for your time. Goodbye."],
+  "close_wrong_number": ["not_reached", "wrong_number", "I am sorry for the trouble. Thank you, goodbye."],
+  "close_deceased": ["not_reached", "deceased", "I am sorry for your loss. Thank you, goodbye."],
+  "close_unclear": ["not_reached", "unclear", "Thank you for your time. Goodbye."]
+ },
+ "lint": {
+  "pre_identity_nodes": ["opening", "third_party", "identity", "identity_next"],
+  "forbidden_before_identity": ["collections", "debt", "payment", "credit card", "loan"],
+  "outcomes": [["promise", ""], ["paid", ""], ["transferred", "restructuring"], ["transferred", "human"],
+               ["transferred", "support"], ["no_promise", "refused"], ["no_promise", "hardship"], ["no_promise", "dispute"],
+               ["no_promise", "service_error"], ["not_verified", "failed"], ["not_verified", "declined"],
+               ["not_reached", "callback"], ["not_reached", "no_callback"], ["not_reached", "wrong_number"],
+               ["not_reached", "deceased"], ["not_reached", "unclear"]]
+ },
+ "sample_vars": {"customer_id": "c_test", "first_name": "Daniel", "title": "Mr", "last_name": "Reyes", "now": "2026-10-14T11:00",
+                 "products": "[{\"product_id\": \"p1\", \"type\": \"credit_card\", \"card_last4\": \"4821\", \"past_due\": 300.0, \"days_late\": 5, \"minimum_payment\": 50.0}, {\"product_id\": \"p2\", \"type\": \"car_loan\", \"past_due\": 900.0, \"days_late\": 20, \"instalment_amount\": 450.0}]"}
+}
