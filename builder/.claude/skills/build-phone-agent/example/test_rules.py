@@ -12,7 +12,7 @@ def setup_vars(now="2031-03-05T11:00"):
     return run_snippet(node_code(WORKFLOW, "prepare"), v)
 
 
-def test_deadlines_skip_the_monday_holiday():
+def test_deadlines_skip_the_monday_holiday():  # R9, R10
     v = setup_vars()
     assert v["deadline_short"] == "2031-03-13"   # Thu 6, Fri 7, (Mon 10 holiday), Tue 11, Wed 12, Thu 13
     assert v["deadline_long"] == "2031-03-11"
@@ -30,7 +30,7 @@ def said(v, turn, **p):
     return said_many(v, turn, [p])
 
 
-def test_long_band_offers_full_then_floor_then_stops():
+def test_long_band_offers_full_then_floor_then_stops():  # R11
     v = said(setup_vars(), 1, kind="refuses")
     assert v["guide"] == 'SAY: "Could you pay 80.50 for your gas bill on Thursday 6 March 2031?"'
     v = said(v, 2, kind="refuses")
@@ -39,12 +39,12 @@ def test_long_band_offers_full_then_floor_then_stops():
     assert v["close_key"] == "close_said_no"
 
 
-def test_day_after_deadline_is_refused_and_deadline_offered():
+def test_day_after_deadline_is_refused_and_deadline_offered():  # R12
     v = said(setup_vars(), 1, kind="proposes", date="2031-03-20")
     assert "Tuesday 11 March 2031" in v["guide"] and "Is that right" not in v["guide"]
 
 
-def test_valid_proposal_is_read_back_then_written_on_confirm():
+def test_valid_proposal_is_read_back_then_written_on_confirm():  # R13
     v = said(setup_vars(), 1, kind="proposes", date="2031-03-07", amount="50", item="i1")
     assert v["guide"] == 'SAY: "50.00 for your gas bill on Friday 7 March 2031. Is that right?"' and "record_now" not in v
     v = said(v, 2, kind="confirms", item="i1")
@@ -52,12 +52,12 @@ def test_valid_proposal_is_read_back_then_written_on_confirm():
     assert json.loads(v["promise_writes_list"]) == [{"fields": {"item_id": "i1", "sum": 50.0, "pay_on": "2031-03-07"}, "status": "pending"}]
 
 
-def test_confirm_without_read_back_gives_the_read_back_first():
+def test_confirm_without_read_back_gives_the_read_back_first():  # R13
     v = said(setup_vars(), 1, kind="confirms")
     assert "record_now" not in v and v["guide"].endswith('Is that right?"')
 
 
-def test_question_back_does_not_repeat_the_offer():
+def test_question_back_does_not_repeat_the_offer():  # R11
     v = said(setup_vars(), 1, kind="refuses")
     v = said(v, 2, kind="other")
     assert "80.50" not in v["guide"]
@@ -70,7 +70,7 @@ def two_items():
     return run_snippet(node_code(WORKFLOW, "prepare"), v)
 
 
-def test_two_items_answered_in_one_message_are_handled_one_line_at_a_time():
+def test_two_items_answered_in_one_message_are_handled_one_line_at_a_time():  # R11
     # "Gas tomorrow, the electricity not": one call with two answers.
     v = said_many(two_items(), 1, [dict(kind="proposes", item="i1", date="2031-03-06"), dict(kind="refuses", item="i2")])
     assert v["guide"] == 'SAY: "80.50 for your gas bill on Thursday 6 March 2031. Is that right?"'
@@ -80,28 +80,28 @@ def test_two_items_answered_in_one_message_are_handled_one_line_at_a_time():
     assert [w["fields"]["item_id"] for w in json.loads(v["promise_writes_list"])] == ["i1"]
 
 
-def test_every_item_refused_closes_said_no():
+def test_every_item_refused_closes_said_no():  # R11
     v = setup_vars()
     for turn in (1, 2, 3):
         v = said(v, turn, kind="refuses")
     assert v["close_key"] == "close_said_no"
 
 
-def test_after_writes_picks_the_close():
+def test_after_writes_picks_the_close():  # R14
     ok = json.dumps([{"fields": {}, "status": "failed"}, {"fields": {}, "status": "ok"}])
     assert run_snippet(node_code(WORKFLOW, "after_writes"), {"promise_writes_list": ok})["close_key"] == "close_agreed"
     bad = json.dumps([{"fields": {}, "status": "failed"}])
     assert run_snippet(node_code(WORKFLOW, "after_writes"), {"promise_writes_list": bad})["close_key"] == "close_system_down"
 
 
-def test_identity_guide_after_a_correct_first_answer_asks_the_second_question():
+def test_identity_guide_after_a_correct_first_answer_asks_the_second_question():  # R5
     v = run_snippet(node_code(WORKFLOW, "id_check_after"), {"id_question": "postcode", "id_check_check_response.status": "success",
                                                           "id_check_check_response.data.correct": "true",
                                                           "id_check_check_response.data.passed": "false"})
     assert v["id_say"] == "Thank you. And what is your year of birth?"
 
 
-def test_identity_passes_when_the_last_answer_is_correct_and_the_bank_leaves_out_the_passed_field():
+def test_identity_passes_when_the_last_answer_is_correct_and_the_bank_leaves_out_the_passed_field():  # R5
     # round 6 brief A PUB-04: the bank sent {"verified": true} with no "all_verified", and the call stayed in identity
     v = run_snippet(node_code(WORKFLOW, "id_check_after"), {"id_question": "birth_year", "id_check_check_response.status": "success",
                                                           "id_check_check_response.data.correct": "true"})
@@ -143,7 +143,7 @@ def test_identity_speaks_a_fixed_line_after_each_check():
     assert checked("postcode", "false")["id_say"] == "That does not match. What is the postcode of your address?"
 
 
-def test_identity_asks_again_a_question_the_bank_did_not_confirm():
+def test_identity_asks_again_a_question_the_bank_did_not_confirm():  # R5
     # rehearsal 4 PUB-03: a wrong first answer, then a correct second one; the agent said "does not match" and moved on
     v = checked("birth_year", "true")
     assert v.get("id_passed") != "yes"
@@ -166,18 +166,37 @@ def named(v, day="", at=""):
     return run_tool(tool_code(WORKFLOW, "time_named"), v, {"day": day, "at": at})
 
 
-def test_callback_inside_the_window_is_booked_by_the_code():
+def test_callback_inside_the_window_is_booked_by_the_code():  # R3
     v = named(setup_vars(), day="2031-03-06", at="10:30")
     assert (v["cb_book"], v["cb_day"], v["cb_at"]) == ("yes", "2031-03-06", "10:30")
 
 
-def test_callback_asks_once_more_after_a_time_outside_the_window_then_closes():
+def test_callback_asks_once_more_after_a_time_outside_the_window_then_closes():  # R4
     v = named(setup_vars(), day="2031-03-08", at="")          # Saturday morning: outside, the one more ask
     assert v.get("cb_close") != "yes" and "outside" in v["tp_guide"]
     v = named(v, day="", at="20:00")                          # after eight: outside again, no third ask
     assert v["cb_close"] == "yes" and v.get("cb_book") != "yes"
 
 
-def test_callback_day_without_a_time_is_not_outside():
+def test_callback_day_without_a_time_is_not_outside():  # R4
     v = named(setup_vars(), day="2031-03-07", at="")
     assert v.get("cb_outside", 0) == 0 and "time" in v["tp_guide"]
+
+
+def test_prepare_states_each_item():  # R8
+    assert setup_vars()["debt_statement"].startswith("Thank you. I am calling about an overdue bill: ")
+
+
+def test_two_refusals_in_a_row_reach_the_close_and_an_answer_resets_the_count():  # R7
+    refuse = tool_code(WORKFLOW, "customer_refuses")
+    v = run_tool(refuse, run_tool(refuse, {}, {}), {})
+    assert v["id_refusals"] == 2
+    assert run_tool(tool_code(WORKFLOW, "answer_given"), v, {"question": "postcode", "parts": []})["id_refusals"] == 0
+
+
+def test_every_close_sets_the_result_and_code_for_the_close_tool():  # R17
+    closes = [n for n in WORKFLOW["nodes"] if n.startswith("close_") and WORKFLOW["nodes"][n]["node_type"] == "code"]
+    assert closes
+    for n in closes:
+        v = run_snippet(node_code(WORKFLOW, n), {})
+        assert v["close_result"] and v["close_code"] is not None

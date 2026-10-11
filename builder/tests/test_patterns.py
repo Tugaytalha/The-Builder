@@ -390,15 +390,15 @@ def test_negotiation_reply_answers_a_side_question_from_the_instructions_too():
     # ACCOUNT, the robot rule is in the system prompt, so the reply was empty and the question got no answer
     from builder.blocks.patterns import negotiation_tool
     reply = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["reply"]["description"]
-    assert "robot" in reply and "instructions" in reply and "every kind" in reply
+    assert "who you are" in reply and "instructions" in reply and "every kind" in reply
 
 
-def test_negotiation_day_of_another_event_is_not_a_payment_day():
+def test_negotiation_day_of_another_event_is_not_the_day_for_the_item():
     # round 5 A talkative PUB-01: "My cousin's wedding is on the 30th" went in as a proposal for 30 October and was read back
     from builder.blocks.patterns import negotiation_tool
     date = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["answers"][
         "items"]["properties"]["date"]["description"]
-    assert "wedding" in date and "to pay" in date
+    assert "another event" in date and "is not" in date and "wedding" not in date
 
 
 def test_answer_tool_reads_turkish_month_names():

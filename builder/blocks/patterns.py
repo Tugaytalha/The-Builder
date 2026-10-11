@@ -328,13 +328,13 @@ def negotiation_tool(kinds, policy, list_var, lines=None):
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
                  + " unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before "
                  "the cut-off still gets its answer in reply."},
-        "date": {"type": "string", "description": "The day the customer named in full in this message as a day to pay, "
-                 "YYYY-MM-DD, or empty. A day of another event (a wedding, a trip) is not a day to pay. Never a day from an earlier message that was cut off, and never a day from a message that only "
+        "date": {"type": "string", "description": "The day the customer named in full in this message for the item, "
+                 "YYYY-MM-DD, or empty. A day of another event the customer mentions is not that day. Never a day from an earlier message that was cut off, and never a day from a message that only "
                  "ends an earlier one ('of November.' after 'on the sixth'): that day was already answered."},
         "amount": {"type": "string", "description": "The amount the customer named in full in this message, digits only, "
                    "or empty. Never an amount from an earlier message that was cut off: '120' from 'I can pay the 120' "
                    "can be the start of 1250."}}}
-    return state_tool("customer_said", "CALL it ONCE every time the customer answers about paying. Put one entry in "
+    return state_tool("customer_said", "CALL it ONCE every time the customer answers about an item. Put one entry in "
                       "answers for each product the customer talked about in this message.", {
         "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about, "
                     "never two for the same product: pick the kind of the main point. A message that only ends the sentence "
@@ -342,8 +342,8 @@ def negotiation_tool(kinds, policy, list_var, lines=None):
                     "and answer any question in reply."},
         "reply": {"type": "string", "description": "If the customer asked a question in this message, your answer in one "
                   "sentence, from your instructions or ACCOUNT, with no amount and no day; else empty. A side question needs it "
-                  "too: who you are, whether you are a robot, why you call, whether this is a scam. Give it with every kind, also "
-                  "unfinished: 'Which loan is this? I' needs the answer. The call says it before the next line."}},
+                  "too: who you are, what you are, why you call, whether the call is genuine. Give it with every kind, also "
+                  "unfinished: a question cut off in the middle needs the answer. The call says it before the next line."}},
         policy + "\n" + engine)
 
 

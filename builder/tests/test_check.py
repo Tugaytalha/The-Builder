@@ -2,7 +2,7 @@ import json
 import shutil
 from pathlib import Path
 
-from builder.blocks.check import ledger_problems, run_checks, snippet_problems
+from builder.blocks.check import coverage_problems, ledger_problems, run_checks, snippet_problems
 from builder.blocks.nodes import always, code_node, conversation, end_node, workflow
 
 FIX = Path(__file__).parent / "fixtures" / "tool_api.json"
@@ -93,3 +93,28 @@ def test_snippet_that_never_ends_is_stopped(monkeypatch):
         check._run_with_timeout("while True:\n    pass\n", {})
     assert time.time() - started < 5
     assert check._run_with_timeout("vars['x'] = 1", {})["x"] == 1
+
+
+def test_a_code_rule_without_a_test_that_names_it_is_reported():
+    ledger = LEDGER + "| R2 | count the tries | §4 | code | answer |\n| R3 | say the line | §5 | fixed-line | opening |\n"
+    assert coverage_problems(ledger, "def test_x():\n    pass\n") == [
+        "ledger R2: mechanism code, but no test in test_rules.py names R2"]
+
+
+def test_a_code_rule_named_in_a_test_passes():
+    ledger = LEDGER + "| R2 | count the tries | §4 | code | answer |\n| R12 | other | §6 | code | answer |\n"
+    assert coverage_problems(ledger, "def test_x():  # R2\n    pass\n") == [
+        "ledger R12: mechanism code, but no test in test_rules.py names R12"]
+    assert coverage_problems(ledger, "# R2, R12\n") == []
+
+
+def test_run_checks_reports_a_code_rule_without_a_test(tmp_path):
+    shutil.copy(FIX, tmp_path / "tool_api.json")
+    (tmp_path / "ledger.md").write_text(LEDGER + "| R2 | count | §4 | code | talk |\n", encoding="utf-8")
+    (tmp_path / "spec.json").write_text(json.dumps({"lint": {}, "sample_vars": {"now": "2031-03-05T11:00"}}))
+    w = workflow("start", "Be brief.", [code_node("start", "vars['a'] = 1", "talk"),
+                                        conversation("talk", "Talk.", transitions=[always("bye")]), end_node("bye", "done")])
+    (tmp_path / "workflow.json").write_text(json.dumps(w))
+    (tmp_path / "test_rules.py").write_text("def test_ok():\n    assert True\n")
+    assert run_checks(str(tmp_path), dry_run=False)["rules_tests"] == [
+        "ledger R2: mechanism code, but no test in test_rules.py names R2"]

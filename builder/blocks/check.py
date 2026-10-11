@@ -8,6 +8,7 @@ optional test_rules.py.
 import _thread
 import json
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -52,6 +53,15 @@ def ledger_problems(text):
         if not where:
             problems.append(f"ledger {rid}: empty where")
     return problems
+
+
+def coverage_problems(ledger_text, tests_text):
+    """Every `code` row of the ledger needs a test in test_rules.py that names its id (in its name, a comment or a
+    docstring): a rule in code with no test is where a wrong condition or a wrong field hides."""
+    rows = [(_cells(line) + [""] * 5)[:5] for line in ledger_text.splitlines() if line.strip().startswith("|")]
+    return [f"ledger {rid}: mechanism code, but no test in test_rules.py names {rid}"
+            for rid, _, _, mechanism, _ in rows[1:]
+            if mechanism == "code" and not re.search(r"(?<![A-Za-z0-9_])" + re.escape(rid) + r"(?![A-Za-z0-9])", tests_text)]
 
 
 def _code_nodes(workflow):
@@ -158,7 +168,11 @@ def run_checks(run_dir, dry_run=True):
         return out
     out["lint"] = lint(workflow, api, spec.get("lint", {}))
     out["snippets"] = snippet_problems(workflow, spec.get("sample_vars", {}))
-    out["rules_tests"] = _rules_tests(run)
+    tests = run / "test_rules.py"
+    if (run / "ledger.md").exists():
+        out["rules_tests"] = coverage_problems((run / "ledger.md").read_text(encoding="utf-8"),
+                                               tests.read_text(encoding="utf-8") if tests.exists() else "")
+    out["rules_tests"] += _rules_tests(run)
     if dry_run:
         out["dry_run"] = _dry_run(workflow)
     return out
