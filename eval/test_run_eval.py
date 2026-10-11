@@ -129,3 +129,17 @@ def test_a_read_waits_out_a_20_minute_outage():
             raise RuntimeError(f"{method} {path} -> 504: error code: 504")
         return {"ok": True}
     assert retry_reads(api, wait=waited.append)("GET", "/x") == {"ok": True}
+
+
+def test_a_read_is_tried_again_after_a_socket_timeout():
+    # round 6: "socket.timeout: The read operation timed out" while Freya was slow
+    import socket
+    from run_cases_at import retry_reads
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) < 2:
+            raise socket.timeout("The read operation timed out")
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}

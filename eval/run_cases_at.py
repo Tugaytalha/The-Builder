@@ -9,7 +9,6 @@ import json
 import re
 import sys
 import time
-import urllib.error
 from pathlib import Path
 
 KIT = Path(__file__).resolve().parents[1] / "kit"
@@ -54,15 +53,15 @@ def unstick(api, now=time.time):
 
 def retry_reads(api, wait=time.sleep, tries=45):
     """Wrap freya.api. A GET that fails with a server error (500, 502, 503, 504: seen in rounds 5b, 5c and 6) or a network
-    error (round 6: DNS) is tried again;
+    error (round 6: DNS, socket timeout) is tried again;
     a write is tried again only after a 503 (refused before anything was written).
     The waits cover an outage of about 22 minutes (round 6: 504s for more than 2.5 minutes stopped a score run)."""
     def wrapped(method, path, body=None, **params):
         for i in range(tries):
             try:
                 return api(method, path, body, **params)
-            except (RuntimeError, urllib.error.URLError) as e:
-                server_or_dns = isinstance(e, urllib.error.URLError) or re.search(r"-> 50[0234]", str(e))
+            except (RuntimeError, OSError) as e:      # OSError: a network error, DNS, or a socket timeout
+                server_or_dns = isinstance(e, OSError) or re.search(r"-> 50[0234]", str(e))
                 refused = re.search(r"-> 503", str(e))      # a 503 is refused before anything is written
                 if i == tries - 1 or not (refused or (method == "GET" and server_or_dns)):
                     raise
