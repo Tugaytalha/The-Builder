@@ -7,7 +7,8 @@ Read this first in a new session. Then read `notes/eval-log.md` (one row per rou
 - Branch `execute-builder-plan`, worktree `/Users/resit/orca/workspaces/The-Builder/mola`.
 - Plan Tasks 1–14 are done. Task 15 (improvement rounds) is in progress. Task 16 (freeze) is at 14:00 UTC.
 - Round 5 is done for A (scores in `eval/results/5/`). A DNS outage stopped the other scores, so A+B, V2 and edge-a were scored again on the same agents as round `5b` (`eval/results/5b/`). Results and root causes are in the round 5 row of `notes/eval-log.md`.
-- Five fixes since the round 5 builds: 3e76500, 3939bb6, 317d3e5, c2999b5 (lint rule 13), e3f7897 (lesson 4l). No build has used them yet: round 6 is their first measurement. Watch V2 (the read-back loop) and the A+B goodbye (no `{{close_extra}}`).
+- Five fixes since the round 5 builds: 3e76500, 3939bb6, 317d3e5, c2999b5 (lint rule 13), e3f7897 (lesson 4l). No build has used them yet: round 6 is their first measurement. Watch V2 (the read-back loop) and the A+B goodbye (no `{{close_extra}}`). Not analyzed yet: edge-a PUB-10 (3 of 3 runs) and PUB-08 (2 of 3).
+- The Freya API returned 504 and 503 errors in rounds 5b and 5c. `run_cases_at.py` does not retry a failed GET, so one error loses the whole score file.
 - Another agent (`76ed8678…`, not ours) runs simulations in the same Freya workspace. Our runner waits for it ("another simulation is running in this workspace"), so rounds take longer.
 
 ## Next rounds
