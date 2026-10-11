@@ -99,3 +99,25 @@ def test_identity_guide_after_a_correct_first_answer_asks_the_second_question():
                                                           "id_check_check_response.data.correct": "true",
                                                           "id_check_check_response.data.passed": "false"})
     assert v["id_guide"] == "Correct. Now ask: And what is your year of birth?"
+
+
+def named(v, day="", at=""):
+    """The model reports a day or a time that the other person named for a callback."""
+    return run_tool(tool_code(WORKFLOW, "time_named"), v, {"day": day, "at": at})
+
+
+def test_callback_inside_the_window_is_booked_by_the_code():
+    v = named(setup_vars(), day="2031-03-06", at="10:30")
+    assert (v["cb_book"], v["cb_day"], v["cb_at"]) == ("yes", "2031-03-06", "10:30")
+
+
+def test_callback_asks_once_more_after_a_time_outside_the_window_then_closes():
+    v = named(setup_vars(), day="2031-03-08", at="")          # Saturday morning: outside, the one more ask
+    assert v.get("cb_close") != "yes" and "outside" in v["tp_guide"]
+    v = named(v, day="", at="20:00")                          # after eight: outside again, no third ask
+    assert v["cb_close"] == "yes" and v.get("cb_book") != "yes"
+
+
+def test_callback_day_without_a_time_is_not_outside():
+    v = named(setup_vars(), day="2031-03-07", at="")
+    assert v.get("cb_outside", 0) == 0 and "time" in v["tp_guide"]

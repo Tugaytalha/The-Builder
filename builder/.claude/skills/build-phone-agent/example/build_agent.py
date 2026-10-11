@@ -8,8 +8,8 @@ import json
 from builder.blocks.coderun import with_dates
 from builder.blocks.nodes import (all_of, always, any_of, cond, conversation, field, go, intent, is_true, tts,
                                   workflow, api_node, code_node)
-from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, negotiation_nodes,
-                                     negotiation_tool, start, state_tool, write_loop)
+from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, identity_check, negotiation_nodes,
+                                     negotiation_tool, record_with_retry, start, state_tool, write_loop)
 from builder.blocks.tools import load_api, make_tool
 
 SPEC = json.load(open("spec.json"))
@@ -211,11 +211,14 @@ OPENING_TASK = ("You asked whether you speak with " + CUSTOMER + ". Do not say w
                 "If the person did not clearly confirm, answer a question they asked in one sentence, then ask again: "
                 "\"Is this " + CUSTOMER + "?\". Do not call a tool in this turn.")
 
-THIRD_PARTY_TASK = ("The person is not " + CUSTOMER + ". Never say why you are calling, and give no hint of it. If the person asks what it "
+THIRD_PARTY_TASK = ("NEXT STEP: {{tp_guide}}\n\n"
+                    "The person is not " + CUSTOMER + ". Never say why you are calling, and give no hint of it. If the person asks what it "
                     "is about, offers to pay or offers to take a message, say only that you can speak about it with "
-                    + CUSTOMER + " only. Do not say what you can or cannot accept. Ask when " + CUSTOMER + " can be reached.\n{{callback_facts}}\nWhen the person names a day and a time, call schedule_callback "
-                    "with the day as YYYY-MM-DD and the time as HH:MM. If it fails, the time is outside the window: say so "
-                    "and ask once for another time. If there is still no time in the window, call transition_to_close_no_time.")
+                    + CUSTOMER + " only. Do not say what you can or cannot accept.\n{{callback_facts}}\nEvery time the person "
+                    "names a day or a time, also a vague one ('Saturday morning', 'after eight'), call time_named FIRST with the "
+                    "day as YYYY-MM-DD and the time as HH:MM, each empty when not named; the code checks the window and counts. "
+                    "Then follow NEXT STEP. If the person gives no time at all after NEXT STEP asked again, call "
+                    "transition_to_close_no_time.")
 
 IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
                  "The person confirmed they are " + CUSTOMER + ". Check identity before anything else, one question at a "
@@ -243,11 +246,26 @@ answer = answer_tool({q["value"]: q["kind"] for q in QUESTIONS})
 verify = make_tool(API, I["tool"], baked={**BAKED_ID, I["question_field"]: "{{id_question}}", I["answer_field"]: "{{id_answer}}"})
 refuses = state_tool("customer_refuses", "CALL it every time the customer refuses to answer a security question.", {},
                      "vars['id_refusals'] = int(float(vars.get('id_refusals') or 0)) + 1")
-callback = make_tool(API, "schedule_callback", baked=BAKED_ID, post_code=PLAIN_POST,
-                     description="Book a callback. CALL it when the person names a day and a time.")
-callback["pre_process_code"] = guard_hook(
-    "not (str(body.get('day')) in str(vars.get('callback_days')).split(',') and %r <= str(body.get('at'))[:5] <= %r)"
-    % (SPEC["callback"]["from"], SPEC["callback"]["to"]))
+# The code checks the window and counts the asks (edge case: the model judged the window itself and asked twice).
+TIME_NAMED = """
+day = str(params.get('day') or '').strip()[:10]
+at = str(params.get('at') or '').strip()[:5]
+if (day and day not in str(vars.get('callback_days')).split(',')) or (at and not (%r <= at <= %r)):
+    n = int(float(vars.get('cb_outside') or 0)) + 1
+    vars['cb_outside'] = n
+    vars['tp_guide'] = 'That time is outside the window. Say so in one sentence, and ask for a day and time inside it.'
+    if n > %d:
+        vars['cb_close'] = 'yes'
+elif day and at:
+    vars['cb_day'], vars['cb_at'], vars['cb_book'] = day, at, 'yes'
+    vars['tp_guide'] = 'Say only: one moment, please.'
+else:
+    vars['tp_guide'] = 'Ask only for the ' + ('time' if day else 'day') + ' of the callback.'
+""" % (SPEC["callback"]["from"], SPEC["callback"]["to"], SPEC["callback"]["asks_after_outside"])
+time_named = state_tool("time_named", "CALL it every time the person names a day or a time for a callback.", {
+    "day": {"type": "string", "description": "The day named, YYYY-MM-DD, or empty."},
+    "at": {"type": "string", "description": "The time named, HH:MM in 24 hours, or empty."}}, TIME_NAMED)
+book = make_tool(API, "schedule_callback", baked={**BAKED_ID, "day": "{{cb_day}}", "at": "{{cb_at}}"})
 said = negotiation_tool({
     "accepts": "yes to your last proposal.",
     "confirms": "a clear yes to the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence.",
@@ -269,8 +287,8 @@ party = field("party", "string", "Who answered, from the latest message. custome
               "question.", enum=["customer", "someone_else", "unclear"])
 nodes = [
     start("setup"),
-    code_node("setup", with_dates(SETUP) + "\nvars['id_guide'] = 'Wait for the answer to the first question.'", "opening",
-              fallbacks={"date_facts": "Date facts are not available.", "callback_facts": "", "callback_days": "",
+    code_node("setup", with_dates(SETUP) + "\nvars['id_guide'] = 'Wait for the answer to the first question.'\nvars['tp_guide'] = 'Ask when the customer can be reached.'", "opening",
+              fallbacks={"date_facts": "Date facts are not available.", "callback_facts": "", "callback_days": "", "tp_guide": "Ask when the customer can be reached.",
                          "id_guide": "Wait for the answer to the first question."}),
     conversation("opening", OPENING_TASK, on_enter=tts(SPEC["opening_line"]), first_entry_only=True, extract=[party],
                  max_turns=20, max_turn_target="close_unsure", transitions=[
@@ -279,9 +297,11 @@ nodes = [
                      go("close_unsure", all_of(cond("party", "equals", "unclear"), cond("opening.total_turns", "greater_than", 1)),
                         "still unclear after the second ask"),
                      always("opening")]),
-    conversation("third_party", THIRD_PARTY_TASK, tools=[callback], max_turns=20, max_turn_target="close_no_time", transitions=[
-        go("close_call_later", is_true("schedule_callback_response.data.ok"), "callback booked"),
+    conversation("third_party", THIRD_PARTY_TASK, tools=[time_named], max_turns=20, max_turn_target="close_no_time", transitions=[
+        go("book_callback", any_of(cond("cb_book", "equals", "yes")), "a time inside the window"),
+        go("close_no_time", any_of(cond("cb_close", "equals", "yes")), "outside the window after the one more ask"),
         {**intent("close_no_time", "no callback time inside the window"), "is_tool_call": True}]),
+    *record_with_retry("book_callback", book, 1, "close_call_later", "close_no_time"),
     # The first entry speaks a fixed line; every return from the check speaks the next step (on_enter llm).
     *[conversation(node, IDENTITY_TASK, tools=[answer, refuses], first_entry_only=(node == "identity"),
                    on_enter=tts("Thank you. First I need to ask two security questions. " + QUESTIONS[0]["ask"])
