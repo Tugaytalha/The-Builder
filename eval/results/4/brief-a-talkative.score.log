@@ -1,0 +1,21 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 420.0, '2026-10-14')]
+       - conversation: The call failed to meet two success criteria: the function `create_promise` was never called, and the required text-message sentence was not spoken by the agent at the end of the call. Although security questions were passed correctly before the 
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-10-16')]
+       - conversation: The conversation failed on two counts: 1) The required promise for 637.50 on Friday 16 October was not achieved. In Message 12, the assistant offered the amount for Wednesday 14 October 2026, and the customer never accepted. 2) The call ended bec
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 10 s, worst 16 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+8 / 10 passed (bank records and conversation checks). Last simulation f0d5a821-6bf5-4fd1-b0dd-d57f1491c096, status completed, 223 s.

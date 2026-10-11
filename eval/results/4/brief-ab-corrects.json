@@ -1,0 +1,160 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "87ed196f-0aef-4635-a3fb-06eca5cb0cdc",
+ "iteration_id": "a6ad87ef-3fd9-47a1-931e-dff534ab2921",
+ "seconds": 137,
+ "passed": 2,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "4dd94e8e-46e6-4f87-9d85-3a55bae76148",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_f09797d7-25d",
+   "slowest_turn_s": 7.2,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "conversation: The assistant failed to meet the security question success criterion: the phone question was asked only once ([Message 4]), but the instructions required it to be asked 'again once' (meaning a total of two times). The date of birth was correctly asked only once ([Message 2]). Other criteria were successfully met: exactly one promise was created for the credit card (system event for p1 following co"
+   ],
+   "call_id": "da5893bb-2332-4e51-9157-808fa5672635",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_3ebf9423-441",
+   "slowest_turn_s": 14.8,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "01029791-780c-4cbc-abf2-fa70440c9c0e",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_fda29137-61b",
+   "slowest_turn_s": 5.9,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "4dd94e8e-46e6-4f87-9d85-3a55bae76148",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_f09797d7-25d",
+    "slowest_turn_s": 7.2,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: The assistant failed to meet the security question success criterion: the phone question was asked only once ([Message 4]), but the instructions required it to be asked 'again once' (meaning a total of two times). The date of birth was correctly asked only once ([Message 2]). Other criteria were successfully met: exactly one promise was created for the credit card (system event for p1 following co"
+    ],
+    "call_id": "da5893bb-2332-4e51-9157-808fa5672635",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_3ebf9423-441",
+    "slowest_turn_s": 14.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "01029791-780c-4cbc-abf2-fa70440c9c0e",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_fda29137-61b",
+    "slowest_turn_s": 5.9,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

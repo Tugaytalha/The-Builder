@@ -1,0 +1,8 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The assistant failed to meet the security question success criterion: the phone question was asked only once ([Message 4]), but the instructions required it to be asked 'again once' (meaning a total of two times). The date of birth was correctly 
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 15 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation 87ed196f-0aef-4635-a3fb-06eca5cb0cdc, status completed, 137 s.

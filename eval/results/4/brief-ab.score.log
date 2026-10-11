@@ -1,0 +1,30 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The assistant failed to adhere to the specified number of collection attempts for the car loan. According to the success criteria, there should have been exactly one attempt on the car loan (early band), but the assistant made two attempts in Mes
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 13 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 2 / 3 passed, 127 s
+
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 17 s, worst 21 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 2 of 3: 3 / 3 passed, 127 s
+
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The agent correctly asked the phone question twice and the date of birth question only once. It also successfully recorded exactly one promise for the credit card and added 'refused' notes for the other products via API calls. However, the agent 
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 16 s, worst 24 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 3 of 3: 2 / 3 passed, 190 s
+
+PASS PUB-11 3/3
+FAIL PUB-12 1/3
+PASS PUB-13 3/3
+
+2 / 3 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation f31212e3-cc89-41cc-9667-8bb0d0d2c27a, status completed, 445 s.

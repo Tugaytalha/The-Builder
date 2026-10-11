@@ -1,0 +1,8 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The assistant correctly handled security questions (asking for the phone number twice and date of birth once), recorded exactly one promise for the credit card, and correctly applied 'refused' notes for the other products. However, it failed the 
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 6 s, worst 8 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation a3fc0d94-a879-4bcd-ac02-9cbb6462c5c8, status completed, 64 s.
