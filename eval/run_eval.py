@@ -95,9 +95,11 @@ def main():
             log = open(out / f"{e['name']}.build.log", "w")
             procs[e["name"]] = (subprocess.Popen([PYTHON, "builder/build.py", e["brief"], e["api"]], cwd=REPO, stdout=log,
                                                  stderr=subprocess.STDOUT), time.time())
-        for name, (p, t0) in procs.items():
-            rows[name]["build_exit"] = p.wait()
-            rows[name]["build_s"] = round(time.time() - t0)
+        while any(rows[n].get("build_exit") is None for n in procs):   # record each build when it ends
+            for name, (p, t0) in procs.items():
+                if rows[name].get("build_exit") is None and p.poll() is not None:
+                    rows[name]["build_exit"], rows[name]["build_s"] = p.returncode, round(time.time() - t0)
+            time.sleep(5)
 
     for e in suite:
         export = REPO / "submission" / f"{e['name']}.workflow.json"

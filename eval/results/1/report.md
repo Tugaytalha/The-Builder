@@ -1,0 +1,53 @@
+| entry | set | passed | total | build s | build exit | change |
+|---|---|---|---|---|---|---|
+| brief-a | dev | 10 | 10 | 332 | 0 |  |
+| brief-ab | dev | 2 | 3 | 506 | 0 |  |
+| v2-values-a | dev | 8 | 10 | 506 | 0 |  |
+| v1-raw-a | heldout | 10 | 10 | 547 | 0 |  |
+| v3-raw-b | heldout | 0 | 3 | 547 | 0 |  |
+
+## closing (14)
+- brief-ab PUB-12: notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+- brief-ab PUB-12: outcome ('no_promise', 'refused'), expected ('promise', None)
+- brief-ab PUB-12: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+- brief-ab PUB-12: outcome ('no_promise', 'refused'), expected ('promise', None)
+- brief-ab PUB-12: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+- v2-values-a PUB-09: outcome (None, None), expected ('transferred', 'plan_review')
+- v2-values-a PUB-09: outcome (None, None), expected ('transferred', 'plan_review')
+- v2-values-a PUB-09: outcome (None, None), expected ('transferred', 'plan_review')
+- v3-raw-b PUB-11: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-11: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []
+- v3-raw-b PUB-12: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-12: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+- v3-raw-b PUB-12: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-12: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+
+## amounts (6)
+- brief-ab PUB-12: promises [('p1', 510.0, '2026-10-15'), ('p2', 1320.0, '2026-10-15'), ('p3', 140.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]
+- brief-ab PUB-12: promises [], expected [('p1', 510.0, '2026-10-15')]
+- brief-ab PUB-12: promises [], expected [('p1', 510.0, '2026-10-15')]
+- v3-raw-b PUB-11: promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+- v3-raw-b PUB-12: promises [], expected [('p1', 510.0, '2026-10-27')]
+- v3-raw-b PUB-12: promises [], expected [('p1', 510.0, '2026-10-27')]
+
+## identity (5)
+- brief-ab PUB-12: conversation: The call failed to meet several success criteria. While security verification was handled correctly (DOB asked once in Message 2 and phone re-asked once in Message 6), the agent failed t
+- v2-values-a PUB-03: outcome (None, None), expected ('not_verified', 'id_failed')
+- v2-values-a PUB-03: outcome (None, None), expected ('not_verified', 'id_failed')
+- v2-values-a PUB-03: outcome (None, None), expected ('not_verified', 'id_failed')
+- v3-raw-b PUB-12: conversation: The call failed the success criteria because the agent made two attempts to collect on the car loan (Messages 16 and 18), whereas the instructions specified exactly 'one attempt' for 140
+
+## attempts (3)
+- brief-ab PUB-12: conversation: The agent failed most of the success criteria and the call ending requirements: 1) While it correctly asked the phone question again once (Message 6), it failed to limit attempts on the 
+- v3-raw-b PUB-12: conversation: The agent failed to meet the success criteria for the following reasons: 1. Car Loan Attempts: The agent made two collection attempts on the car loan (Message 18 and Message 20), violati
+- v3-raw-b PUB-12: conversation: The agent failed on several points: 1. It leaked internal instructions into the conversation in Message 12 ('Propose exactly this, once: ...'). 2. It exceeded the number of attempts spec
+
+## dates (2)
+- v3-raw-b PUB-11: conversation: The agent failed to meet the success criterion requiring 'one read-back and one confirmation' for all three products. In Message 8, the agent asked to confirm the 'full past due amounts 
+- v3-raw-b PUB-13: conversation: The agent failed to meet the third success criterion. While the agent correctly identified the deadline for the personal loan as 12 November (Message 8) and successfully recorded both pa
+
+## other (1)
+- brief-ab PUB-12: conversation: Call ended but analysis never arrived (300s)
+
+## tool honesty (1)
+- v3-raw-b PUB-11: conversation: The assistant failed to meet the success criteria regarding the creation of promises. While all three products were stated before the first ask in [Message 6], and the assistant provided

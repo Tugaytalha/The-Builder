@@ -1,0 +1,13 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > add_note > add_note > add_note > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-15')]
+       - notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The conversation failed to meet several criteria and did not end properly. First, the agent entered a repetitive loop from Message 12 to Message 66, and the call only concluded because the turn limit for the 'negotiate' node was reached. Second, 
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-14')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]
+       - conversation: The credit card promise was recorded for the correct date (30 October), but the loan promise failed the criteria. Although the user agreed to pay the loan on 23 October in message 9, the assistant recorded it for 14 October (as seen in the API ca
+
+slowest agent turn per call: median 6 s, worst 13 s. Failed calls where the customer hung up: 0.
+
+1 / 3 passed (bank records and conversation checks). Last simulation eb7d153d-b7d9-43b9-9b88-e8093103cf21, status completed, 202 s.

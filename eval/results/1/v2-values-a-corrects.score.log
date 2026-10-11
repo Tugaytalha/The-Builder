@@ -1,0 +1,17 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > verify > verify > close_call
+       - outcome (None, None), expected ('not_verified', 'id_failed')
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+FAIL PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome (None, None), expected ('transferred', 'plan_review')
+FAIL PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 365.0, '2026-12-22')], expected [('p1', 365.0, '2026-12-23')]
+
+slowest agent turn per call: median 6 s, worst 16 s. Failed calls where the customer hung up: 0.
+
+7 / 10 passed (bank records and conversation checks). Last simulation 54e134ad-1479-4f7e-ba01-63723044cd74, status completed, 139 s.

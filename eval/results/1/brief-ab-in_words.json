@@ -1,0 +1,174 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "eb7d153d-b7d9-43b9-9b88-e8093103cf21",
+ "iteration_id": "4b2ae9b6-7726-42a9-a758-4d2af91e334d",
+ "seconds": 202,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "e7dfbb6e-5fb7-4a93-8868-8dd5e2502489",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_bee3943e-8c4",
+   "slowest_turn_s": 6.5,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'refused'), expected ('promise', None)",
+    "promises [], expected [('p1', 510.0, '2026-10-15')]",
+    "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: The conversation failed to meet several criteria and did not end properly. First, the agent entered a repetitive loop from Message 12 to Message 66, and the call only concluded because the turn limit for the 'negotiate' node was reached. Second, the agent failed to record a promise for the credit card, instead logging 'refused' for all three products in the system events. Third, the number of atte"
+   ],
+   "call_id": "620b7857-7c09-45a9-a539-53fad13ad2c9",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "add_note",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_5cd2c7a5-3da",
+   "slowest_turn_s": 12.7,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-14')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "conversation: The credit card promise was recorded for the correct date (30 October), but the loan promise failed the criteria. Although the user agreed to pay the loan on 23 October in message 9, the assistant recorded it for 14 October (as seen in the API call for p2) and read back 14 October in message 10. Consequently, the loan was not recorded on the requested deadline of 23 October, and the read-back did "
+   ],
+   "call_id": "c6000431-5587-450d-97c6-ee333d0d5924",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_6ca82788-5a5",
+   "slowest_turn_s": 5.5,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "e7dfbb6e-5fb7-4a93-8868-8dd5e2502489",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_bee3943e-8c4",
+    "slowest_turn_s": 6.5,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'refused'), expected ('promise', None)",
+     "promises [], expected [('p1', 510.0, '2026-10-15')]",
+     "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: The conversation failed to meet several criteria and did not end properly. First, the agent entered a repetitive loop from Message 12 to Message 66, and the call only concluded because the turn limit for the 'negotiate' node was reached. Second, the agent failed to record a promise for the credit card, instead logging 'refused' for all three products in the system events. Third, the number of atte"
+    ],
+    "call_id": "620b7857-7c09-45a9-a539-53fad13ad2c9",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "add_note",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_5cd2c7a5-3da",
+    "slowest_turn_s": 12.7,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-14')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "conversation: The credit card promise was recorded for the correct date (30 October), but the loan promise failed the criteria. Although the user agreed to pay the loan on 23 October in message 9, the assistant recorded it for 14 October (as seen in the API call for p2) and read back 14 October in message 10. Consequently, the loan was not recorded on the requested deadline of 23 October, and the read-back did "
+    ],
+    "call_id": "c6000431-5587-450d-97c6-ee333d0d5924",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_6ca82788-5a5",
+    "slowest_turn_s": 5.5,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

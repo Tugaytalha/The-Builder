@@ -1,0 +1,25 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > verify > verify > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 420.0, '2026-10-29')]
+       - conversation: The conversation failed to meet three out of the four success criteria because identity verification was not completed successfully. Specifically: 1. Both security questions did not pass; the user provided incorrect digits for the second question
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > verify > close_call
+       - outcome (None, None), expected ('not_verified', 'id_failed')
+PASS PUB-04 medium Dates          | verify > verify > verify > verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > verify > verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > verify > verify > verify > get_account > promise > close_call
+FAIL PUB-07 hard   Dates          | verify > verify > verify > verify > verify > verify > get_account > promise > close_call
+       - promises [('p1', 540.0, '2026-12-17')], expected [('p1', 540.0, '2026-12-28')]
+       - conversation: The agent failed to meet the specific requirement of recording a promise for Monday 28 December. While the agent correctly asked for an exact payment day in Message 16 and avoided the restricted holiday dates (24 and 25 December), the promise was
+FAIL PUB-08 medium Already paid   | verify > verify > verify > verify > close_call
+       - outcome (None, None), expected ('paid', None)
+       - conversation: The agent did not state that payments can take one business day to appear. The call was terminated early after the user failed the identity verification process multiple times. While no promise was recorded (satisfying the second criterion), the 
+FAIL PUB-09 medium Restructuring  | verify > verify > verify > verify > close_call
+       - outcome (None, None), expected ('transferred', 'plan_review')
+       - transfers [], expected [{'queue': 'restructuring'}]
+       - conversation: The call did not meet the primary success criterion as the 'transfer_to_agent' function was never called. The assistant ended the call following the user's failure to answer the security questions correctly, which prevented the conversation from 
+PASS PUB-10 hard   Tool failure   | verify > verify > verify > verify > verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 6 s, worst 13 s. Failed calls where the customer hung up: 0.
+
+5 / 10 passed (bank records and conversation checks). Last simulation a0406b2d-011b-4c71-84eb-d89382384f41, status completed, 159 s.

@@ -1,0 +1,22 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('not_verified', 'id_failed')
+       - conversation: The conversation failed on multiple criteria: 1. The security check did not end after a third wrong answer; only one incorrect answer was provided ([Message 5]) before the agent erroneously claimed the identity was verified in [Message 8]. 2. The
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+FAIL PUB-07 hard   Dates          | close_call
+       - outcome ('not_reached', 'unclear'), expected ('promise', None)
+       - promises [], expected [('p1', 540.0, '2026-12-28')]
+       - conversation: The call ended prematurely after the first security question. The agent never reached the stage of asking for a payment day, and consequently, no promise was recorded for December 28th as required by the success criteria.
+FAIL PUB-08 medium Already paid   | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('paid', None)
+       - conversation: The agent failed to state that payments can take one business day to appear. The conversation ended abruptly after the user asked a question, which was interpreted by the system as a refusal (as seen in the 'customer_refuses' system event), preve
+FAIL PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome (None, None), expected ('transferred', 'plan_review')
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 10 s. Failed calls where the customer hung up: 1.
+
+6 / 10 passed (bank records and conversation checks). Last simulation 43d910ef-39ca-4252-8710-30b000e829de, status completed, 140 s.

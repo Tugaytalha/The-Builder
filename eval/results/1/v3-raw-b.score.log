@@ -1,0 +1,43 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - conversation: The agent failed to meet the success criterion requiring 'one read-back and one confirmation' for all three products. In Message 8, the agent asked to confirm the 'full past due amounts for all three' but failed to read back the specific payment 
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > add_note > add_note > add_note > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-27')]
+       - notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The agent failed to meet the success criteria for the following reasons: 1. Car Loan Attempts: The agent made two collection attempts on the car loan (Message 18 and Message 20), violating the requirement for exactly one attempt of 140.00 on Frid
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 8 s, worst 8 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 1 / 3 passed, 119 s
+
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > add_note > add_note > add_note > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+       - notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []
+       - conversation: The assistant failed to meet the success criteria regarding the creation of promises. While all three products were stated before the first ask in [Message 6], and the assistant provided read-backs and received confirmations for all three in [Mes
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > add_note > add_note > add_note > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-27')]
+       - notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The agent failed on several points: 1. It leaked internal instructions into the conversation in Message 12 ('Propose exactly this, once: ...'). 2. It exceeded the number of attempts specified for the car loan; the criteria requested 'one attempt'
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - conversation: The agent failed to meet the third success criterion. While the agent correctly identified the deadline for the personal loan as 12 November (Message 8) and successfully recorded both payments for that date (System Events), the final read-back in
+
+slowest agent turn per call: median 10 s, worst 14 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 2 of 3: 0 / 3 passed, 99 s
+
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The call failed the success criteria because the agent made two attempts to collect on the car loan (Messages 16 and 18), whereas the instructions specified exactly 'one attempt' for 140.00 on Friday 30 October. All other criteria were satisfied:
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 14 s, worst 20 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 3 of 3: 2 / 3 passed, 117 s
+
+FAIL PUB-11 1/3
+FAIL PUB-12 0/3
+FAIL PUB-13 2/3
+
+0 / 3 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation 73df9fc7-9d08-467d-8ced-b05c89a68541, status completed, 334 s.

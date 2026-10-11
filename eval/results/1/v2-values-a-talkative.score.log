@@ -1,0 +1,26 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 420.0, '2026-10-29')]
+       - conversation: The call did not meet all success criteria. While security questions were passed correctly before getting account details and 'collections' was only mentioned after verification, the agent never called 'create_promise' because the customer did no
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > verify > close_call
+       - outcome (None, None), expected ('not_verified', 'id_failed')
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-11-02')]
+       - conversation: 1. The agent ended the call prematurely after the user's excuse without attempting to secure a promise or negotiate dates further. 2. No promise was secured for the amount and date specified in the criteria (637.50 on Monday 2 November). 3. The b
+FAIL PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+       - conversation: The agent failed to ask for the exact day only once; it repeated the request five times across messages 8, 10, 12, 14, and 16. It correctly handled the holiday restriction by rejecting December 24 and suggesting December 28 instead of December 25
+FAIL PUB-08 medium Already paid   | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('paid', None)
+       - conversation: The agent failed to mention that payments can take one business day to appear. While the second criterion was met (no promise was recorded, as shown by the 'close_call' system event with outcome 'no_promise'), the first criterion was explicitly r
+FAIL PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome (None, None), expected ('transferred', 'plan_review')
+FAIL PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 365.0, '2026-12-30')], expected [('p1', 365.0, '2026-12-23')]
+
+slowest agent turn per call: median 7 s, worst 13 s. Failed calls where the customer hung up: 0.
+
+3 / 10 passed (bank records and conversation checks). Last simulation ac31032e-9a19-4f30-8a82-63c337bde286, status completed, 192 s.
