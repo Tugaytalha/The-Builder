@@ -19,52 +19,67 @@ def test_deadlines_skip_the_monday_holiday():
     assert v["callback_days"] == "2031-03-06,2031-03-07"
 
 
+def said(v, turn, **p):
+    """One call of the state tool in the given turn of the negotiate node."""
+    return run_tool(tool_code(WORKFLOW, "customer_said"), {**v, "negotiate.total_turns": turn},
+                    {"kind": "", "date": "", "amount": "", "item": "", **p})
+
+
 def test_long_band_offers_full_then_floor_then_stops():
-    v = setup_vars()
-    say = lambda v, kind, **p: run_tool(tool_code(WORKFLOW, "customer_said"), v, {"kind": kind, "date": "", "amount": "", "item": "", **p})
-    v = say(v, "refuses")
-    assert "80.50 for your gas bill on Thursday 6 March 2031" in v["guide"]
-    v = say(v, "refuses")
-    assert "20.00 for your gas bill on Tuesday 11 March 2031" in v["guide"]
-    v = say(v, "refuses")
+    v = said(setup_vars(), 1, kind="refuses")
+    assert v["guide"] == 'SAY: "Could you pay 80.50 for your gas bill on Thursday 6 March 2031?"'
+    v = said(v, 2, kind="refuses")
+    assert v["guide"] == 'SAY: "Could you pay 20.00 for your gas bill on Tuesday 11 March 2031?"'
+    v = said(v, 3, kind="refuses")
     assert v["close_key"] == "close_said_no"
 
 
 def test_day_after_deadline_is_refused_and_deadline_offered():
-    v = run_tool(tool_code(WORKFLOW, "customer_said"), setup_vars(), {"kind": "proposes", "date": "2031-03-20", "amount": ""})
-    assert "Tuesday 11 March 2031" in v["guide"] and "agreed_date" not in v
+    v = said(setup_vars(), 1, kind="proposes", date="2031-03-20")
+    assert "Tuesday 11 March 2031" in v["guide"] and "Is that right" not in v["guide"]
 
 
 def test_valid_proposal_is_read_back_then_written_on_confirm():
-    code = tool_code(WORKFLOW, "customer_said")
-    v = run_tool(code, setup_vars(), {"kind": "proposes", "date": "2031-03-07", "amount": "50", "item": "i1"})
-    assert "50.00" in v["guide"] and "record_now" not in v
-    v = run_tool(code, v, {"kind": "confirms", "date": "", "amount": "", "item": "i1"})
+    v = said(setup_vars(), 1, kind="proposes", date="2031-03-07", amount="50", item="i1")
+    assert v["guide"] == 'SAY: "50.00 for your gas bill on Friday 7 March 2031. Is that right?"' and "record_now" not in v
+    v = said(v, 2, kind="confirms", item="i1")
     assert v["record_now"] == "yes"
     assert json.loads(v["promise_writes_list"]) == [{"fields": {"item_id": "i1", "sum": 50.0, "pay_on": "2031-03-07"}, "status": "pending"}]
 
 
-def test_two_items_answered_differently():
+def test_confirm_without_read_back_gives_the_read_back_first():
+    v = said(setup_vars(), 1, kind="confirms")
+    assert "record_now" not in v and v["guide"].endswith('Is that right?"')
+
+
+def test_question_back_does_not_repeat_the_offer():
+    v = said(setup_vars(), 1, kind="refuses")
+    v = said(v, 2, kind="other")
+    assert "80.50" not in v["guide"]
+
+
+def two_items():
     items = json.dumps([{"item_id": "i1", "kind": "gas", "overdue": 80.5, "days_overdue": 25, "smallest_payment": 20},
                         {"item_id": "i2", "kind": "electricity", "overdue": 40, "days_overdue": 3, "smallest_payment": 10}])
     v = run_snippet(node_code(WORKFLOW, "setup"), {**SPEC["sample_vars"], "items": items})
-    v = run_snippet(node_code(WORKFLOW, "prepare"), v)
-    code = tool_code(WORKFLOW, "customer_said")
-    say = lambda v, **p: run_tool(code, v, {"kind": "", "date": "", "amount": "", "item": "", **p})
-    v = say(v, kind="proposes", item="i1", date="2031-03-06")      # "gas tomorrow, the electricity not"
-    v = say(v, kind="refuses", item="i2")
-    assert "10.00 for your electricity bill on Thursday 13 March 2031" in v["guide"]   # short band: floor on the 5th bd
-    v = say(v, kind="refuses", item="i2")                          # attempts used up: back to the open gas item
-    assert "record_now" not in v and "close_key" not in v
-    v = say(v, kind="confirms", item="i1")
+    return run_snippet(node_code(WORKFLOW, "prepare"), v)
+
+
+def test_two_items_answered_in_one_message_are_handled_one_line_at_a_time():
+    # "Gas tomorrow, the electricity not": two calls in the same turn.
+    v = said(two_items(), 1, kind="proposes", item="i1", date="2031-03-06")
+    v = said(v, 1, kind="refuses", item="i2")
+    assert v["guide"] == 'SAY: "80.50 for your gas bill on Thursday 6 March 2031. Is that right?"'
+    v = said(v, 2, kind="confirms", item="i1")       # next turn: the electricity offer, said once
+    assert v["guide"] == 'SAY: "Could you pay 10.00 for your electricity bill on Thursday 13 March 2031?"'
+    v = said(v, 3, kind="refuses", item="i2")        # attempts used up: only the gas promise is written
     assert [w["fields"]["item_id"] for w in json.loads(v["promise_writes_list"])] == ["i1"]
 
 
 def test_every_item_refused_closes_said_no():
-    code = tool_code(WORKFLOW, "customer_said")
     v = setup_vars()
-    for _ in range(3):
-        v = run_tool(code, v, {"kind": "refuses", "date": "", "amount": "", "item": ""})
+    for turn in (1, 2, 3):
+        v = said(v, turn, kind="refuses")
     assert v["close_key"] == "close_said_no"
 
 
@@ -73,18 +88,6 @@ def test_after_writes_picks_the_close():
     assert run_snippet(node_code(WORKFLOW, "after_writes"), {"promise_writes_list": ok})["close_key"] == "close_agreed"
     bad = json.dumps([{"fields": {}, "status": "failed"}])
     assert run_snippet(node_code(WORKFLOW, "after_writes"), {"promise_writes_list": bad})["close_key"] == "close_system_down"
-
-
-def test_confirm_without_read_back_gives_the_read_back_first():
-    v = run_tool(tool_code(WORKFLOW, "customer_said"), setup_vars(), {"kind": "confirms", "date": "", "amount": ""})
-    assert "record_now" not in v and v["guide"].startswith("Read back")
-
-
-def test_question_back_does_not_repeat_the_offer():
-    code = tool_code(WORKFLOW, "customer_said")
-    v = run_tool(code, setup_vars(), {"kind": "refuses", "date": "", "amount": ""})
-    v = run_tool(code, v, {"kind": "other", "date": "", "amount": ""})
-    assert "80.50" not in v["guide"] and "Thursday" not in v["guide"]
 
 
 def test_identity_guide_after_a_correct_first_answer_asks_the_second_question():

@@ -97,99 +97,106 @@ for p in load_list():
     facts.append('Item ' + str(p.get(%(id)r)) + ': ' + word + ', overdue ' + money(full) + ', ' + str(days_late)
                  + ' days. Smallest payment ' + money(floor) + '. Deadline ' + say(iso_day(deadline)) + ' (' + deadline + ').')
     said.append('your ' + word + ' has ' + money(full) + ' overdue, ' + str(days_late) + ' days late')
-vars['neg_state'] = json.dumps(dict(items=items, cur=0))
+items[0]['asked'] = 'yes'   # the debt statement asks about the first item
+vars['neg_state'] = json.dumps(dict(items=items))
 vars['item_count'] = str(len(items))
 vars['account_facts'] = '\n'.join(facts)
 first = items[0]
 vars['debt_statement'] = ('Thank you. I am calling about an overdue bill: ' + '; '.join(said)
                           + '. Could you settle the full amount by ' + say(iso_day(first['deadline'])) + '?')
-vars['guide'] = 'Wait for the answer to your question. Then call customer_said.'
+vars['guide'] = 'Wait for the answer. Say nothing new.'
 ''' % {"list": A["list_field"], "bands": [[b["name"], b["max_days"], b["offers"]] for b in SPEC["bands"]],
        "words": A["kind_words"], "days": A["days_field"], "amount": A["amount_field"], "floor": A["floor_field"],
        "kind": A["kind_field"], "id": A["id_field"]}
 
 P = SPEC["promise"]
 # The state tool: the model reports what the customer said, the code decides the next step (spikes S2, S9).
-# The state tool: the model reports what the customer said about one item, the code decides the next step
-# (spikes S2, S9). The state is kept per item. A customer can answer for several items in one message: the model
-# then calls the tool once per item.
+# The state tool: the model reports what the customer said about one item; the code decides what to say next
+# (spikes S2, S9). The state is kept per item. One message can answer for several items: the model then calls the
+# tool once per item, in the same turn. So the code does not answer each call on its own. After every call it plans
+# the next line from the whole state: the first item, in account order, that has a line not yet spoken. A line shown
+# in an earlier turn counts as spoken (the node's turn counter tells the turns apart), so no offer is said twice.
+# The guide holds only the words to say, in quotes: an instruction in it would be read aloud.
 NEGOTIATE = HELPERS + r'''
 st = json.loads(vars.get('neg_state'))
 items = st['items']
+turn = str(vars.get(%(turns)r))
+for x in items:
+    if x.get('shown') and x.get('shown') != turn:
+        x['line'], x['shown'] = '', ''
 want = str(params.get('item') or '')
 picked = [i for i, x in enumerate(items) if x['id'] == want and x['status'] == 'open']
-if picked:
-    st['cur'] = picked[0]
-it = items[st['cur']]
+it = items[picked[0]] if picked else ([x for x in items if x['status'] == 'open'] or items)[0]
 kind = str(params.get('kind') or '')
 def read_back(amount, day):
     it['agreed'] = [round(float(amount), 2), day]
-    return ('Read back exactly: ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day))
-            + '. Then ask "Is that right?". After a clear yes, call customer_said with kind confirms.'
-            + ' If the customer changes a value, call customer_said with kind proposes.')
+    return money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '. Is that right?'
 def ok_day(day):
     try:
         d = iso_day(day)
     except Exception:
         return False
     return is_business_day(d, HOLIDAYS) and vars.get('today_iso') <= day <= it['deadline']
-def next_item():
-    # Called when the current item is finished. Moves to the next open item, or ends the talk.
-    rest = [i for i, x in enumerate(items) if x['status'] == 'open']
-    if rest:
-        st['cur'] = rest[0]
-        nx = items[rest[0]]
-        return ('Now the ' + nx['word'] + ': ask "Could you settle ' + money(nx['full']) + ' by '
-                + say(iso_day(nx['deadline'])) + '?". Then call customer_said with item ' + nx['id'] + '.')
-    writes = [dict(fields=dict(%(idf)s=x['id'], %(amf)s=x['agreed'][0], %(daf)s=x['agreed'][1]), status='pending')
-              for x in items if x['status'] == 'agreed']
-    if writes:
-        vars['promise_writes_list'] = json.dumps(writes)
-        vars['record_now'] = 'yes'
-        return 'Say: one moment, please.'
-    vars['close_key'] = 'close_said_no'
-    return 'Stop. Make no other offer.'
 if kind == 'refuses':
+    it.pop('agreed', None)
     it['used'] = it['used'] + 1
     if it['used'] <= len(it['offers']):
         amount, day = it['offers'][it['used'] - 1]
         it['pending'] = [amount, day]
-        guide = ('Propose exactly this, once: ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day))
-                 + '. Then wait for the answer and call customer_said.')
+        it['line'] = 'Could you pay ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?'
     else:
-        it['status'] = 'stopped'
-        guide = next_item()
-elif kind == 'accepts':
+        it['status'], it['line'] = 'stopped', ''
+elif kind == 'accepts' or (kind == 'confirms' and not it.get('agreed')):
     amount, day = it.get('pending') or [it['full'], it['deadline']]
-    guide = read_back(amount, day)
+    it['line'] = read_back(amount, day)
 elif kind == 'proposes':
+    it.pop('agreed', None)
     pending = it.get('pending') or [it['full'], it['deadline']]
     amount = float(params.get('amount') or pending[0])
     day = str(params.get('date') or pending[1])[:10]
     if not ok_day(day):
         it['pending'] = [amount, it['deadline']]
-        guide = ('Say that the latest day you can record for the ' + it['word'] + ' is ' + say(iso_day(it['deadline']))
-                 + ' and that it must be a business day. Offer ' + money(amount) + ' on that day. Then call customer_said.')
+        it['line'] = ('The latest business day I can record for your ' + it['word'] + ' is ' + say(iso_day(it['deadline']))
+                      + '. Could you pay ' + money(amount) + ' on that day?')
     elif amount < it['floor'] - 0.001 or amount > it['full'] + 0.001:
         it['pending'] = [it['floor'], day]
-        guide = ('Say that the amount must be from ' + money(it['floor']) + ' to ' + money(it['full'])
-                 + '. Offer ' + money(it['floor']) + ' on ' + say(iso_day(day)) + '. Then call customer_said.')
+        it['line'] = ('The amount must be from ' + money(it['floor']) + ' to ' + money(it['full']) + '. Could you pay '
+                      + money(it['floor']) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?')
     else:
-        guide = read_back(amount, day)
-elif kind == 'confirms' and not it.get('agreed'):
-    amount, day = it.get('pending') or [it['full'], it['deadline']]
-    guide = read_back(amount, day)
+        it['line'] = read_back(amount, day)
 elif kind == 'confirms':
-    it['status'] = 'agreed'
-    guide = next_item()
+    it['status'], it['line'] = 'agreed', ''
 elif kind == 'wants_person':
-    guide = 'Call transfer_to_agent now.'
+    vars['guide'] = 'Call transfer_to_agent now.'
+# Plan the next line from the whole state.
+open_items = [x for x in items if x['status'] == 'open']
+todo = [x for x in open_items if x.get('line') and x.get('shown') in ('', None, turn)]
+if kind == 'wants_person':
+    pass
+elif todo:
+    todo[0]['shown'] = turn
+    vars['guide'] = 'SAY: "' + todo[0]['line'] + '"'
+elif open_items:
+    nx = open_items[0]
+    if not nx.get('asked'):
+        nx['asked'] = 'yes'
+        nx['line'] = 'Could you settle ' + money(nx['full']) + ' for your ' + nx['word'] + ' by ' + say(iso_day(nx['deadline'])) + '?'
+        nx['shown'] = turn
+        vars['guide'] = 'SAY: "' + nx['line'] + '"'
+    else:
+        vars['guide'] = 'SAY: "Could you answer with a yes or a no?"'
 else:
-    guide = ('Answer in one short sentence. Then ask for a yes or a no to your last proposal. '
-             'Do not say the amount or the day again: an offer counts every time it is said.')
+    writes = [dict(fields=dict(%(idf)s=x['id'], %(amf)s=x['agreed'][0], %(daf)s=x['agreed'][1]), status='pending')
+              for x in items if x['status'] == 'agreed']
+    if writes:
+        vars['promise_writes_list'] = json.dumps(writes)
+        vars['record_now'] = 'yes'
+        vars['guide'] = 'SAY: "One moment, please."'
+    else:
+        vars['close_key'] = 'close_said_no'
+        vars['guide'] = 'SAY: "I understand."'
 vars['neg_state'] = json.dumps(st)
-vars['guide'] = guide
-''' % {"idf": P["id_field"], "amf": P["amount_field"], "daf": P["date_field"]}
+''' % {"idf": P["id_field"], "amf": P["amount_field"], "daf": P["date_field"], "turns": "negotiate.total_turns"}
 
 # After the promise writes: a code node picks the close from the statuses.
 AFTER_WRITES = '''
@@ -247,16 +254,14 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
                  "If the customer refuses to answer, call customer_refuses, then explain once that the questions protect "
                  "their account and ask again.")
 
-NEGOTIATE_TASK = ("NEXT STEP (obey it): {{guide}}\n\n"
-                  "Identity is verified. You stated the bill and asked a question. Every time the customer answers about "
-                  "paying, call customer_said with the item and kind: accepts (yes to your last proposal), confirms (a clear yes to the "
-                  "read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence; "
-                  "anything else is proposes or other), "
-                  "refuses (no, with no day and "
-                  "no amount), proposes (names a day or an amount; pass date as YYYY-MM-DD and amount as a number), "
-                  "wants_person, or other. If one message answers for several items, call customer_said once per item. "
-                  "Then follow NEXT STEP. Propose only what NEXT STEP says. Never say that "
-                  "something is recorded: the call says it at the end.\n\n"
+NEGOTIATE_TASK = ("NEXT STEP: {{guide}}\n\n"
+                  "Identity is verified. You stated the bill. Every time the customer answers about paying, call "
+                  "customer_said with the item and the kind: accepts (yes to your last proposal), confirms (a clear yes to "
+                  "the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence), "
+                  "refuses (no, with no day and no amount), proposes (names a day or an amount; date as YYYY-MM-DD, amount "
+                  "as a number), wants_person, or other. If one message answers for several items, call customer_said "
+                  "once per item. Then say the words in NEXT STEP after SAY, word for word, and nothing else about "
+                  "amounts or days. Never say that something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 
 # ---------------------------------------------------------------- tools

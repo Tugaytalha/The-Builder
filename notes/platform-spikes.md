@@ -73,6 +73,12 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Result: the agent asked "What is the year?", then "Correct. What are the last four digits…", then "What are the rest of the digits?". The bank got exactly `1988-03-14` and `4471`, both verified, 0 wrong answers. In eval round 1, the model-called tool sent `1900-03-14` and `44` for the same speech style and the case failed.
 - Verdict: **works**. `identity_next` with `on_enter` llm speaks after an engine-run step.
 
+## S12 (extra): can a `code_exec` tool read the node's turn counter?
+
+- Workflow: one conversation node `talk` with a state tool that appends `vars.get('talk.total_turns')` to a variable on every call.
+- Result: the values were 0 ("Hello?"), 1, 2, 3, one per customer message.
+- Verdict: **works**. State code can tell turns apart, so it knows which line it chose in an earlier turn (and the model spoke).
+
 ## Summary for the blueprint
 
 | Spike | Verdict | Use |
@@ -86,3 +92,4 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | S9 tool-written variable in the prompt | works | the state tool writes the next step into a `{{variable}}` of `task_message` |
 | S10 engine-run write with retry | works | `record_with_retry`; results are `<node>_response.*` |
 | S11 engine-run identity check | works | `answer_tool` + `identity_check`; the model never calls the identity tool |
+| S12 turn counter in tool code | works | the state tool plans one line per turn from the whole state |
