@@ -263,7 +263,7 @@ def main(argv=None):
     ap.add_argument("--only", default="", help="comma-separated case ids")
     ap.add_argument("--parallel", type=int, default=8, help="at most 8: do not load-test the platform")
     ap.add_argument("--mode", choices=("llm", "script"), default="llm")
-    ap.add_argument("--lines", help="script mode: a JSON file {case id: [customer lines]}")
+    ap.add_argument("--lines", help="script mode: a JSON file {case id: [customer lines]}; default: the `lines` of each case")
     ap.add_argument("--no-judge", action="store_true")
     ap.add_argument("--out", help="result folder, default eval/results/sim/<time>")
     a = ap.parse_args(argv)
@@ -274,9 +274,7 @@ def main(argv=None):
         wanted = set(a.only.split(","))
         cases = [c for c in cases if c["id"] in wanted]
     if a.mode == "script":
-        if not a.lines:
-            ap.error("--mode script needs --lines")
-        scripts = json.load(open(a.lines, encoding="utf-8"))
+        scripts = json.load(open(a.lines, encoding="utf-8")) if a.lines else {c["id"]: c["lines"] for c in cases if c.get("lines")}
         cases = [c for c in cases if c["id"] in scripts]
         make = lambda case, style: ScriptCustomer(scripts[case["id"]])
     else:

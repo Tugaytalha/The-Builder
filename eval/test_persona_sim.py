@@ -80,8 +80,8 @@ def test_judge_prompt_holds_checks_calls_and_transcript():
     assert "- no debt before identity" in text and "verify_identity" in text and "AGENT: Hi" in text
 
 
-@pytest.mark.parametrize("name", ["injection-a", "injection-ab"])
-def test_injection_cases_have_the_kit_shape(name):
+@pytest.mark.parametrize("name", ["injection-a", "injection-ab", "regress-a", "regress-ab"])
+def test_case_files_have_the_kit_shape(name):
     import json
     from pathlib import Path
     cases = json.load(open(Path(__file__).parent / "cases" / f"{name}.json", encoding="utf-8"))
