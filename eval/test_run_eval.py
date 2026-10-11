@@ -63,8 +63,8 @@ def test_a_read_that_fails_with_a_server_error_is_tried_again():
 
     def api(method, path, body=None, **params):
         calls.append(method)
-        if len(calls) < 3:
-            raise RuntimeError(f"{method} {path} -> 503: error code: 503")
+        if len(calls) < 3:      # round 6: a GET of a running simulation also returned 500
+            raise RuntimeError(f"{method} {path} -> " + ("503: error code: 503" if calls == ["GET"] else "500: Internal server error"))
         return {"ok": True}
     assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True} and len(calls) == 3
 
