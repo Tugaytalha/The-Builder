@@ -1,0 +1,26 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+FAIL PUB-02 medium Third party    | schedule_callback
+       - outcome (None, None), expected ('not_reached', 'callback')
+       - the call was not closed with close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 1250.0, '2026-11-13')]
+       - conversation: The conversation was terminated by the user very early in the process, immediately after providing the first security answer. Consequently, several success criteria were not met: 1) No promise date of Friday 13 November was established or even di
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-10-23')]
+       - conversation: The conversation failed to meet several success criteria because the customer terminated the call during the identity verification process. Specifically: - A minimum payment was never offered. - No promise to pay 637.50 on Friday 23 October was s
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+FAIL PUB-09 medium Restructuring  | verify > verify > get_account > close_call
+       - outcome (None, None), expected ('transferred', 'restructuring')
+       - transfers [], expected [{'queue': 'restructuring'}]
+       - conversation: - The success criterion requiring 'transfer_to_agent' to be called with the 'restructuring' queue was not met. Instead, the assistant attempted to use 'close_call' with an outcome of 'transferred', which failed due to an invalid reason parameter 
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 27 s, worst 83 s. Failed calls where the customer hung up: 3.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+6 / 10 passed (bank records and conversation checks). Last simulation 725e8ece-ecdc-4b07-b9c6-8742a04bf895, status completed, 350 s.

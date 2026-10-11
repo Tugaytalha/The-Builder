@@ -1,0 +1,160 @@
+{
+ "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
+ "simulation_id": "6c67de8d-6cff-4448-9e66-87e1fc5a529e",
+ "iteration_id": "c12c207f-8e37-4c77-a8e7-f33e3e7303f4",
+ "seconds": 207,
+ "passed": 2,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('promise', None)",
+    "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+    "conversation: - The agent failed to provide a read-back or seek confirmation for the payment arrangement proposed by the customer. - No 'create_promise' tool calls were executed for the three products mentioned. - Because no promises were created through the system tools, the requirement for setting them on Friday 27 November was not met."
+   ],
+   "call_id": "cad7d245-8aed-4e0f-881a-0bd0e2018f3d",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_f0d12492-e51",
+   "slowest_turn_s": 77.1,
+   "ended": "customer-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "7e29763c-8f93-4e68-9bc2-202130ff7aff",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_d9486dec-67b",
+   "slowest_turn_s": 17.3,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "b5dcdda1-4deb-4904-b7fe-a01058db4b8f",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_8f1ccf7a-812",
+   "slowest_turn_s": 57.1,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('promise', None)",
+     "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+     "conversation: - The agent failed to provide a read-back or seek confirmation for the payment arrangement proposed by the customer. - No 'create_promise' tool calls were executed for the three products mentioned. - Because no promises were created through the system tools, the requirement for setting them on Friday 27 November was not met."
+    ],
+    "call_id": "cad7d245-8aed-4e0f-881a-0bd0e2018f3d",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_f0d12492-e51",
+    "slowest_turn_s": 77.1,
+    "ended": "customer-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "7e29763c-8f93-4e68-9bc2-202130ff7aff",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_d9486dec-67b",
+    "slowest_turn_s": 17.3,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "b5dcdda1-4deb-4904-b7fe-a01058db4b8f",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_8f1ccf7a-812",
+    "slowest_turn_s": 57.1,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

@@ -1,0 +1,14 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > close_call
+       - outcome ('no_promise', 'service_error'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-27')]
+       - notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The conversation failed to meet most of the success criteria because the agent terminated the call prematurely immediately after the security check. - The criteria for the phone and date of birth questions were met (phone asked twice, DOB once). 
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'service_error'), expected ('promise', None)
+       - promises [], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]
+
+slowest agent turn per call: median 33 s, worst 53 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+1 / 3 passed (bank records and conversation checks). Last simulation 836e742c-2c8d-48c7-8e7d-8a9bb5b4d3cb, status completed, 185 s.
