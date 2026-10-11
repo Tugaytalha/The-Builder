@@ -60,8 +60,8 @@ Builds: 468–656 s, all exit 0, no keys in the traces, no builder file changed.
 2. **Before identity passes, the model knows nothing.** An unverified model with a collections prompt invents plausible account facts.
 3. **Read the transcript before any fix.** In this session 9 of 11 failures were not agent defects: test mismatches with our memo briefs, platform slowness, simulator artifacts.
 4. **Our practice briefs are harder than the official ones.** Their memos change rules (A: 5th business day; B: one date for all products). An official scorer failure on such a rule means the agent obeyed the memo.
-5. **Platform slowness is the main remaining risk.** Silence = platform step time × our step count (16:00 study of 623 calls in `notes/eval-log.md`). The guard against renamed API fields is in d6e5e61.
-5a. **Earlier text:** Agent turns of 70–80 s make the customer hang up. In the afternoon the median slowest turn was 6–20 s.
+5. **Platform slowness is the main remaining risk.** Silence = platform step time × our step count (16:00 study of 623 calls in `notes/eval-log.md`). Agent turns of 70–80 s make the customer hang up. In the afternoon the median slowest turn was 6–20 s.
+6. **A hidden tool API can rename fields.** Since d6e5e61, a baked field that the API does not have stops the build with the API's field names.
 
 ## Next steps
 
