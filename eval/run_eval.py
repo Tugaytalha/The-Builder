@@ -77,10 +77,13 @@ def _move_kit_results():
         shutil.move(str(src), str(REPO / "runs" / (time.strftime("%Y%m%d-%H%M%S") + "-kit-results")))
 
 
-def score_with_retry(run, result):
-    """Run a score command; when it wrote no result file (a Freya API error stopped it), run it once more."""
+def score_with_retry(run, result, wait=time.sleep, tries=4):
+    """Run a score command; when it wrote no result file (a Freya API error stopped it), wait 2 minutes and run it
+    again, up to `tries` times (round 6: Freya refused new simulations for several minutes)."""
     result.unlink(missing_ok=True)
-    for _ in range(2):
+    for i in range(tries):
+        if i:
+            wait(120)
         run()
         if result.exists():
             return True

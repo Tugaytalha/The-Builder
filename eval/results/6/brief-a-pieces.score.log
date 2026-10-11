@@ -1,0 +1,59 @@
+Traceback (most recent call last):
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 84, in <module>
+    if __name__ == "__main__":
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 80, in main
+    sys.argv = ["run_cases.py"] + argv
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 67, in main
+    rows, sim_id, it_id, status, took, med = run_once(a.agent_id, cases, ids)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 88, in run_once
+    sim_id, it_id, status = freya.run_simulation(agent_id, f"cases {time.strftime('%H:%M:%S')}", {ids[c["id"]]: sessions[c["id"]] for c in cases})
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 91, in run_simulation
+    sim = api("POST", "/api/v2/simulations", {
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 38, in wrapped
+    out = api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 62, in wrapped
+    return api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 19, in api
+    raise RuntimeError(f"{method} {path} -> {e.code}: {e.read().decode()[:1500]}") from None
+RuntimeError: POST /api/v2/simulations -> 504: error code: 504
+
+POST /api/v2/simulations failed (etry shortly.","result":null}}), trying again
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+Traceback (most recent call last):
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 85, in <module>
+    main(sys.argv[1:])
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 81, in main
+    run_cases.main()
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 67, in main
+    rows, sim_id, it_id, status, took, med = run_once(a.agent_id, cases, ids)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 88, in run_once
+    sim_id, it_id, status = freya.run_simulation(agent_id, f"cases {time.strftime('%H:%M:%S')}", {ids[c["id"]]: sessions[c["id"]] for c in cases})
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 91, in run_simulation
+    sim = api("POST", "/api/v2/simulations", {
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 38, in wrapped
+    out = api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 62, in wrapped
+    return api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 19, in api
+    raise RuntimeError(f"{method} {path} -> {e.code}: {e.read().decode()[:1500]}") from None
+RuntimeError: POST /api/v2/simulations -> 504: error code: 504
+

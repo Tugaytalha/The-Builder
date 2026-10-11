@@ -94,13 +94,15 @@ def test_a_score_run_that_wrote_no_result_runs_once_more(tmp_path):
         calls.append(1)
         if len(calls) == 2:
             result.write_text("{}")
-    assert score_with_retry(run, result) and len(calls) == 2
+    assert score_with_retry(run, result, wait=lambda s: None) and len(calls) == 2
 
 
-def test_a_score_run_is_tried_twice_at_most(tmp_path):
+def test_a_score_run_is_tried_four_times_at_most_with_a_wait_between(tmp_path):
+    # round 6: Freya refused new simulations for several minutes; two attempts in a row were both lost
     from run_eval import score_with_retry
-    calls = []
-    assert not score_with_retry(lambda: calls.append(1), tmp_path / "r.json") and len(calls) == 2
+    calls, waits = [], []
+    assert not score_with_retry(lambda: calls.append(1), tmp_path / "r.json", wait=waits.append)
+    assert len(calls) == 4 and len(waits) == 3
 
 
 def test_a_read_that_fails_on_dns_is_tried_again():
