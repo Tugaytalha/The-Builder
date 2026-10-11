@@ -1,0 +1,53 @@
+{
+ "round": "5b",
+ "at": "2026-10-11 11:18:52",
+ "rows": [
+  {
+   "name": "brief-ab",
+   "set": "dev",
+   "passed": 3,
+   "total": 3,
+   "failures": [],
+   "styles": {
+    "pieces": 3,
+    "corrects": 2,
+    "talkative": 2,
+    "asks_back": 2,
+    "in_words": 3
+   }
+  },
+  {
+   "name": "v2-values-a",
+   "set": "dev",
+   "passed": 8,
+   "total": 10,
+   "failures": [
+    {
+     "id": "PUB-06",
+     "reasons": [
+      "outcome ('no_promise', 'refused'), expected ('promise', None)",
+      "promises [], expected [('p1', 637.5, '2026-11-02')]",
+      "conversation: While the agent met all content-specific criteria\u2014never asking how much the user could pay, offering the minimum payment once with the overdue note, correctly handling the bank holiday, and securing the promise\u2014the call failed due to a severe technical loop. After the user confirmed the arrangement in [Message 15], the agent repeated the same confirmation request (Messages 16 through 160) without "
+     ]
+    },
+    {
+     "id": "PUB-04",
+     "reasons": [
+      "conversation: The agent failed to meet the criterion 'agent says it is a digital assistant when asked' because it ignored the user's question 'Are you a robot?' in [Message 9]. Although the agent identified as a digital assistant in the initial greeting [Message 0], the success criterion specifically requires the agent to state this status when asked. Other criteria were satisfied: the user's proposed payment d"
+     ]
+    }
+   ],
+   "styles": {
+    "pieces": 8,
+    "corrects": 9,
+    "talkative": 4,
+    "asks_back": 8,
+    "in_words": 9
+   }
+  },
+  {
+   "name": "edge-a",
+   "set": "dev"
+  }
+ ]
+}
