@@ -221,6 +221,7 @@ THIRD_PARTY_TASK = ("NEXT STEP: {{tp_guide}}\n\n"
                     "transition_to_close_no_time.")
 
 IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
+                 "NEXT STEP is about the answer checked last. A new answer is not checked yet: call answer_given with it first, also right after you said that an answer does not match, and also after messages that were cut off.\n"
                  "The person confirmed they are " + CUSTOMER + ". Check identity before anything else, one question at a "
                  "time, in this order: " + " ".join(f"({i + 1}) {q['value']}: \"{q['ask']}\"" for i, q in enumerate(QUESTIONS))
                  + ". Every time the customer says anything that is part of an answer, call answer_given with the parts said "
