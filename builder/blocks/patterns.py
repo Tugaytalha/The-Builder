@@ -270,14 +270,17 @@ def negotiation_tool(kinds, policy, list_var):
                  + " unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before "
                  "the cut-off still gets its answer in reply."},
         "date": {"type": "string", "description": "The day the customer named in full in this message, YYYY-MM-DD, "
-                 "or empty. Never a day from an earlier message that was cut off."},
+                 "or empty. Never a day from an earlier message that was cut off, and never a day from a message that only "
+                 "ends an earlier one ('of November.' after 'on the sixth'): that day was already answered."},
         "amount": {"type": "string", "description": "The amount the customer named in full in this message, digits only, "
                    "or empty. Never an amount from an earlier message that was cut off: '120' from 'I can pay the 120' "
                    "can be the start of 1250."}}}
     return state_tool("customer_said", "CALL it ONCE every time the customer answers about paying. Put one entry in "
                       "answers for each product the customer talked about in this message.", {
         "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about, "
-                    "never two for the same product: pick the kind of the main point."},
+                    "never two for the same product: pick the kind of the main point. A message that only ends the sentence "
+                    "of an earlier one adds no new answer: send the kind for anything else, with no day and no amount, "
+                    "and answer any question in reply."},
         "reply": {"type": "string", "description": "If the customer asked a question in this message, your answer in one "
                   "sentence from ACCOUNT, with no amount and no day; else empty. Also when the kind is unfinished: 'Which loan is "
                   "this? I' needs the answer. The call says it before the next line."}},

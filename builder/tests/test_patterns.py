@@ -299,3 +299,12 @@ def test_negotiation_answers_a_question_before_a_cut_off():
     v = run_tool(props["code"]["default"], v, {"answers": [{"item": "a", "kind": "unfinished", "date": "", "amount": ""}],
                                                "reply": "Yes, I am a digital assistant."})
     assert v["say_now"] == "Yes, I am a digital assistant. Please go on."
+
+
+def test_negotiation_tail_of_a_cut_off_message_is_not_a_new_answer():
+    # round 5 A pieces PUB-04: "of November. Am I talking to a robot?" ended the last message; the model sent the same
+    # proposal again, the policy counted a second proposal and went to the floor
+    from builder.blocks.patterns import negotiation_tool
+    props = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]
+    assert "only ends" in props["answers"]["description"]
+    assert "only ends" in props["answers"]["items"]["properties"]["date"]["description"]
