@@ -188,10 +188,14 @@ it = picked[0] if picked else (open_items or items)[0]
 amount = params.get('amount')
 amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
 day = str(params.get('date') or '')[:10]
-line = decide(it, str(params.get('kind') or ''), amount, day)
-it['line'] = line or ''
-it['shown'] = ''
-if vars.get('close_key') or vars.get('negotiation_action'):
+unfinished = str(params.get('kind') or '') == 'unfinished'
+if not unfinished:
+    line = decide(it, str(params.get('kind') or ''), amount, day)
+    it['line'] = line or ''
+    it['shown'] = ''
+if unfinished:
+    vars['guide'] = 'SAY: "Sorry, please go on."'     # a message cut off mid-sentence changes nothing
+elif vars.get('close_key') or vars.get('negotiation_action'):
     pass
 else:
     open_items = [x for x in items if x.get('status') == 'open']
@@ -239,12 +243,14 @@ def negotiation_tool(node, kinds, policy, list_var):
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
     one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
     the tool once per product, and the last call's guide is said. A line shown in an earlier turn of `node` counts as
-    spoken (spike S12), so no line is said twice. The guide holds only words in quotes."""
+    spoken (spike S12), so no line is said twice. The guide holds only words in quotes. The engine adds the kind
+    "unfinished" (a message cut off mid-sentence): it changes nothing and asks the customer to go on."""
     engine = NEGOTIATION_ENGINE % {"turns": node + ".total_turns", "list_var": list_var}
     return state_tool("customer_said", "CALL it every time the customer answers about paying, once per product.", {
         "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
-        "kind": {"type": "string", "enum": list(kinds),
-                 "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())},
+        "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
+                 "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
+                 + " unfinished: the message stops in the middle of a sentence; nothing is decided yet."},
         "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
         "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}},
         policy + "\n" + engine)
