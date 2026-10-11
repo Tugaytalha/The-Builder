@@ -20,3 +20,13 @@ def test_chat_ends_a_call_that_is_still_open(monkeypatch):
     monkeypatch.setattr(smoke.freya, "api", lambda method, path, body: sent.append(path) or {"callId": "c1", "response": "x"})
     smoke.chat("w", {}, ["Evet."])
     assert sent[-1] == "/api/v2/chat/end"
+
+
+def test_chat_takes_a_504_on_a_later_turn_as_the_call_end(monkeypatch):
+    # the wrong-person close answered 504, not 502, three times (rehearsal build and chat, 11 Oct)
+    def api(method, path, body):
+        if body.get("callId"):
+            raise RuntimeError("POST /api/v2/chat/message -> 504: error code: 504")
+        return {"callId": "c1", "response": "Merhaba"}
+    monkeypatch.setattr(smoke.freya, "api", api)
+    assert smoke.chat("w", {}, ["Hayır, ben eşiyim."]) == ["Merhaba", smoke.ENDED]
