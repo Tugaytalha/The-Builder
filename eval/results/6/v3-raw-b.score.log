@@ -1,0 +1,21 @@
+GET /api/v2/simulations/0198f446-8c39-46d0-9ae8-fad2ea94f03e/iterations/54cebb6b-9f8a-4544-8acd-e73c51dde827 failed (de827 -> 502: error code: 502
+), trying again
+GET /api/v2/simulations/0198f446-8c39-46d0-9ae8-fad2ea94f03e failed (4f03e -> 502: error code: 502
+), trying again
+FAIL PUB-11 medium Multi-product  | close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+       - conversation: The call ended during the security verification phase before any of the success criteria could be addressed. No products were stated, no read-backs occurred, and no payment promises were created.
+FAIL PUB-12 hard   Multi-product  | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-27')]
+       - notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: - The phone question was asked a total of four times (Messages 4, 6, 8, 10), violating the requirement that it be asked again only once. - The agent accepted Monday 26 October (a holiday) in Message 22 without offering Tuesday 27 October. - No pr
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 300.0, '2026-11-18'), ('p2', 900.0, '2026-11-12')], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]
+       - conversation: The agent failed all success criteria. Specifically: 1) It recorded the credit card for 18 November and the loan for 12 November as shown in the system events and Message 8, rather than recording both on the same day. 2) Only the loan was recorde
+
+slowest agent turn per call: median 56 s, worst 101 s. Failed calls where the customer hung up: 1.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+0 / 3 passed (bank records and conversation checks). Last simulation 0198f446-8c39-46d0-9ae8-fad2ea94f03e, status completed, 1834 s.

@@ -1,0 +1,108 @@
+another simulation is running in this workspace, waiting 30 s
+Traceback (most recent call last):
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 86, in <module>
+    main(sys.argv[1:])
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 82, in main
+    run_cases.main()
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 67, in main
+    rows, sim_id, it_id, status, took, med = run_once(a.agent_id, cases, ids)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 88, in run_once
+    sim_id, it_id, status = freya.run_simulation(agent_id, f"cases {time.strftime('%H:%M:%S')}", {ids[c["id"]]: sessions[c["id"]] for c in cases})
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 91, in run_simulation
+    sim = api("POST", "/api/v2/simulations", {
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 38, in wrapped
+    out = api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 63, in wrapped
+    return api(method, path, body, **params)
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/freya.py", line 19, in api
+    raise RuntimeError(f"{method} {path} -> {e.code}: {e.read().decode()[:1500]}") from None
+RuntimeError: POST /api/v2/simulations -> 504: error code: 504
+
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (c3dfa -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations failed (tions -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (etry shortly.","result":null}}), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (etry shortly.","result":null}}), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160/iterations/686b88e4-f950-49c8-90da-35283b1c3dfa failed (750-4f57-8f87-32b87fda39b5"}}}), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (etry shortly.","result":null}}), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (etry shortly.","result":null}}), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (a4c-493b-873c-6eedbb71f31e"}}}), trying again
+GET /api/v2/simulations/97100a63-772e-4009-87c2-a56adeaae160 failed (ae160 -> 504: error code: 504
+), trying again
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > close_call > verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > get_account > promise > verify > verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('promise', None)
+       - conversation: The conversation failed on several counts: 1. The promise date was set to November 6th (the user's offered date) instead of the required late-band deadline of October 23rd. 2. The agent entered a repetitive 'Goodbye' loop from Message 14 to Messa
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > close_call
+       - conversation: Call ended but analysis never arrived (300s)
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+FAIL PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+       - conversation: Call ended but analysis never arrived (300s)
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 7 s. Failed calls where the customer hung up: 0.
+
+7 / 10 passed (bank records and conversation checks). Last simulation 97100a63-772e-4009-87c2-a56adeaae160, status completed, 3411 s.

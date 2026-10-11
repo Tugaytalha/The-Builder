@@ -1,0 +1,11 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+       - conversation: - The agent failed to provide a read-back or seek confirmation for the payment arrangement proposed by the customer. - No 'create_promise' tool calls were executed for the three products mentioned. - Because no promises were created through the s
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 57 s, worst 77 s. Failed calls where the customer hung up: 1.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+2 / 3 passed (bank records and conversation checks). Last simulation 6c67de8d-6cff-4448-9e66-87e1fc5a529e, status completed, 207 s.

@@ -1,0 +1,17 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('not_verified', 'failed')
+       - conversation: The conversation failed multiple success criteria: 1. Both the product ('credit card') and the amount ('150 dollars') were disclosed in Message 6 and Message 8. 2. The assistant did not tell the customer to use the app or visit a branch before en
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 12 s, worst 32 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+9 / 10 passed (bank records and conversation checks). Last simulation 34c15a9c-19d5-488c-b362-bad192753c00, status completed, 222 s.

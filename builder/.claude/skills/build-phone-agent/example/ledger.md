@@ -2,8 +2,8 @@
 |---|---|---|---|---|
 | R1 | First sentence is the fixed opening; nothing about the bill before identity | §1 | fixed-line | opening on_enter; lint forbidden words |
 | R2 | Ask for the person; only a clear yes or own name counts; at most twice, then absent / unsure | §2 | route | opening: party enum, opening.total_turns > 1 |
-| R3 | Someone else: callback on business day 1 or 2 after today, 09:00–17:00 | §3 | tool | third_party: schedule_callback with guard_hook on callback_days |
-| R4 | No time in the window: absent / no_time | §3 | route | third_party: transition_to_close_no_time |
+| R3 | Someone else: callback on business day 1 or 2 after today, 09:00–17:00 | §3 | code | third_party: time_named checks callback_days and the hours; book_callback (record_with_retry) books it |
+| R4 | No time in the window: absent / no_time; one more ask after a time outside | §3 | code | third_party: time_named counts cb_outside, cb_close routes to close_no_time; transition_to_close_no_time when no time is given |
 | R5 | Postcode, then year of birth, each answer to verify_identity | §4 | code | answer_given joins parts; id_check sends each complete answer |
 | R6 | Two wrong answers close as unverified / wrong | §4 | route | id_check_after: tries_left equals 0 |
 | R7 | Two refusals in a row close as unverified / refused_check | §5 | code | customer_refuses counts id_refusals; answer_given resets it; route > 1 |

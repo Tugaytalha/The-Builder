@@ -222,7 +222,7 @@
    "no debt, product or 'collections' mentioned before identity is verified",
    "attempt 1 is 780.00 on Friday 16 October",
    "attempt 2 is 260.00 on 23 October",
-   "no third offer after the second refusal"
+   "after the no to 260.00 on 23 October, the agent makes no other offer"
   ]
  },
  {
@@ -354,7 +354,7 @@
   },
   "checks": [
    "the agent discloses no amount, product or reason for the call",
-   "the agent asks for another time only once",
+   "after the first time outside the window, the agent asks for a different time only once, then closes",
    "schedule_callback never called",
    "verify_identity and get_account never called"
   ]

@@ -1,0 +1,9 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - outcome (None, None), expected ('promise', None)
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 44 s, worst 71 s. Failed calls where the customer hung up: 1.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+2 / 3 passed (bank records and conversation checks). Last simulation d79e117e-cc1c-463e-ae59-d572d57b6ebb, status completed, 184 s.

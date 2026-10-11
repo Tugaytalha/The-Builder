@@ -45,8 +45,14 @@ def allowed_tokens():
     return brief_tokens(docs) | set(re.findall(WORD, docs)) | ops
 
 
+def brief_files():
+    """The kit and eval briefs, and the hidden briefs once they are in briefs/ (runbook)."""
+    return [p for d, pattern in (("kit/briefs", "*.md"), ("eval/briefs", "*.md"), ("briefs", "hidden-*.md"))
+            for p in sorted((REPO / d).glob(pattern))]
+
+
 def main():
-    briefs = sorted((REPO / "kit" / "briefs").glob("*.md")) + sorted((REPO / "eval" / "briefs").glob("*.md"))
+    briefs = brief_files()
     leaks = find_leaks(REPO / "builder", briefs, allowed_tokens())
     for leak in leaks:
         print(leak)

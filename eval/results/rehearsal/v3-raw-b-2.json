@@ -1,0 +1,164 @@
+{
+ "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
+ "simulation_id": "836e742c-2c8d-48c7-8e7d-8a9bb5b4d3cb",
+ "iteration_id": "be608b1f-b733-49db-bb65-1815399a0537",
+ "seconds": 185,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "4453ec20-d15d-452e-83ea-1ab647848912",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_39a66c31-72a",
+   "slowest_turn_s": 52.6,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'service_error'), expected ('promise', None)",
+    "promises [], expected [('p1', 510.0, '2026-10-27')]",
+    "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: The conversation failed to meet most of the success criteria because the agent terminated the call prematurely immediately after the security check. - The criteria for the phone and date of birth questions were met (phone asked twice, DOB once). - However, the agent failed to discuss any products (credit card, personal loan, car loan), did not handle the holiday scheduling (October 26th vs 27th), "
+   ],
+   "call_id": "74f87f77-cb09-4d6d-840c-75faaec4558c",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_79dbf1c1-955",
+   "slowest_turn_s": 32.7,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'service_error'), expected ('promise', None)",
+    "promises [], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]"
+   ],
+   "call_id": "661a6e6a-f02c-46c3-8a32-01ded2a67f19",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_d77203d5-97d",
+   "slowest_turn_s": 6.5,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "4453ec20-d15d-452e-83ea-1ab647848912",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_39a66c31-72a",
+    "slowest_turn_s": 52.6,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'service_error'), expected ('promise', None)",
+     "promises [], expected [('p1', 510.0, '2026-10-27')]",
+     "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: The conversation failed to meet most of the success criteria because the agent terminated the call prematurely immediately after the security check. - The criteria for the phone and date of birth questions were met (phone asked twice, DOB once). - However, the agent failed to discuss any products (credit card, personal loan, car loan), did not handle the holiday scheduling (October 26th vs 27th), "
+    ],
+    "call_id": "74f87f77-cb09-4d6d-840c-75faaec4558c",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_79dbf1c1-955",
+    "slowest_turn_s": 32.7,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'service_error'), expected ('promise', None)",
+     "promises [], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]"
+    ],
+    "call_id": "661a6e6a-f02c-46c3-8a32-01ded2a67f19",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_d77203d5-97d",
+    "slowest_turn_s": 6.5,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

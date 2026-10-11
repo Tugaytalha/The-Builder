@@ -19,26 +19,42 @@ def _resolve(spec, node):
 
 
 def _json_schema(spec, holder):
-    content = (_resolve(spec, holder) or {}).get("content") or {}
+    holder = _resolve(spec, holder) or {}
+    if "schema" in holder:                  # Swagger 2: the schema sits on the response or the body parameter
+        return _resolve(spec, holder["schema"])
+    content = holder.get("content") or {}
     media = content.get("application/json") or next(iter(content.values()), {})
     return _resolve(spec, media.get("schema") or {})
 
 
-def load_api(path):
-    """Operation name -> {"url", "method", "fields", "required", "response"}."""
-    spec = json.load(open(path))
+def _base_url(spec):
+    """OpenAPI 3 `servers`, or Swagger 2 `schemes` + `host` + `basePath`."""
     servers = spec.get("servers") or []
-    if not servers or not servers[0].get("url"):
-        raise ValueError("tool API has no servers entry")
-    base = servers[0]["url"].rstrip("/")
+    if servers and servers[0].get("url"):
+        return servers[0]["url"].rstrip("/")
+    if spec.get("host"):
+        scheme = (spec.get("schemes") or ["https"])[0]
+        return f"{scheme}://{spec['host']}{spec.get('basePath', '')}".rstrip("/")
+    raise ValueError("tool API has no servers entry (and no Swagger 2 host)")
+
+
+def _request_body(spec, op):
+    body_params = [p for p in op.get("parameters") or [] if _resolve(spec, p).get("in") == "body"]
+    return _json_schema(spec, op.get("requestBody") or (_resolve(spec, body_params[0]) if body_params else {}))
+
+
+def load_api(path):
+    """Operation name -> {"url", "method", "fields", "required", "response"}. A "/" inside a route becomes "_"."""
+    spec = json.load(open(path))
+    base = _base_url(spec)
     api = {}
     for route, methods in (spec.get("paths") or {}).items():
         for method, op in methods.items():
             if method.lower() not in ("post", "get", "put", "patch", "delete"):
                 continue
-            body = _json_schema(spec, op.get("requestBody") or {})
+            body = _request_body(spec, op)
             ok = (op.get("responses") or {}).get("200") or {}
-            api[route.strip("/")] = {
+            api[route.strip("/").replace("/", "_")] = {
                 "url": base + "/" + route.lstrip("/"), "method": method.upper(),
                 "fields": {k: _resolve(spec, v) for k, v in (body.get("properties") or {}).items()},
                 "required": list(body.get("required") or []),

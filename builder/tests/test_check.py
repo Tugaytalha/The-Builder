@@ -62,3 +62,19 @@ def test_failing_rules_test_is_reported(tmp_path):
     (tmp_path / "workflow.json").write_text(json.dumps(workflow("bye", "s", [end_node("bye", "done")])))
     (tmp_path / "test_rules.py").write_text("def test_bad():\n    assert 1 == 2\n")
     assert run_checks(str(tmp_path), dry_run=False)["rules_tests"] != []
+
+
+def test_snippet_that_never_ends_is_reported(monkeypatch):
+    # review: a code node with an endless loop hung the gate after the watchdog
+    import builder.blocks.check as check
+    monkeypatch.setattr(check, "SNIPPET_TIMEOUT_S", 1)
+    w = workflow("x", "s", [code_node("x", "while True:\n    pass", "y"), end_node("y", "done")])
+    problems = snippet_problems(w, {"now": "2031-03-05T11:00"})
+    assert len(problems) == 1 and "x" in problems[0] and "time" in problems[0]
+
+
+def test_rules_tests_that_never_end_are_reported(tmp_path, monkeypatch):
+    import builder.blocks.check as check
+    monkeypatch.setattr(check, "RULES_TIMEOUT_S", 2)
+    (tmp_path / "test_rules.py").write_text("def test_slow():\n    while True:\n        pass\n")
+    assert "time" in check._rules_tests(tmp_path)[0]

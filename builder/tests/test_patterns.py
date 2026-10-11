@@ -66,8 +66,9 @@ def test_record_with_retry_chains_attempts_and_resets_results():
 def _answer(v, **p):
     from builder.blocks.coderun import run_tool
     from builder.blocks.patterns import answer_tool
-    code = answer_tool({"birth": ["date", 0], "pin": ["digits", 4], "word": ["text", 0]})["function"]["parameters"]["properties"]["code"]["default"]
-    return run_tool(code, v, {"question": "", "day": "", "month": "", "year": "", "digits": "", "text": "", **p})
+    code = answer_tool({"birth": ["date", 0], "pin": ["digits", 4], "word": ["text", 0], "postcode": ["alnum", 6]}
+                       )["function"]["parameters"]["properties"]["code"]["default"]
+    return run_tool(code, v, {"question": "", "day": "", "month": "", "year": "", "digits": "", "chars": "", "text": "", **p})
 
 
 def test_answer_tool_joins_a_date_in_two_parts():
@@ -85,6 +86,19 @@ def test_answer_tool_joins_digits_and_replaces_a_full_new_answer():
     v = _answer({**v, "id_send": "no"}, question="pin", digits="12")
     v = _answer(v, question="pin", digits="9904")
     assert v["id_answer"] == "9904" and v["id_send"] == "yes"
+
+
+def test_answer_tool_joins_letters_and_digits_in_parts():
+    # a postcode or a reference said in two parts: the second part was lost with the text kind (Tugay, persona lines)
+    v = _answer({}, question="postcode", chars="s w 1 a")
+    assert "id_send" not in v and "2 more" in v["id_guide"]
+    v = _answer(v, question="postcode", chars="1a")
+    assert (v["id_answer"], v["id_send"]) == ("SW1A1A", "yes")
+
+
+def test_answer_tool_reads_spoken_letters_and_digits():
+    v = _answer({}, question="postcode", chars="S W one A double A")
+    assert v["id_answer"] == "SW1AAA"
 
 
 def test_answer_tool_resets_the_refusal_count():
@@ -109,6 +123,15 @@ def test_identity_check_chain_lints_clean():
     nodes = [start("ask"), conversation("ask", "{{id_guide}}", transitions=[go("idc", is_true("id_send"), "send"), always("bye")])]
     w = workflow("start", "Be brief.", nodes + chain + close_sequence("bye", {"x": "y"}, "Bye."))
     assert lint(w, API, {}) == [] and [n["name"] for n in chain] == ["idc", "idc_check", "idc_after"]
+
+
+def test_identity_check_speaks_a_fixed_line_when_the_check_is_not_available():
+    from builder.blocks.patterns import identity_check
+    tool = make_tool(API, "check_member", baked={"member_id": "{{member_id}}", "code": "{{id_answer}}", "kind": "{{id_question}}"})
+    chain = identity_check("idc", tool, "ask", [], "vars['id_say'] = 'Thank you.'")
+    scope = {"vars": {"idc_check_response.status": "error"}}
+    exec(chain[2]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"], scope)
+    assert scope["vars"]["id_say"] == "Sorry, I could not check that. Please say it again."
 
 
 def test_write_loop_writes_each_pending_item_then_finishes():
@@ -181,7 +204,7 @@ def test_negotiation_two_answers_in_one_call_say_the_first_product_first():
 def test_negotiation_never_says_a_line_twice_and_finishes_with_writes():
     v = _neg({}, 1, item="a", kind="no")
     v = _neg(v, 2, item="a", kind="human_question")    # an answer that changes nothing: the question again, no new offer
-    assert v["say_now"] == "I understand. Could you pay half for a?"
+    assert v["say_now"] == "Could you pay half for a?"
     v = _neg(v, 3, item="a", kind="yes")
     assert v["guide"] == 'SAY: "Could you pay b?"'    # b was never asked
     v = _neg(v, 4, item="b", kind="no")
@@ -250,7 +273,7 @@ def test_negotiation_puts_the_chosen_line_in_say_now_for_the_code_to_speak():
     v = _neg({}, 1, item="a", kind="no")
     assert v["say_turn"] == "yes" and v["say_now"] == "Could you pay half for a?"
     v = _neg(v, 2, item="a", kind="human_question")    # no line and no reply: the code asks the last question again
-    assert v["say_turn"] == "yes" and v["say_now"] == "I understand. Could you pay half for a?"
+    assert v["say_turn"] == "yes" and v["say_now"] == "Could you pay half for a?"
 
 
 def test_negotiation_nodes_speak_say_now_with_fixed_text():
@@ -311,7 +334,7 @@ def test_negotiation_asks_the_last_question_again_after_a_message_with_no_answer
     # which returned no speakable content twice; the customer hung up
     v = _neg({}, 1, item="a", kind="no")
     v = _neg(v, 2, item="a", kind="other")
-    assert v["say_turn"] == "yes" and v["say_now"] == "I understand. Could you pay half for a?"
+    assert v["say_turn"] == "yes" and v["say_now"] == "Could you pay half for a?"
 
 
 def test_negotiation_never_asks_an_offer_with_a_number_again():
@@ -319,7 +342,7 @@ def test_negotiation_never_asks_an_offer_with_a_number_again():
     v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}],
                                                 "last_question": "Could you pay 20.00 on Friday 23 October?"})}
     v = _neg(v, 1, item="a", kind="other")
-    assert v["say_now"] == "I understand. What is your answer?"
+    assert v["say_now"] == "What is your answer?"
 
 
 ECHO_POLICY = POLICY.replace("def decide(it, kind, amount, day):\n", """def decide(it, kind, amount, day):
@@ -344,3 +367,34 @@ def test_negotiation_retries_an_answer_without_its_values_when_it_would_repeat_t
     assert v["say_now"] == "On 2026-11-02, right?"
     v = say(v, "confirms", "2026-11-02")
     assert v["record_now"] == "yes"
+
+
+def test_negotiation_leaves_the_policy_keys_of_an_item_alone():
+    # round 5 brief A build: the policy kept its own list it['said'] of offers; the engine wrote a string to the same
+    # key (e3f7897), so the next it['said'].append(...) failed and the agent said nothing
+    policy = POLICY.replace("def decide(it, kind, amount, day):\n",
+                            "def decide(it, kind, amount, day):\n    it.setdefault('said', []).append(kind)\n", 1)
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    code = negotiation_tool({"no": "refuses"}, policy, "writes_list")["function"]["parameters"]["properties"]["code"]["default"]
+    v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"}]})}
+    for turn in (1, 2):
+        v = run_tool(code, v, {"answers": [{"item": "a", "kind": "no", "date": "", "amount": ""}], "reply": ""})
+        assert "customer_said_code_error" not in v
+    assert __import__("json").loads(v["neg_state"])["items"][0]["said"] == ["no", "no"]
+
+
+def test_negotiation_reply_answers_a_side_question_from_the_instructions_too():
+    # round 5 PUB-04 (A and V2, 5 calls): "Am I talking to a robot?" came with a proposal; the reply was limited to
+    # ACCOUNT, the robot rule is in the system prompt, so the reply was empty and the question got no answer
+    from builder.blocks.patterns import negotiation_tool
+    reply = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["reply"]["description"]
+    assert "robot" in reply and "instructions" in reply and "every kind" in reply
+
+
+def test_negotiation_day_of_another_event_is_not_a_payment_day():
+    # round 5 A talkative PUB-01: "My cousin's wedding is on the 30th" went in as a proposal for 30 October and was read back
+    from builder.blocks.patterns import negotiation_tool
+    date = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["answers"][
+        "items"]["properties"]["date"]["description"]
+    assert "wedding" in date and "to pay" in date

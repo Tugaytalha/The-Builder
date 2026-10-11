@@ -5,6 +5,7 @@
 It wraps run_cases' `http` so that a new practice session takes `now` from the case's `variables.now`.
 Nothing in kit/ changes.
 """
+import http.client
 import json
 import re
 import sys
@@ -44,17 +45,36 @@ def unstick(api, now=time.time):
                 its = its.get("iterations") or its.get("items") or its
                 runs = api("GET", f"{path}/iterations/{its[0]['id']}", limit=100).get("runs", [])
                 if runs and all(r.get("endedAt") for r in runs):
-                    print("simulation ended its runs but stays running: setting it to completed", flush=True)
-                    api("PUT", path, {"status": "completed"})
+                    print("simulation ended its runs but stays running: cancelling it", flush=True)
+                    api("POST", path + "/cancel", {})        # a PUT to completed did not hold (round 6)
                     sim["status"] = "completed"
         return out
+    return wrapped
+
+
+def retry_reads(api, wait=time.sleep, tries=45):
+    """Wrap freya.api. A GET that fails with a server error (500, 502, 503, 504: seen in rounds 5b, 5c and 6) or a network
+    error (round 6: DNS, socket timeout) or a cut body (IncompleteRead, bad JSON) is tried again;
+    a write is tried again only after a 503 (refused before anything was written).
+    The waits cover an outage of about 22 minutes (round 6: 504s for more than 2.5 minutes stopped a score run)."""
+    def wrapped(method, path, body=None, **params):
+        for i in range(tries):
+            try:
+                return api(method, path, body, **params)
+            except (RuntimeError, OSError, http.client.HTTPException, ValueError) as e:   # network, DNS, timeout, cut body
+                server_or_dns = not isinstance(e, RuntimeError) or re.search(r"-> 50[0234]", str(e))
+                refused = re.search(r"-> 503", str(e))      # a 503 is refused before anything is written
+                if i == tries - 1 or not (refused or (method == "GET" and server_or_dns)):
+                    raise
+                print(f"{method} {path} failed ({str(e)[-30:]}), trying again", flush=True)
+                wait(min(30, 10 * (i + 1)))
     return wrapped
 
 
 def main(argv):
     import freya
     import run_cases
-    freya.api = unstick(freya.api)
+    freya.api = unstick(retry_reads(freya.api))
     cases = argv[argv.index("--cases") + 1] if "--cases" in argv else str(KIT / "public-test-set.json")
     nows = {c["id"]: c["variables"]["now"] for c in json.load(open(cases)) if c.get("variables", {}).get("now")}
     run_cases.http = wrap(run_cases.http, nows)

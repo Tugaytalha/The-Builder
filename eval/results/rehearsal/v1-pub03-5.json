@@ -1,0 +1,96 @@
+{
+ "agent_id": "2936f16e-c36d-4049-a6d9-10874b2baa3e",
+ "simulation_id": "773db379-7414-45b9-86c2-2f5a824c48eb",
+ "iteration_id": "5d732b8f-bd3e-4ad2-a806-af421658e157",
+ "seconds": 150,
+ "passed": 1,
+ "total": 1,
+ "runs": 3,
+ "final": [
+  {
+   "id": "PUB-03",
+   "family": "Identity",
+   "passes": 3,
+   "runs": 3,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-03",
+   "level": "medium",
+   "family": "Identity",
+   "pass": true,
+   "failed": [],
+   "call_id": "66683ada-d795-4f04-afe5-a81e6e4ab758",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_9aa457b5-6cd",
+   "slowest_turn_s": 8.1,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-03",
+    "level": "medium",
+    "family": "Identity",
+    "pass": true,
+    "failed": [],
+    "call_id": "112374ee-26aa-46be-8bb7-53017af5169f",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_3f4a743e-c6e",
+    "slowest_turn_s": 9.3,
+    "ended": "assistant-ended-call"
+   }
+  ],
+  [
+   {
+    "id": "PUB-03",
+    "level": "medium",
+    "family": "Identity",
+    "pass": true,
+    "failed": [],
+    "call_id": "77074ec8-84fb-4632-af2a-ec07415559de",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_1576bac1-888",
+    "slowest_turn_s": 21.4,
+    "ended": "assistant-ended-call"
+   }
+  ],
+  [
+   {
+    "id": "PUB-03",
+    "level": "medium",
+    "family": "Identity",
+    "pass": true,
+    "failed": [],
+    "call_id": "66683ada-d795-4f04-afe5-a81e6e4ab758",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_9aa457b5-6cd",
+    "slowest_turn_s": 8.1,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

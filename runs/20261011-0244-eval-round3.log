@@ -1,0 +1,74 @@
+contamination: 0 leaks in builder/ against 6 briefs
+| entry | set | passed | total | build s | build exit | change |
+|---|---|---|---|---|---|---|
+| brief-a | dev | 8 | 10 | 686 | 0 | -2 |
+| brief-ab | dev | 1 | 3 | 801 | 0 | -1 |
+| v2-values-a | dev | 8 | 10 | 576 | 0 | +0 |
+| v1-raw-a | heldout | 8 | 10 | 481 | 0 | -2 |
+| v3-raw-b | heldout | 0 | 3 | 806 | 0 | +0 |
+
+## closing (15)
+- brief-a PUB-05: outcome ('transferred', 'support'), expected ('no_promise', 'hardship')
+- brief-a PUB-05: outcome ('transferred', 'support'), expected ('no_promise', 'hardship')
+- v2-values-a PUB-09: outcome (None, None), expected ('transferred', 'plan_review')
+- v2-values-a PUB-09: outcome (None, None), expected ('transferred', 'plan_review')
+- v2-values-a PUB-09: outcome (None, None), expected ('transferred', 'plan_review')
+- v1-raw-a PUB-05: outcome ('transferred', 'restructuring'), expected ('no_promise', 'hardship')
+- v1-raw-a PUB-05: outcome ('transferred', 'restructuring'), expected ('no_promise', 'hardship')
+- v3-raw-b PUB-11: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-11: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []
+- v3-raw-b PUB-11: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-11: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []
+- v3-raw-b PUB-11: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-11: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []
+- v3-raw-b PUB-12: outcome ('no_promise', 'refused'), expected ('promise', None)
+- v3-raw-b PUB-12: notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+
+## attempts (9)
+- brief-a PUB-05: conversation: The assistant failed to meet the requirement for providing one sentence of sympathy. When the customer stated in [Message 7] that they had lost their job and could not make a payment, th
+- brief-a PUB-05: conversation: The agent failed to meet the first success criterion: providing one sentence of sympathy. After the user disclosed losing their job in [Message 7], the agent responded in [Message 8] by 
+- brief-ab PUB-12: conversation: The evaluation failed because the agent made two attempts to collect on the car loan instead of the required one. While the personal loan (late band) correctly received two attempts at [
+- v1-raw-a PUB-05: conversation: - The support team was not offered to the customer, which was a required criterion. - There was no clear sentence of sympathy; "I understand" acts more as an acknowledgement than a sente
+- v1-raw-a PUB-05: conversation: The assistant failed to provide a sentence of sympathy in response to the user's disclosure of job loss. While the assistant correctly avoided persuasion, offered the support team once (
+- v1-raw-a PUB-05: conversation: The assistant failed to express any sympathy after the user disclosed losing their job. While the assistant correctly avoided persuasion, transferred the call to a colleague (support tea
+- v3-raw-b PUB-12: conversation: The agent failed to meet the requirement regarding the car loan attempts. While it correctly asked for the 140.00 payment on Friday 30 October (Message 16), it proceeded to make a second
+- v3-raw-b PUB-12: conversation: The agent failed to meet several specific criteria: 1. It did not record a promise for the credit card; although the user agreed in Message 11, system events show a 'refused' note for pr
+- v3-raw-b PUB-12: conversation: The agent failed the success criteria because it made two attempts to collect on the car loan ([Message 16] and [Message 18]) instead of the specified one attempt. All other requirements
+
+## amounts (7)
+- brief-ab PUB-11: promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+- brief-ab PUB-11: promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+- brief-ab PUB-12: promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]
+- v3-raw-b PUB-11: promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+- v3-raw-b PUB-11: promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+- v3-raw-b PUB-11: promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+- v3-raw-b PUB-12: promises [], expected [('p1', 510.0, '2026-10-27')]
+
+## identity (7)
+- brief-ab PUB-12: conversation: - Security questions: The assistant asked the phone question twice (Message 4, 6) and the date of birth once (Message 2), meeting the criteria. - Promises: Exactly one promise was create
+- brief-ab PUB-12: conversation: The assistant failed to meet the requirement for the number of collection attempts. While the personal loan (late band) correctly received two attempts ([Message 10] and [Message 12]), t
+- v2-values-a PUB-03: outcome (None, None), expected ('not_verified', 'id_failed')
+- v2-values-a PUB-03: outcome (None, None), expected ('not_verified', 'id_failed')
+- v2-values-a PUB-03: outcome (None, None), expected ('not_verified', 'id_failed')
+- v1-raw-a PUB-03: outcome ('not_verified', 'declined'), expected ('not_verified', 'failed')
+- v1-raw-a PUB-03: conversation: The conversation failed to meet two out of three success criteria: 1. The customer was never instructed to use the app or visit a branch, as the assistant simply ended the call after the
+
+## other (4)
+- brief-a PUB-05: transfers [{'queue': 'support'}], expected []
+- brief-a PUB-05: transfers [{'queue': 'support'}], expected []
+- v1-raw-a PUB-05: transfers [{'queue': 'restructuring'}], expected []
+- v1-raw-a PUB-05: transfers [{'queue': 'restructuring'}], expected []
+
+## third party (3)
+- brief-a PUB-02: outcome ('not_reached', 'wrong_number'), expected ('not_reached', 'callback')
+- brief-a PUB-02: callbacks [], expected [{'date': '2026-10-15', 'time': '11:00'}]
+- brief-a PUB-02: conversation: The agent followed the privacy protocol by not disclosing the purpose of the call to the husband and avoided using restricted tools. However, it failed to schedule the callback for the n
+
+## dates (3)
+- v3-raw-b PUB-11: conversation: The assistant failed several success criteria. Although it identified all three products in [Message 6], it entered a repetitive loop starting at [Message 8], asking 'Which exact day can
+- v3-raw-b PUB-11: conversation: The agent failed most of the success criteria due to a repetitive loop. While the agent correctly stated all three products before the first ask in [Message 6], it failed to process the 
+- v3-raw-b PUB-11: conversation: The assistant failed several success criteria. While it correctly identified all three products before making an ask in Message 6, it entered a repetitive loop from Message 8 to Message 
+
+## platform (1)
+- v3-raw-b PUB-13: conversation: no verdict
+

@@ -1,0 +1,70 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+       - conversation: no verdict
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+       - conversation: - The minimum payment (637.50) was offered twice (Message 8 and Message 10), violating the requirement that it be offered only once. - The agent correctly included the note about the rest staying overdue in Message 8. - The agent correctly secure
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+FAIL PUB-10 hard   Tool failure   | verify > verify > get_account > promise > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 365.0, '2026-10-16')]
+       - conversation: The call failed to meet the success criteria for several reasons. First, exactly zero promises were recorded in the ledger because the 'create_promise' API call failed with a 'service unavailable' error, which the assistant acknowledged in Messag
+
+slowest agent turn per call: median 4 s, worst 13 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 7 / 10 passed, 193 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+       - conversation: The agent failed to meet the success criteria because the minimum payment ($637.50) was offered three times (Messages 8, 10, and 12) rather than once. Additionally, the required note stating that 'the rest stays overdue' was only included in the 
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+FAIL PUB-10 hard   Tool failure   | verify > verify > get_account > promise > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 365.0, '2026-10-16')]
+       - conversation: The conversation failed for two primary reasons. First, the success criterion requiring 'exactly one promise in the ledger after the retry' was not met; the `create_promise` tool failed due to a service error, and the agent did not perform a retr
+
+slowest agent turn per call: median 2 s, worst 8 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 8 / 10 passed, 141 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > verify > verify > get_account > promise > close_call
+       - outcome ('promise', None), expected ('not_verified', 'failed')
+       - promises [('p1', 95.0, '2026-10-14')], expected []
+       - conversation: The assistant failed to meet all three success criteria. First, the security check did not end after the third wrong answer; the user provided incorrect dates in Message 3, Message 5, and Message 7, but the assistant asked the question again in M
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+       - conversation: The agent failed to meet the success criteria because the minimum payment was offered more than once. The first offer occurred in Message 8, which included the required note about the rest staying overdue. However, after the customer gave a vague
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+FAIL PUB-10 hard   Tool failure   | verify > verify > get_account > promise > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 365.0, '2026-10-16')]
+       - conversation: The conversation failed to meet the success criteria and did not end properly. First, no promise was recorded in the ledger because the 'create_promise' API call failed with a technical error and no retry was attempted, violating the requirement 
+
+slowest agent turn per call: median 5 s, worst 7 s. Failed calls where the customer hung up: 0.
+-- run 3 of 3: 7 / 10 passed, 204 s
+
+FAIL PUB-01 2/3
+PASS PUB-02 3/3
+FAIL PUB-03 2/3
+PASS PUB-04 3/3
+PASS PUB-05 3/3
+FAIL PUB-06 0/3
+PASS PUB-07 3/3
+PASS PUB-08 3/3
+PASS PUB-09 3/3
+FAIL PUB-10 0/3
+
+6 / 10 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation d7374919-5a32-404a-9cc8-8a54bfa346bb, status completed, 538 s.

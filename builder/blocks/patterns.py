@@ -87,6 +87,24 @@ new_digits = ''.join(ch for ch in str(params.get('digits') or '') if ch.isdigit(
 if new_digits:
     have = mine.get('digits') or ''
     mine['digits'] = new_digits if (len(new_digits) >= kind[1] or not have) else have + new_digits
+WORDS = {'zero': '0', 'oh': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7',
+         'eight': '8', 'nine': '9'}
+def chars_of(x):
+    """'S W one A double A' -> 'SW1AAA': upper case, no spaces, spoken digits and 'double' / 'triple' read."""
+    out, times = '', 1
+    for w in str(x or '').replace(',', ' ').replace('-', ' ').split():
+        lw = w.lower()
+        if lw in ('double', 'triple'):
+            times = 2 if lw == 'double' else 3
+            continue
+        w = ''.join(c for c in WORDS.get(lw, w) if c.isalnum()).upper()
+        if w:
+            out, times = out + w[0] * times + w[1:], 1
+    return out
+new_chars = chars_of(params.get('chars'))
+if new_chars:
+    have = mine.get('chars') or ''
+    mine['chars'] = new_chars if (len(new_chars) >= kind[1] or not have) else have + new_chars
 if str(params.get('text') or '').strip():
     mine['text'] = str(params.get('text')).strip()
 answer, missing = '', ''
@@ -102,6 +120,12 @@ elif kind[0] == 'digits':
         answer = have
     else:
         missing = 'the rest of the digits (' + str(kind[1] - len(have)) + ' more)'
+elif kind[0] == 'alnum':
+    have = mine.get('chars') or ''
+    if len(have) >= kind[1]:
+        answer = have
+    else:
+        missing = 'the rest of the letters and digits (' + str(kind[1] - len(have)) + ' more)'
 else:
     answer = mine.get('text') or ''
     missing = '' if answer else 'the answer'
@@ -123,7 +147,7 @@ vars['id_refusals'] = 0     # refusals count in a row: an answer ends the row
 def answer_tool(questions):
     """The model reports the parts of an identity answer; the code joins them over several turns and says when an
     answer is complete. `questions` maps each question value (as the tool API names it) to ["date", 0],
-    ["digits", <count>] or ["text", 0]. A part given after a partial answer is joined to it. On a complete answer it sets id_question, id_answer and id_send = "yes".
+    ["digits", <count>], ["alnum", <count>] (letters and digits, such as a postcode or a reference) or ["text", 0]. A part given after a partial answer is joined to it. On a complete answer it sets id_question, id_answer and id_send = "yes".
     Every turn it writes id_guide, the next step for the model, and sets id_refusals to 0: a customer who asks back
     and then answers has not refused twice."""
     names = list(questions)
@@ -133,6 +157,8 @@ def answer_tool(questions):
         "month": {"type": "string", "description": "Month the customer said in this message, as a word or digits, or empty."},
         "year": {"type": "string", "description": "Year the customer said in this message, four digits, or empty. Never guess it."},
         "digits": {"type": "string", "description": "Digits the customer said in this message, digits only, or empty."},
+        "chars": {"type": "string", "description": "Letters and digits the customer said in this message for a code such as "
+                  "a postcode or a reference, as said ('S W one A'), or empty."},
         "text": {"type": "string", "description": "Any other kind of answer, as said, or empty."}},
         ANSWER_CODE % (questions,))
 
@@ -140,18 +166,21 @@ def answer_tool(questions):
 def identity_check(name, verify_tool, back_node, routes, guide_code):
     """The engine-run identity check. Route to `name` when id_send is "yes". `verify_tool` comes from make_tool with the
     question field baked as "{{id_question}}" and the answer field as "{{id_answer}}". After the call, `guide_code` runs
-    with `r(field)` = the result field as a string and must set vars['id_guide'] (the next step for the model).
+    with `r(field)` = the result field as a string and must set vars['id_say'] (the fixed line `back_node` speaks on
+    entry: tts "{{id_say}}") and vars['id_guide'] (the next step for the model in later turns).
     `routes` are transitions on `<name>_check_response.data.<field>` (passed, failed); otherwise the call goes back to
     `back_node`, whose task shows {{id_guide}}."""
     prefix = name + "_check_response."
     after = ("def r(f):\n    return str(vars.get(%r + f))\n" % (prefix + "data.")
              + "if str(vars.get(%r)) != 'success':\n" % (prefix + "status")
-             + "    vars['id_guide'] = 'The check is not available. Ask the same question again.'\n"
+             + "    vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n"
+             + "    vars['id_guide'] = 'The check is not available. Wait for the answer again.'\n"
              + "else:\n" + "\n".join("    " + line for line in guide_code.splitlines()) + "\n")
     return [code_node(name, "vars['id_send'] = 'no'", name + "_check"),
             api_node(name + "_check", verify_tool, name + "_after"),
             code_node(name + "_after", after, back_node, transitions=routes,
-                      fallbacks={"id_guide": "Ask the same question again."})]
+                      fallbacks={"id_guide": "Wait for the answer again.",
+                                 "id_say": "Sorry, I could not check that. Please say it again."})]
 
 
 def write_loop(name, api, tool_name, fields, baked, attempts, done_target):
@@ -206,7 +235,7 @@ for a, kind in zip(answers, kinds):
     amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
     day = str(a.get('date') or '')[:10]
     line = decide(it, kind, amount, day)
-    if line and line == it.get('said') and (amount is not None or day):
+    if line and line == it.get('_said_line') and (amount is not None or day):
         line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)
     it['line'] = line or ''
     if vars.get('close_key') or vars.get('negotiation_action'):
@@ -220,7 +249,7 @@ else:
     todo = [x for x in open_items if x.get('line')]
     if todo:
         speak_line(todo[0]['line'])
-        todo[0]['said'], todo[0]['line'] = todo[0]['line'], ''      # said now
+        todo[0]['_said_line'], todo[0]['line'] = todo[0]['line'], ''      # said now; '_' keeps the key away from the policy's keys
     elif open_items:
         nx = open_items[0]
         if not nx.get('asked'):
@@ -230,7 +259,8 @@ else:
             speak_line('')
         else:
             ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again
-            speak_line('I understand. ' + (ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?'))
+            # only the question: the judge counts "I understand" after small talk as sympathy (reference agent, 10 Oct)
+            speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')
     else:
         confirmed = 'confirms' in kinds and bool(st.get('final_shown'))
         end = finish(items, confirmed)
@@ -262,7 +292,7 @@ def negotiation_tool(kinds, policy, list_var):
           `confirms` after the final read-back was shown. A change at the final read-back reaches `decide` for that
           product, which can set its status back to 'open'.
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
-    one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
+    one asked about in the debt statement has "asked": "yes". Keys that start with "_" belong to the engine. One message can answer for several products: the model calls
     the tool once with one entry per product in `answers`; a second entry for the same product is ignored. Two calls in one message run at the same time and only the
     last write is kept (round 2, PUB-13), so the tool must never need two calls. A chosen line goes to vars['say_now'] with
     vars['say_turn'] = 'yes', and `negotiation_nodes` speaks it with fixed text, so it is said once and word for word (round 4:
@@ -275,8 +305,8 @@ def negotiation_tool(kinds, policy, list_var):
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
                  + " unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before "
                  "the cut-off still gets its answer in reply."},
-        "date": {"type": "string", "description": "The day the customer named in full in this message, YYYY-MM-DD, "
-                 "or empty. Never a day from an earlier message that was cut off, and never a day from a message that only "
+        "date": {"type": "string", "description": "The day the customer named in full in this message as a day to pay, "
+                 "YYYY-MM-DD, or empty. A day of another event (a wedding, a trip) is not a day to pay. Never a day from an earlier message that was cut off, and never a day from a message that only "
                  "ends an earlier one ('of November.' after 'on the sixth'): that day was already answered."},
         "amount": {"type": "string", "description": "The amount the customer named in full in this message, digits only, "
                    "or empty. Never an amount from an earlier message that was cut off: '120' from 'I can pay the 120' "
@@ -288,8 +318,9 @@ def negotiation_tool(kinds, policy, list_var):
                     "of an earlier one adds no new answer: send the kind for anything else, with no day and no amount, "
                     "and answer any question in reply."},
         "reply": {"type": "string", "description": "If the customer asked a question in this message, your answer in one "
-                  "sentence from ACCOUNT, with no amount and no day; else empty. Also when the kind is unfinished: 'Which loan is "
-                  "this? I' needs the answer. The call says it before the next line."}},
+                  "sentence, from your instructions or ACCOUNT, with no amount and no day; else empty. A side question needs it "
+                  "too: who you are, whether you are a robot, why you call, whether this is a scam. Give it with every kind, also "
+                  "unfinished: 'Which loan is this? I' needs the answer. The call says it before the next line."}},
         policy + "\n" + engine)
 
 

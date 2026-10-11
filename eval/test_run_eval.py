@@ -48,9 +48,119 @@ def test_unstick_completes_a_simulation_whose_runs_ended():
     assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "running"
     clock[0] = STUCK_S + 1
     assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "completed"
-    assert ("PUT", "/api/v2/simulations/s1") in calls
+    assert ("POST", "/api/v2/simulations/s1/cancel") in calls   # round 6: a PUT to completed did not hold
 
 
 def test_a_row_that_uses_another_slot_scores_that_slot():
     assert slot_of({"name": "brief-a"}) == "brief-a"
     assert slot_of({"name": "edge-a", "uses": "brief-a"}) == "brief-a"
+
+
+def test_a_read_that_fails_with_a_server_error_is_tried_again():
+    # rounds 5b and 5c: one 504 or 503 on a GET lost the whole score file
+    from run_cases_at import retry_reads
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) < 3:      # round 6: a GET of a running simulation also returned 500
+            raise RuntimeError(f"{method} {path} -> " + ("503: error code: 503" if calls == ["GET"] else "500: Internal server error"))
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True} and len(calls) == 3
+
+
+def test_a_write_is_tried_again_only_after_a_503():
+    # round 6: "POST /api/v2/simulations -> 503: API key validation is temporarily unavailable": nothing was created
+    from run_cases_at import retry_reads
+    import pytest
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) == 1:
+            raise RuntimeError(f"{method} {path} -> 503: API key validation is temporarily unavailable")
+        raise RuntimeError(f"{method} {path} -> 500: Internal server error")
+    with pytest.raises(RuntimeError, match="500"):
+        retry_reads(api, wait=lambda s: None)("POST", "/x")
+    assert len(calls) == 2
+
+
+def test_a_score_run_that_wrote_no_result_runs_once_more(tmp_path):
+    # rounds 5b and 5c: a Freya API error stopped a score run, and its result file was missing from the round
+    from run_eval import score_with_retry
+    result, calls = tmp_path / "r.json", []
+
+    def run():
+        calls.append(1)
+        if len(calls) == 2:
+            result.write_text("{}")
+    assert score_with_retry(run, result, wait=lambda s: None) and len(calls) == 2
+
+
+def test_a_score_run_is_tried_four_times_at_most_with_a_wait_between(tmp_path):
+    # round 6: Freya refused new simulations for several minutes; two attempts in a row were both lost
+    from run_eval import score_with_retry
+    calls, waits = [], []
+    assert not score_with_retry(lambda: calls.append(1), tmp_path / "r.json", wait=waits.append)
+    assert len(calls) == 4 and len(waits) == 3
+
+
+def test_a_read_that_fails_on_dns_is_tried_again():
+    # round 6: "nodename nor servname provided" (a short DNS outage) stopped every score run
+    import urllib.error
+    from run_cases_at import retry_reads
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) < 2:
+            raise urllib.error.URLError("[Errno 8] nodename nor servname provided, or not known")
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}
+
+
+def test_a_read_waits_out_a_20_minute_outage():
+    # round 6: Freya returned 504 for more than 2.5 minutes while a simulation ran, and the score run stopped
+    from run_cases_at import retry_reads
+    waited = []
+
+    def api(method, path, body=None, **params):
+        if sum(waited) < 20 * 60:
+            raise RuntimeError(f"{method} {path} -> 504: error code: 504")
+        return {"ok": True}
+    assert retry_reads(api, wait=waited.append)("GET", "/x") == {"ok": True}
+
+
+def test_a_read_is_tried_again_after_a_socket_timeout():
+    # round 6: "socket.timeout: The read operation timed out" while Freya was slow
+    import socket
+    from run_cases_at import retry_reads
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) < 2:
+            raise socket.timeout("The read operation timed out")
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}
+
+
+def test_a_read_is_tried_again_after_a_cut_body():
+    # review: an IncompleteRead or a cut JSON body was not tried again
+    import http.client
+    from run_cases_at import retry_reads
+    errors = [http.client.IncompleteRead(b"{"), ValueError("Expecting value: line 1 column 2")]
+
+    def api(method, path, body=None, **params):
+        if errors:
+            raise errors.pop(0)
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}
+
+
+def test_contamination_reads_the_hidden_briefs(tmp_path, monkeypatch):
+    import contamination
+    (tmp_path / "briefs").mkdir()
+    (tmp_path / "briefs" / "hidden-1.md").write_text("x")
+    monkeypatch.setattr(contamination, "REPO", tmp_path)
+    assert tmp_path / "briefs" / "hidden-1.md" in contamination.brief_files()

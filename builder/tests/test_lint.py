@@ -99,7 +99,7 @@ def test_flags_forbidden_word_before_identity():
 
 def test_flags_cap_without_target():
     w = build()
-    w["nodes"]["greet"]["max_node_turns"] = 4
+    w["nodes"]["greet"]["max_node_turns"] = 20
     problems_about(w, "greet")
 
 
@@ -120,3 +120,14 @@ def test_flags_a_fixed_line_with_a_variable_that_can_be_empty():
     w = build(start=code_node("start", "vars['extra'] = 'Note.'", "greet", fallbacks={"extra": ""}),
               greet=conversation("greet", "Say hello.", on_enter=tts("Hello. {{extra}}"), transitions=[always("log")]))
     problems_about(w, "extra")
+
+
+def test_flags_a_turn_cap_that_cut_off_messages_use_up():
+    # round 5 talkative: about half of the customer's messages were cut off; identity_next (cap 16) closed as declined
+    # before the third wrong answer (A PUB-03), third_party (cap 10) closed with no callback (V2 PUB-02)
+    w = build()
+    w["nodes"]["greet"]["max_node_turns"] = 16
+    w["nodes"]["greet"]["max_turn_transition"] = "bye"
+    problems_about(w, "greet")
+    w["nodes"]["greet"]["max_node_turns"] = 20
+    assert not [p for p in lint(w, API, RULES) if p.startswith("greet")]

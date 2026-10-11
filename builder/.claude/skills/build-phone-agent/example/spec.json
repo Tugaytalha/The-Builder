@@ -2,7 +2,7 @@
  "vars": {"id": "client_ref", "title": "salutation", "last_name": "family_name", "now": "now"},
  "holidays": ["2031-03-10", "2031-04-18"],
  "opening_line": "Good morning, this is the automated assistant of Lumen Energy. Is this {{salutation}} {{family_name}}?",
- "callback": {"business_days_after_today": [1, 2], "from": "09:00", "to": "17:00"},
+ "callback": {"business_days_after_today": [1, 2], "from": "09:00", "to": "17:00", "asks_after_outside": 1},
  "identity": {
   "tool": "verify_identity", "question_field": "question", "answer_field": "reply",
   "questions": [
@@ -26,7 +26,7 @@
   "close_system_down": ["declined", "system_down", "I am sorry, I could not record the promise. Thank you, goodbye."],
   "close_handed_over": ["handed_over", "", "A colleague will take over now. Thank you, goodbye."],
   "close_wrong": ["unverified", "wrong", "I am sorry, I cannot continue without the check. Goodbye."],
-  "close_refused_check": ["unverified", "refused_check", "I understand. I cannot continue without the check. Goodbye."],
+  "close_refused_check": ["unverified", "refused_check", "I cannot continue without the check. Goodbye."],
   "close_call_later": ["absent", "call_later", "Thank you, we will call back then. Goodbye."],
   "close_no_time": ["absent", "no_time", "Thank you for your time. Goodbye."],
   "close_unsure": ["absent", "unsure", "Thank you for your time. Goodbye."]
