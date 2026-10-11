@@ -101,6 +101,15 @@ def test_identity_guide_after_a_correct_first_answer_asks_the_second_question():
     assert v["id_guide"] == "Correct. Now ask: And what is your year of birth?"
 
 
+def test_identity_passes_when_the_last_answer_is_correct_and_the_bank_leaves_out_the_passed_field():
+    # round 6 brief A PUB-04: the bank sent {"verified": true} with no "all_verified", and the call stayed in identity
+    v = run_snippet(node_code(WORKFLOW, "id_check_after"), {"id_question": "birth_year", "id_check_check_response.status": "success",
+                                                          "id_check_check_response.data.correct": "true"})
+    assert v["id_passed"] == "yes"
+    routes = {t["target_node"]: t for t in WORKFLOW["nodes"]["id_check_after"]["transitions"]}
+    assert routes["fetch_account"]["condition"]["conditions"][0]["variable"] == "id_passed"
+
+
 def named(v, day="", at=""):
     """The model reports a day or a time that the other person named for a callback."""
     return run_tool(tool_code(WORKFLOW, "time_named"), v, {"day": day, "at": at})

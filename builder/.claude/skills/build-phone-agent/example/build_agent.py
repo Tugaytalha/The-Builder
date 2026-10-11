@@ -183,7 +183,9 @@ ASKS = %(asks)r
 order = [q for q, ask in ASKS]
 q = str(vars.get('id_question') or '')
 nxt = order[order.index(q) + 1] if q in order and order.index(q) + 1 < len(order) else ''
-if r(%(passed)r) == 'true':
+# The passed field can be missing (round 6 PUB-04): a correct answer to the last question also passes.
+if r(%(passed)r) == 'true' or (r(%(correct)r) == 'true' and not nxt):
+    vars['id_passed'] = 'yes'
     vars['id_guide'] = 'Both answers are correct. Say thank you.'
 elif r('ok') == 'false':
     vars['id_guide'] = 'The answer could not be read. It is not a wrong answer. Ask the same question again.'
@@ -312,7 +314,7 @@ nodes = [
                        go("close_refused_check", any_of(cond("id_refusals", "greater_than", I["refusals_allowed"])), "refused")])
       for node in ("identity", "identity_next")],
     *identity_check("id_check", verify, "identity_next", [
-        go("fetch_account", is_true("id_check_check_response.data." + I["passed_field"]), "identity passed"),
+        go("fetch_account", any_of(cond("id_passed", "equals", "yes")), "identity passed"),
         go("close_wrong", any_of(cond("id_check_check_response.data." + I["left_field"], "equals", "0")), "check failed")],
         ID_GUIDE),
     api_node("fetch_account", make_tool(API, "get_account", baked=BAKED_ID), "prepare",
