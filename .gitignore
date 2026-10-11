@@ -10,3 +10,4 @@ __pycache__/
 .pytest_cache/
 .freya-agents.json.lock
 reference-agent/out/
+eval/results/sim/
