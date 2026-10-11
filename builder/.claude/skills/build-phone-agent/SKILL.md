@@ -9,7 +9,7 @@ The prompt gives you the run folder, the slot and the minutes left. Work only in
 
 ## Time
 
-Keep to this budget. With 5 minutes left, stop fixing: make sure the last deployed version is the best one you have and end with step 10.
+The prompt gives the time now and the stop time, in UTC. To know the time, run `date -u +%H:%M`. Never guess how much time has passed. Do every step below while more than 5 minutes are left; a full pass takes about 15 minutes. With 5 minutes left, stop fixing: make sure the last deployed version is the best one you have and end with step 10. The budget per step:
 
 | Steps | Minutes |
 |---|---|

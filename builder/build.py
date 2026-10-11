@@ -48,8 +48,9 @@ async def run_agent(run_dir, trace, deadline):
         env={"BASH_DEFAULT_TIMEOUT_MS": "600000", "BASH_MAX_TIMEOUT_MS": "900000",
              "CLAUDE_CODE_DISABLE_BACKGROUND_TASKS": "1", "PYTHONPATH": str(REPO), "BUILDER_PYTHON": sys.executable})
     minutes = int((deadline - time.time()) / 60)
+    utc = lambda t: time.strftime("%H:%M", time.gmtime(t))
     prompt = (f"Use the build-phone-agent skill. Run folder: {run_dir}. Slot: {run_dir.name.rsplit('-', 2)[0]}. "
-              f"Time left: {minutes} minutes.")
+              f"It is {utc(time.time())} UTC now. Time left: {minutes} minutes: the build stops at {utc(deadline)} UTC.")
     commands = {}
     transcript = open(run_dir / "agent.jsonl", "a")   # every message, for debugging; the trace is the summary
     async for message in query(prompt=prompt, options=options):
