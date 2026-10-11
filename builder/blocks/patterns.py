@@ -188,6 +188,7 @@ answers = json.loads(answers) if isinstance(answers, str) else answers
 answers = [answers] if isinstance(answers, dict) else answers
 kinds = [str(a.get('kind') or '') for a in answers]
 unfinished = bool(kinds) and all(k == 'unfinished' for k in kinds)
+done = []
 for a, kind in zip(answers, kinds):
     if kind == 'unfinished':
         continue
@@ -195,6 +196,9 @@ for a, kind in zip(answers, kinds):
     open_items = [x for x in items if x.get('status') == 'open']
     picked = [x for x in open_items if str(x.get('id')) == want]
     it = picked[0] if picked else (open_items or items)[0]
+    if it['id'] in done:
+        continue                            # one answer per product and message: the first is the main point
+    done.append(it['id'])
     amount = a.get('amount')
     amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
     line = decide(it, kind, amount, str(a.get('date') or '')[:10])
@@ -251,7 +255,7 @@ def negotiation_tool(node, kinds, policy, list_var):
           product, which can set its status back to 'open'.
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
     one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
-    the tool once with one entry per product in `answers`. Two calls in one message run at the same time and only the
+    the tool once with one entry per product in `answers`; a second entry for the same product is ignored. Two calls in one message run at the same time and only the
     last write is kept (round 2, PUB-13), so the tool must never need two calls. A line shown in an earlier turn of `node` counts as
     spoken (spike S12), so no line is said twice. The guide holds only words in quotes. The engine adds the kind
     "unfinished" (a message cut off mid-sentence): it changes nothing and asks the customer to go on."""
@@ -265,5 +269,6 @@ def negotiation_tool(node, kinds, policy, list_var):
         "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}}}
     return state_tool("customer_said", "CALL it ONCE every time the customer answers about paying. Put one entry in "
                       "answers for each product the customer talked about in this message.", {
-        "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about."}},
+        "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about, "
+                    "never two for the same product: pick the kind of the main point."}},
         policy + "\n" + engine)

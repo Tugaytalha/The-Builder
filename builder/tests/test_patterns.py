@@ -226,6 +226,12 @@ def test_negotiation_agreement_on_one_product_and_answer_on_the_next_in_one_call
     assert v["record_now"] == "yes" and len(__import__("json").loads(v["writes_list"])) == 2
 
 
+def test_negotiation_uses_one_answer_per_product_in_one_call():
+    # PUB-05 in round 3: "I lost my job ... can I get a discount?" came as hardship and plan for one product
+    v = _neg_call({}, 1, [{"item": "", "kind": "no"}, {"item": "a", "kind": "human"}])
+    assert "negotiation_action" not in v and v["guide"] == 'SAY: "Could you pay half for a?"'
+
+
 def test_negotiation_takes_answers_as_a_json_string():
     v = _neg_call({}, 1, '[{"item": "a", "kind": "no"}]')
     assert v["guide"] == 'SAY: "Could you pay half for a?"'
