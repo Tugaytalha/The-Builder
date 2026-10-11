@@ -1,0 +1,13 @@
+{
+  "team": "Cracked Engineers",
+  "members": [
+    {"name": "Reşit Aydın", "email": "resitaydinn@gmail.com"},
+    {"name": "Tugay Talha İçen", "email": "mukoicen@gmail.com"}
+  ],
+  "repo": "https://github.com/Tugaytalha/The-Builder",
+  "commit": "063fe94",
+  "run_command": ".venv/bin/python builder/build.py {case_folder} {mock_url}",
+  "workflow": "submission/final-case-b.workflow.json",
+  "trace": "traces/final-b-session.jsonl",
+  "mock_url": "https://the-builder-mock.the-builder-freya.workers.dev"
+}
