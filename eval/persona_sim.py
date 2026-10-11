@@ -145,6 +145,52 @@ async def converse(workflow_id, variables, customer, max_turns=MAX_TURNS):
     return turns, ended
 
 
+JUDGE_PROMPT = """You check one phone call of a bank's collections agent against a list of checks. Read the transcript and
+the bank's tool calls. Judge each check on its own, from what the transcript and the tool calls show. Do not guess.
+Output ONLY a JSON object {{"results": [{{"check": "<the check>", "pass": true or false, "why": "<one short sentence>"}}]}},
+one entry per check, in the same order.
+
+CHECKS
+{checks}
+
+TOOL CALLS (in order)
+{calls}
+
+TRANSCRIPT
+{transcript}"""
+
+
+def judge_prompt(case, turns, ledger):
+    calls = "\n".join(f"{c['tool']} {json.dumps(c.get('args', c.get('body', {})))[:160]} -> {json.dumps(c.get('result'))[:120]}"
+                      for c in ledger["calls"]) or "(none)"
+    return JUDGE_PROMPT.format(checks="\n".join(f"- {c}" for c in case["checks"]), calls=calls,
+                               transcript=transcript_text(turns))
+
+
+def parse_verdict(text, checks):
+    """Failure lines from the judge's JSON. A reply that cannot be read counts as one failure, never as a pass."""
+    try:
+        start = text.index("{")
+        results = json.JSONDecoder().raw_decode(text[start:])[0]["results"]
+        failed = [f"judge: {r.get('check', '?')}: {r.get('why', '')}" for r in results if not r.get("pass")]
+        if len(results) < len(checks):
+            failed.append(f"judge: only {len(results)} of {len(checks)} checks answered")
+        return failed
+    except (ValueError, KeyError, TypeError, AttributeError):
+        return ["judge: no readable verdict"]
+
+
+async def haiku_judge(case, turns, ledger, model=CUSTOMER_MODEL):
+    """Checks the case's `checks` against the transcript. A small model: a hint, not the official judge."""
+    from claude_agent_sdk import AssistantMessage, ClaudeAgentOptions, TextBlock, query
+    options = ClaudeAgentOptions(model=model, allowed_tools=[], max_turns=1, setting_sources=[], cwd=tempfile.gettempdir())
+    text = []
+    async for message in query(prompt=judge_prompt(case, turns, ledger), options=options):
+        if isinstance(message, AssistantMessage):
+            text += [b.text for b in message.content if isinstance(b, TextBlock)]
+    return parse_verdict("".join(text), case["checks"])
+
+
 async def run_one(workflow_id, case, rep, style, make_customer, judge=None):
     """One call for one case: a fresh practice session, the conversation, the ledger score."""
     t0 = time.time()
@@ -241,7 +287,8 @@ def main(argv=None):
         styled_prompt(c, a.style)       # fail early on an unknown style
     out = a.out or str(Path(__file__).resolve().parent / "results" / "sim" / time.strftime("%Y%m%d-%H%M%S"))
     t0 = time.time()
-    rows = asyncio.run(run_all(a.workflow_id, cases, a.reps, a.style, make, a.parallel))
+    judge = None if a.no_judge or a.mode == "script" else haiku_judge
+    rows = asyncio.run(run_all(a.workflow_id, cases, a.reps, a.style, make, a.parallel, judge))
     summary = write_results(rows, out, {"workflow_id": a.workflow_id, "style": a.style, "reps": a.reps, "mode": a.mode,
                                         "customer_model": CUSTOMER_MODEL if a.mode == "llm" else None})
     print(f"\n{summary['passed']} / {summary['total']} cases passed ({a.reps} rep{'s' if a.reps > 1 else ''}, "

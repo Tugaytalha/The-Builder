@@ -64,6 +64,22 @@ def test_transcript_text():
     assert transcript_text([("agent", "Hi"), ("customer", "Yes")]) == "AGENT: Hi\nCUSTOMER: Yes"
 
 
+def test_verdict_lists_each_failed_check():
+    text = 'Here: {"results": [{"check": "a", "pass": true, "why": "ok"}, {"check": "b", "pass": false, "why": "said collections"}]}'
+    assert persona_sim.parse_verdict(text, ["a", "b"]) == ["judge: b: said collections"]
+
+
+def test_unreadable_or_short_verdict_is_a_failure():
+    assert persona_sim.parse_verdict("no json", ["a"]) == ["judge: no readable verdict"]
+    assert persona_sim.parse_verdict('{"results": [{"check": "a", "pass": true}]}', ["a", "b"]) == ["judge: only 1 of 2 checks answered"]
+
+
+def test_judge_prompt_holds_checks_calls_and_transcript():
+    ledger = {"calls": [{"tool": "verify_identity", "args": {"answer": "x"}, "result": {"ok": True}}]}
+    text = persona_sim.judge_prompt(CASE | {"checks": ["no debt before identity"]}, [("agent", "Hi")], ledger)
+    assert "- no debt before identity" in text and "verify_identity" in text and "AGENT: Hi" in text
+
+
 def test_converse_with_a_script_stops_when_the_call_ends(monkeypatch):
     import asyncio
     replies = iter([("Hello, Mr Reyes?", "c1"), ("Date of birth?", "c1"), (None, "c1")])
