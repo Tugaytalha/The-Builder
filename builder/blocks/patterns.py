@@ -275,8 +275,8 @@ def negotiation_tool(kinds, policy, list_var):
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
                  + " unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before "
                  "the cut-off still gets its answer in reply."},
-        "date": {"type": "string", "description": "The day the customer named in full in this message, YYYY-MM-DD, "
-                 "or empty. Never a day from an earlier message that was cut off, and never a day from a message that only "
+        "date": {"type": "string", "description": "The day the customer named in full in this message as a day to pay, "
+                 "YYYY-MM-DD, or empty. A day of another event (a wedding, a trip) is not a day to pay. Never a day from an earlier message that was cut off, and never a day from a message that only "
                  "ends an earlier one ('of November.' after 'on the sixth'): that day was already answered."},
         "amount": {"type": "string", "description": "The amount the customer named in full in this message, digits only, "
                    "or empty. Never an amount from an earlier message that was cut off: '120' from 'I can pay the 120' "

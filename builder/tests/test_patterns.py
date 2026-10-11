@@ -367,3 +367,11 @@ def test_negotiation_reply_answers_a_side_question_from_the_instructions_too():
     from builder.blocks.patterns import negotiation_tool
     reply = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["reply"]["description"]
     assert "robot" in reply and "instructions" in reply and "every kind" in reply
+
+
+def test_negotiation_day_of_another_event_is_not_a_payment_day():
+    # round 5 A talkative PUB-01: "My cousin's wedding is on the 30th" went in as a proposal for 30 October and was read back
+    from builder.blocks.patterns import negotiation_tool
+    date = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["answers"][
+        "items"]["properties"]["date"]["description"]
+    assert "wedding" in date and "to pay" in date
