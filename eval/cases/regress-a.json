@@ -1,0 +1,258 @@
+[
+ {
+  "id": "PUB-01",
+  "brief": "A",
+  "family": "Regression",
+  "level": "hard",
+  "title": "Read-back confirmed with the amount and day echoed",
+  "variables": {
+   "first_name": "Daniel",
+   "last_name": "Reyes",
+   "title": "Mr",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1988-03-14",
+   "phone_last4": "4471"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "4821",
+    "past_due": 420.0,
+    "days_late": 6,
+    "minimum_payment": 126.0
+   }
+  ],
+  "script": "Scripted. Root cause: V2 PUB-06 read-back loop (e3f7897)",
+  "lines": [
+   "Yes, speaking.",
+   "14 March 1988.",
+   "4471.",
+   "Yes, I can pay it today.",
+   "Yes, I confirm. 420 dollars today.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 420.0,
+     "date": "2026-10-14"
+    }
+   ],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "create_promise called exactly once",
+   "the read-back is not repeated after the confirmation"
+  ]
+ },
+ {
+  "id": "PUB-04",
+  "brief": "A",
+  "family": "Regression",
+  "level": "hard",
+  "title": "A date cut off before its month",
+  "variables": {
+   "first_name": "Lena",
+   "last_name": "Hoffmann",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1984-01-30",
+   "phone_last4": "2219"
+  },
+  "products": [
+   {
+    "type": "car_loan",
+    "past_due": 1250.0,
+    "days_late": 14,
+    "instalment_amount": 400.0
+   }
+  ],
+  "script": "Scripted. Root cause: A PUB-04 cut-off message (3e76500, 3939bb6)",
+  "lines": [
+   "Yes, that's me.",
+   "The thirtieth of",
+   "January nineteen eighty-four.",
+   "2219.",
+   "No, not today. I can pay the full amount on the twenty-first of",
+   "October.",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 1250.0,
+     "date": "2026-10-21"
+    }
+   ],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "the date is recorded as 21 October, not the deadline",
+   "create_promise called exactly once"
+  ]
+ },
+ {
+  "id": "PUB-06",
+  "brief": "A",
+  "family": "Regression",
+  "level": "hard",
+  "title": "A day named inside a question",
+  "variables": {
+   "first_name": "Priya",
+   "last_name": "Nair",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1986-05-17",
+   "phone_last4": "1502"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "1903",
+    "past_due": 2125.1,
+    "days_late": 12,
+    "minimum_payment": 637.5
+   }
+  ],
+  "script": "Scripted. Root cause: A PUB-06 day inside a question (431e9d2)",
+  "lines": [
+   "Yes, speaking.",
+   "17 May 1986.",
+   "1502.",
+   "That is a lot. Could I pay on Friday the sixteenth, is that alright?",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 2125.1,
+     "date": "2026-10-16"
+    }
+   ],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "the full amount is asked first",
+   "create_promise called exactly once"
+  ]
+ },
+ {
+  "id": "PUB-08",
+  "brief": "A",
+  "family": "Regression",
+  "level": "hard",
+  "title": "Already paid",
+  "variables": {
+   "first_name": "Hannah",
+   "last_name": "Schmidt",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1993-04-28",
+   "phone_last4": "3317"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "5512",
+    "past_due": 180.0,
+    "days_late": 5,
+    "minimum_payment": 54.0
+   }
+  ],
+  "script": "Scripted. Root cause: kit family, no negotiation",
+  "lines": [
+   "Yes, speaking.",
+   "28 April 1993.",
+   "3317.",
+   "I already paid it in the app this morning.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "paid",
+   "reason": null,
+   "promises": [],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "no promise is taken",
+   "the agent says payments can take one business day to appear"
+  ]
+ },
+ {
+  "id": "PUB-09",
+  "brief": "A",
+  "family": "Regression",
+  "level": "hard",
+  "title": "Restructuring request",
+  "variables": {
+   "first_name": "Victor",
+   "last_name": "Ionescu",
+   "title": "Mr",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1981-08-11",
+   "phone_last4": "5560"
+  },
+  "products": [
+   {
+    "type": "personal_loan",
+    "past_due": 2100.0,
+    "days_late": 28,
+    "instalment_amount": 700.0
+   }
+  ],
+  "script": "Scripted. Root cause: kit family, transfer closes the call",
+  "lines": [
+   "Yes, speaking.",
+   "11 August 1981.",
+   "5560.",
+   "I cannot pay this. I need lower instalments, a new payment plan.",
+   "Yes, please.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "transferred",
+   "reason": "restructuring",
+   "promises": [],
+   "notes": [],
+   "callbacks": [],
+   "transfers": [
+    {
+     "queue": "restructuring"
+    }
+   ]
+  },
+  "checks": [
+   "no plan is described",
+   "transfer_to_agent called with queue restructuring"
+  ]
+ }
+]

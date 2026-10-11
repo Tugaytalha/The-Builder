@@ -1,0 +1,455 @@
+{
+ "agent_id": "76ed8678-09fd-43d4-9c3e-cab2e9cfd216",
+ "simulation_id": "9883ec9d-3444-4731-a03a-3128b45a89fd",
+ "iteration_id": "2de3ebc5-b440-4a7e-9817-706fbcd2d134",
+ "seconds": 134,
+ "passed": 6,
+ "total": 10,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-01",
+   "family": "Happy path",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-02",
+   "family": "Third party",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-03",
+   "family": "Identity",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-04",
+   "family": "Dates",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-05",
+   "family": "Hardship",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-06",
+   "family": "Amounts",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-07",
+   "family": "Dates",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-08",
+   "family": "Already paid",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-09",
+   "family": "Restructuring",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-10",
+   "family": "Tool failure",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-01",
+   "level": "easy",
+   "family": "Happy path",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('promise', None)",
+    "promises [], expected [('p1', 420.0, '2026-10-14')]",
+    "the call was not closed with close_call",
+    "conversation: The evaluation failed for the following reasons: 1. The 'create_promise' function was never called according to the system events, even though the user agreed to the payment. 2. The required text-message sentence was never said by the assistant. 3. The assistant entered a repetitive loop of unhelpful responses ('Go on.', 'What would you like to do?') starting at Message 12, which led to the custom"
+   ],
+   "call_id": "c1948210-05f9-4c76-82e9-562c2195390e",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account"
+   ],
+   "customer_id": "c_deb12945-802",
+   "slowest_turn_s": 3.3,
+   "ended": "customer-ended-call"
+  },
+  {
+   "id": "PUB-02",
+   "level": "medium",
+   "family": "Third party",
+   "pass": true,
+   "failed": [],
+   "call_id": "77453a7b-01b4-4d9c-99f6-dfae2e897c2c",
+   "tools": [
+    "schedule_callback",
+    "close_call"
+   ],
+   "customer_id": "c_a6c7f30a-1d0",
+   "slowest_turn_s": 2.9,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-03",
+   "level": "medium",
+   "family": "Identity",
+   "pass": true,
+   "failed": [],
+   "call_id": "9fa20f65-aca3-4a75-9ba8-3d27ef016d2e",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_0d7169bd-051",
+   "slowest_turn_s": 1.5,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-04",
+   "level": "medium",
+   "family": "Dates",
+   "pass": true,
+   "failed": [],
+   "call_id": "a7617ad9-bdfc-4497-accc-9b0fa6ccf91c",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_b1c1fb13-218",
+   "slowest_turn_s": 1.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-05",
+   "level": "medium",
+   "family": "Hardship",
+   "pass": true,
+   "failed": [],
+   "call_id": "441b8ccb-1524-4599-9026-39ee2189f878",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_801af7c7-68d",
+   "slowest_turn_s": 3.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-06",
+   "level": "hard",
+   "family": "Amounts",
+   "pass": false,
+   "failed": [
+    "conversation: The conversation failed to meet all the success criteria. Specifically, the minimum payment ($637.50) was offered more than once, violating the constraint that it be offered only once. The first offer occurred in Message 8 (including the required note about the balance staying overdue), and a second offer of the same amount for a different date occurred in Message 18. Other criteria were met: the "
+   ],
+   "call_id": "8b218255-eddd-41a8-ac50-0b39869bb404",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_239845a2-b97",
+   "slowest_turn_s": 2.7,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-07",
+   "level": "hard",
+   "family": "Dates",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 540.0, '2026-11-02')], expected [('p1', 540.0, '2026-10-27')]",
+    "conversation: The agent failed to meet two out of the three success criteria. While it did ask for the exact day once in [Message 14], it failed to offer the next business day (Tuesday 27 October) after rejecting the user's proposal of October 26th in [Message 15]. Instead, the agent immediately offered the final deadline of November 2nd in [Message 16]. Consequently, the promise was recorded for November 2nd a"
+   ],
+   "call_id": "d6e2aedd-c65b-4e32-9bf4-3592504db3c9",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_a936cef4-9a5",
+   "slowest_turn_s": 5.9,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-08",
+   "level": "medium",
+   "family": "Already paid",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('paid', None)",
+    "the call was not closed with close_call",
+    "conversation: The agent failed to meet the success criteria because the conversation ended during the identity verification process. Specifically, the agent never mentioned that payments can take one business day to appear. While no promise was recorded, both conditions in the 'All of these are true' section must be satisfied for success."
+   ],
+   "call_id": "a4e1772a-24c6-4956-801c-f7d47cb979a3",
+   "tools": [
+    "verify_identity"
+   ],
+   "customer_id": "c_8a788f76-6cb",
+   "slowest_turn_s": 5.7,
+   "ended": "customer-ended-call"
+  },
+  {
+   "id": "PUB-09",
+   "level": "medium",
+   "family": "Restructuring",
+   "pass": true,
+   "failed": [],
+   "call_id": "3a05e3cd-350b-490d-8ad5-3fd409664450",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "transfer_to_agent",
+    "close_call"
+   ],
+   "customer_id": "c_1e8c2f18-987",
+   "slowest_turn_s": 3.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-10",
+   "level": "hard",
+   "family": "Tool failure",
+   "pass": true,
+   "failed": [],
+   "call_id": "cacc46a7-2577-4c5c-8f95-177eb55aea72",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_5dae9dc0-03a",
+   "slowest_turn_s": 7.2,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-01",
+    "level": "easy",
+    "family": "Happy path",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('promise', None)",
+     "promises [], expected [('p1', 420.0, '2026-10-14')]",
+     "the call was not closed with close_call",
+     "conversation: The evaluation failed for the following reasons: 1. The 'create_promise' function was never called according to the system events, even though the user agreed to the payment. 2. The required text-message sentence was never said by the assistant. 3. The assistant entered a repetitive loop of unhelpful responses ('Go on.', 'What would you like to do?') starting at Message 12, which led to the custom"
+    ],
+    "call_id": "c1948210-05f9-4c76-82e9-562c2195390e",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account"
+    ],
+    "customer_id": "c_deb12945-802",
+    "slowest_turn_s": 3.3,
+    "ended": "customer-ended-call"
+   },
+   {
+    "id": "PUB-02",
+    "level": "medium",
+    "family": "Third party",
+    "pass": true,
+    "failed": [],
+    "call_id": "77453a7b-01b4-4d9c-99f6-dfae2e897c2c",
+    "tools": [
+     "schedule_callback",
+     "close_call"
+    ],
+    "customer_id": "c_a6c7f30a-1d0",
+    "slowest_turn_s": 2.9,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-03",
+    "level": "medium",
+    "family": "Identity",
+    "pass": true,
+    "failed": [],
+    "call_id": "9fa20f65-aca3-4a75-9ba8-3d27ef016d2e",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_0d7169bd-051",
+    "slowest_turn_s": 1.5,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-04",
+    "level": "medium",
+    "family": "Dates",
+    "pass": true,
+    "failed": [],
+    "call_id": "a7617ad9-bdfc-4497-accc-9b0fa6ccf91c",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_b1c1fb13-218",
+    "slowest_turn_s": 1.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-05",
+    "level": "medium",
+    "family": "Hardship",
+    "pass": true,
+    "failed": [],
+    "call_id": "441b8ccb-1524-4599-9026-39ee2189f878",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_801af7c7-68d",
+    "slowest_turn_s": 3.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-06",
+    "level": "hard",
+    "family": "Amounts",
+    "pass": false,
+    "failed": [
+     "conversation: The conversation failed to meet all the success criteria. Specifically, the minimum payment ($637.50) was offered more than once, violating the constraint that it be offered only once. The first offer occurred in Message 8 (including the required note about the balance staying overdue), and a second offer of the same amount for a different date occurred in Message 18. Other criteria were met: the "
+    ],
+    "call_id": "8b218255-eddd-41a8-ac50-0b39869bb404",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_239845a2-b97",
+    "slowest_turn_s": 2.7,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-07",
+    "level": "hard",
+    "family": "Dates",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 540.0, '2026-11-02')], expected [('p1', 540.0, '2026-10-27')]",
+     "conversation: The agent failed to meet two out of the three success criteria. While it did ask for the exact day once in [Message 14], it failed to offer the next business day (Tuesday 27 October) after rejecting the user's proposal of October 26th in [Message 15]. Instead, the agent immediately offered the final deadline of November 2nd in [Message 16]. Consequently, the promise was recorded for November 2nd a"
+    ],
+    "call_id": "d6e2aedd-c65b-4e32-9bf4-3592504db3c9",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_a936cef4-9a5",
+    "slowest_turn_s": 5.9,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-08",
+    "level": "medium",
+    "family": "Already paid",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('paid', None)",
+     "the call was not closed with close_call",
+     "conversation: The agent failed to meet the success criteria because the conversation ended during the identity verification process. Specifically, the agent never mentioned that payments can take one business day to appear. While no promise was recorded, both conditions in the 'All of these are true' section must be satisfied for success."
+    ],
+    "call_id": "a4e1772a-24c6-4956-801c-f7d47cb979a3",
+    "tools": [
+     "verify_identity"
+    ],
+    "customer_id": "c_8a788f76-6cb",
+    "slowest_turn_s": 5.7,
+    "ended": "customer-ended-call"
+   },
+   {
+    "id": "PUB-09",
+    "level": "medium",
+    "family": "Restructuring",
+    "pass": true,
+    "failed": [],
+    "call_id": "3a05e3cd-350b-490d-8ad5-3fd409664450",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "transfer_to_agent",
+     "close_call"
+    ],
+    "customer_id": "c_1e8c2f18-987",
+    "slowest_turn_s": 3.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-10",
+    "level": "hard",
+    "family": "Tool failure",
+    "pass": true,
+    "failed": [],
+    "call_id": "cacc46a7-2577-4c5c-8f95-177eb55aea72",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_5dae9dc0-03a",
+    "slowest_turn_s": 7.2,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

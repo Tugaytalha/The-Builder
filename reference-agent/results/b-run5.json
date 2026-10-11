@@ -1,0 +1,166 @@
+{
+ "agent_id": "282c9130-fd52-4bed-92b9-7708e584de6f",
+ "simulation_id": "84e013bb-ea67-428d-86fb-1b3683ca3698",
+ "iteration_id": "9b299ef7-f49d-4a66-a51f-9ccd701e81b5",
+ "seconds": 62,
+ "passed": 2,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "45b05fbd-b648-44d3-85f6-b8d48769e194",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_20dae232-59a",
+   "slowest_turn_s": 5.3,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "conversation: The agent satisfied all specific success criteria: it verified the customer by asking the phone question a second time [6] while only asking the date of birth once [2]; it secured exactly one promise for the credit card [10, 11] and recorded 'refused' notes for the personal loan and car loan; and it performed the correct number of persuasion attempts (two for the personal loan [12, 14] and one for"
+   ],
+   "call_id": "4a6438f3-7113-405f-8611-7ccb574f1b5a",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "get_account",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_4a2b1c6e-383",
+   "slowest_turn_s": 1.6,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "94436405-1b4a-4e47-8402-3d5aea7660bc",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_5595291b-a2f",
+   "slowest_turn_s": 2.1,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "45b05fbd-b648-44d3-85f6-b8d48769e194",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_20dae232-59a",
+    "slowest_turn_s": 5.3,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: The agent satisfied all specific success criteria: it verified the customer by asking the phone question a second time [6] while only asking the date of birth once [2]; it secured exactly one promise for the credit card [10, 11] and recorded 'refused' notes for the personal loan and car loan; and it performed the correct number of persuasion attempts (two for the personal loan [12, 14] and one for"
+    ],
+    "call_id": "4a6438f3-7113-405f-8611-7ccb574f1b5a",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "get_account",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_4a2b1c6e-383",
+    "slowest_turn_s": 1.6,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "94436405-1b4a-4e47-8402-3d5aea7660bc",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_5595291b-a2f",
+    "slowest_turn_s": 2.1,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

@@ -1,0 +1,68 @@
+[
+ {
+  "id": "PUB-13",
+  "brief": "B",
+  "family": "Regression",
+  "level": "hard",
+  "title": "One date for two products, the loan clamped",
+  "variables": {
+   "first_name": "Elena",
+   "last_name": "Rossi",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1991-01-08",
+   "phone_last4": "6604"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "6604",
+    "past_due": 300.0,
+    "days_late": 4,
+    "minimum_payment": 90.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 900.0,
+    "days_late": 20,
+    "instalment_amount": 300.0
+   }
+  ],
+  "script": "Scripted. Root cause: A+B one date for everything (rule B6)",
+  "lines": [
+   "Yes, speaking.",
+   "8 January 1991.",
+   "6604.",
+   "No, not today. I can pay both on the thirtieth of October.",
+   "Yes, that works.",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 300.0,
+     "date": "2026-10-30"
+    },
+    {
+     "product_id": "p2",
+     "amount": 900.0,
+     "date": "2026-10-23"
+    }
+   ],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "credit card recorded on 30 October",
+   "loan recorded on its own deadline, 23 October",
+   "one read-back for both"
+  ]
+ }
+]
