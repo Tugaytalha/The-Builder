@@ -27,7 +27,7 @@ def chat(workflow_id, variables, lines):
             if "-> 502" not in str(exc) or not call_id:
                 raise
             replies.append(ENDED)  # the chat route answers 502 on the turn that ends the call
-            break
+            return replies         # no /chat/end: it runs the end-of-call tools again (close_call twice, rehearsal)
         call_id = r.get("callId") or call_id
         replies.append(r.get("response") or "")
     try:

@@ -45,7 +45,7 @@ Do every step on the machine that runs the final build, in a plain terminal (not
 ## The final case
 
 1. Download the zip. Unzip it to `briefs/` exactly as received, so the folder is `briefs/<case folder>/`. Read `BRIEF.md` and `README.md`.
-2. **Mock (by hand, allowed: the mock is not the builder).** From the service contract and the test customers, fill `mock/src/routes.js` (one handler per route, the contract's paths and fields), `mock/src/data.js` (the test customers) and `mock/src/openapi.js` (one operation per route, the contract's names, enums and descriptions). Then `cd mock && npx wrangler deploy`, then `curl -X POST <mock>/__reset`.
+2. **Mock (by hand, allowed: the mock is not the builder).** From the service contract and the test customers, fill `mock/src/routes.js` (one handler per route, the contract's paths and fields), `mock/src/data.js` (the test customers) and `mock/src/openapi.js` (one operation per route, the contract's names, enums and descriptions). Then `cd mock && npx wrangler deploy`. Wait 1 minute: just after a deploy, Cloudflare can answer `error code: 1042` (rehearsal, 16:22 UTC; 0 of 20 calls failed after one minute). Then `curl -X POST <mock>/__reset`.
 3. Test the mock with `curl`: each route with one test customer, a right and a wrong identity answer, one write, then `GET <mock>/__log`. Then reset it again.
 4. Run the builder:
 
