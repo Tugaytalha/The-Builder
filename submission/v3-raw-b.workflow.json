@@ -1,66 +1,9 @@
 {
  "workflow_id": "aba128b5-6ec6-4200-98cd-1a0e15c2f747",
  "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
- "updated_at": "2026-10-11T14:58:21.113Z",
+ "updated_at": "2026-10-11T16:35:18.482Z",
  "workflow": {
   "nodes": {
-   "wrap": {
-    "name": "wrap",
-    "tools": [],
-    "on_enter": {
-     "type": "silent"
-    },
-    "node_type": "code",
-    "assertions": [],
-    "passthrough": true,
-    "pre_actions": [
-     {
-      "type": "function",
-      "function": {
-       "name": "code_exec",
-       "handler": "__function__:code_exec",
-       "parameters": {
-        "type": "object",
-        "properties": {
-         "code": {
-          "type": "string",
-          "default": "try:\n    \n    import json\n    st = json.loads(vars.get('neg_state') or '[]')\n    items = st['items'] if isinstance(st, dict) else []\n    ws = json.loads(vars.get('promise_writes_list') or '[]')\n    ok = [w['fields'].get('product_id') for w in ws if w.get('status') == 'ok']\n    failed = [w['fields'].get('product_id') for w in ws if w.get('status') != 'ok']\n    notes = []\n    for x in items:\n        if x['id'] in ok:\n            continue\n        reason = 'service_error' if x['id'] in failed else (x.get('note') or 'refused')\n        x['note'] = reason\n        notes.append(dict(product_id=x['id'], reason=reason))\n    vars['neg_state'] = json.dumps(dict(items=items))\n    vars['note_writes_list'] = json.dumps([dict(fields=n, status='pending') for n in notes] if len(items) > 1 else [])\n    words = [x['word'] for x in items if x['id'] in ok]\n    line = ''\n    if words:\n        line = 'Your promise for your ' + ' and your '.join(words) + ' is recorded. ' + 'You will receive a text message confirming this promise.'\n        lost = [x['word'] for x in items if x['id'] in failed]\n        if lost:\n            line = line + ' I could not record the promise for your ' + ' and your '.join(lost) + '.'\n        vars['close_key'] = 'close_promise'\n    elif items and all(x.get('note') == 'paid' for x in items):\n        vars['close_key'] = 'close_paid'\n    else:\n        first = [x.get('note') for x in items if x.get('note') != 'paid']\n        vars['close_key'] = 'close_' + (first[0] if first else 'refused')\n    vars['promise_line'] = (line + ' Thank you, goodbye.').strip()\n    pass\nexcept Exception as exc:\n    vars['close_key'] = 'close_refused'\n    vars['note_writes_list'] = '[]'\n    vars['promise_line'] = 'Thank you, goodbye.'\n    vars['wrap_code_error'] = repr(exc)[:300]\n"
-         },
-         "timeout_ms": {
-          "type": "number",
-          "default": 10000
-         }
-        }
-       },
-       "description": ""
-      }
-     }
-    ],
-    "transitions": [
-     {
-      "condition": {
-       "mode": "exact",
-       "operator": "always"
-      },
-      "description": "always",
-      "target_node": "note_writes"
-     }
-    ],
-    "role_message": "",
-    "task_message": "",
-    "interruptible": true,
-    "max_node_turns": null,
-    "response_mapping": [],
-    "extraction_schema": [],
-    "max_turn_transition": null,
-    "truncation_strategy": "keep_all",
-    "suppress_tool_results": false,
-    "truncation_window_size": 10,
-    "on_enter_first_entry_only": false,
-    "disable_inactivity_monitor": true,
-    "passthrough_default_transition": "note_writes",
-    "return_to_previous_on_interrupt": false
-   },
    "setup": {
     "name": "setup",
     "tools": [],
@@ -81,7 +24,7 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    now = str(vars.get('now') or '')\n    today = iso_day(now)\n    hhmm = now[11:16] if len(now) >= 16 else '00:00'\n    vars['today_iso'] = today.isoformat()\n    vars['now_hhmm'] = hhmm\n    for name, n in [['early', 12], ['late', 7]]:\n        vars['deadline_' + name] = nth_business_day_after(today, n, HOLIDAYS).isoformat()\n    # 10.3(a): last business day of the current week; on that day, of the following week\n    a1 = last_business_day_of_week(today, HOLIDAYS)\n    if a1 <= today:\n        a1 = last_business_day_of_week(today + timedelta(days=7), HOLIDAYS)\n    vars['attempt1_day'] = a1.isoformat()\n    lines = ['Today is ' + say(today) + ' (' + today.isoformat() + '), time ' + hhmm + '.', 'Calendar:']\n    for i in range(36):\n        d = today + timedelta(days=i)\n        tag = 'business day' if is_business_day(d, HOLIDAYS) else 'NOT a business day'\n        lines.append('- ' + d.isoformat() + ' ' + WD[d.weekday()] + ': ' + tag)\n    for i in range(7):\n        lines.append('this ' + WD[i] + ' = ' + this_weekday(today, i).isoformat() + ', next ' + WD[i] + ' = ' + next_weekday(today, i).isoformat())\n    vars['date_facts'] = '\\n'.join(lines)\n    days = [today if k == 0 else nth_business_day_after(today, k, HOLIDAYS) for k in [0, 1]]\n    vars['callback_days'] = ','.join(d.isoformat() for d in days)\n    vars['callback_facts'] = ('A callback is allowed only on ' + ' or '.join(say(d) + ' (' + d.isoformat() + ')' for d in days)\n                              + ', from 10:00 to 19:00, both included, and later than ' + hhmm + ' today.')\n    \n    vars['id_guide'] = 'Wait for the answer to the first question.'\n    vars['tp_guide'] = 'Ask when the customer can be reached.'\n    pass\nexcept Exception as exc:\n    vars['date_facts'] = 'Date facts are not available.'\n    vars['callback_facts'] = ''\n    vars['callback_days'] = ''\n    vars['tp_guide'] = 'Ask when the customer can be reached.'\n    vars['id_guide'] = 'Wait for the answer to the first question.'\n    vars['promise_line'] = 'Thank you, goodbye.'\n    vars['setup_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    now = str(vars.get('now') or '')\n    today = iso_day(now)\n    hhmm = now[11:16] if len(now) >= 16 else '00:00'\n    vars['today_iso'] = today.isoformat()\n    vars['now_hhmm'] = hhmm\n    for name, n in [['early', 12], ['late', 7]]:\n        vars['deadline_' + name] = nth_business_day_after(today, n, HOLIDAYS).isoformat()\n    # attempt 1 day: last business day of this week; on that day, of the next week (10.3a)\n    a1 = last_business_day_of_week(today, HOLIDAYS)\n    if a1 <= today:\n        a1 = last_business_day_of_week(today + timedelta(days=7), HOLIDAYS)\n    vars['attempt1_day'] = a1.isoformat()\n    lines = ['Today is ' + say(today) + ' (' + today.isoformat() + '), time ' + hhmm + '.', 'Calendar:']\n    for i in range(36):\n        d = today + timedelta(days=i)\n        tag = 'business day' if is_business_day(d, HOLIDAYS) else 'NOT a business day'\n        lines.append('- ' + d.isoformat() + ' ' + WD[d.weekday()] + ': ' + tag)\n    for i in range(7):\n        lines.append('this ' + WD[i] + ' = ' + this_weekday(today, i).isoformat() + ', next ' + WD[i] + ' = ' + next_weekday(today, i).isoformat())\n    vars['date_facts'] = '\\n'.join(lines)\n    bd1 = nth_business_day_after(today, 1, HOLIDAYS)\n    vars['callback_days'] = today.isoformat() + ',' + bd1.isoformat()\n    vars['callback_facts'] = ('A callback is allowed only today, ' + say(today) + ' (' + today.isoformat() + '), later than ' + hhmm\n                              + ', or on ' + say(bd1) + ' (' + bd1.isoformat() + '), from 10:00 to 19:00, both included.')\n    \n    vars['id_guide'] = 'Wait for the answer to the first question.'\n    vars['tp_guide'] = 'Ask when the customer can be reached.'\n    vars['promise_line'] = 'Thank you, goodbye.'\n    vars['bye_line'] = 'Thank you for your time. Goodbye.'\n    pass\nexcept Exception as exc:\n    vars['date_facts'] = 'Date facts are not available.'\n    vars['callback_facts'] = ''\n    vars['callback_days'] = ''\n    vars['tp_guide'] = 'Ask when the customer can be reached.'\n    vars['id_guide'] = 'Wait for the answer to the first question.'\n    vars['promise_line'] = 'Thank you, goodbye.'\n    vars['bye_line'] = 'Thank you for your time. Goodbye.'\n    vars['transfer_queue'] = 'general'\n    vars['setup_code_error'] = repr(exc)[:300]\n"
          },
          "timeout_ms": {
           "type": "number",
@@ -208,21 +151,6 @@
        "conditions": [
         {
          "mode": "exact",
-         "operand": "deceased",
-         "operator": "equals",
-         "variable": "party"
-        }
-       ]
-      },
-      "description": "the customer passed away",
-      "target_node": "close_deceased"
-     },
-     {
-      "condition": {
-       "logic": "or",
-       "conditions": [
-        {
-         "mode": "exact",
          "operand": "wrong_number",
          "operator": "equals",
          "variable": "party"
@@ -231,6 +159,21 @@
       },
       "description": "wrong number",
       "target_node": "close_wrong_number"
+     },
+     {
+      "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
+         "operand": "deceased",
+         "operator": "equals",
+         "variable": "party"
+        }
+       ]
+      },
+      "description": "deceased",
+      "target_node": "close_deceased"
      },
      {
       "condition": {
@@ -283,7 +226,7 @@
      }
     ],
     "role_message": "",
-    "task_message": "You asked whether you speak with {{title}} {{last_name}}. Do not say why you are calling. If the person did not clearly confirm, answer a question they asked in one sentence, then ask again: \"Am I speaking with {{title}} {{last_name}}?\". Do not call a tool in this turn.",
+    "task_message": "You asked whether you speak with {{title}} {{last_name}}. Never say why you are calling. If the person did not clearly confirm, answer a question they asked in one sentence, then ask: \"Am I speaking with {{title}} {{last_name}}?\" Do not call a tool in this turn.",
     "interruptible": true,
     "max_node_turns": 20,
     "response_mapping": [],
@@ -291,7 +234,7 @@
      {
       "name": "party",
       "type": "string",
-      "description": "Who answered, from the latest message. customer: clearly confirms with yes, that's me, speaking, or says the customer's own name. someone_else: another person, or the customer is not there. wrong_number: says the number does not belong to the customer. deceased: says the customer has passed away. unclear: anything else, also hello, go ahead, who is this, or a question.",
+      "description": "Who answered, from the latest message. customer: clearly confirms with yes, that's me, speaking, or says the customer's own name. someone_else: another person, or the customer is not there. wrong_number: says this number does not belong to the customer. deceased: says the customer has passed away. unclear: anything else, also hello, go ahead, who is this, or a question.",
       "enum_values": [
        "customer",
        "someone_else",
@@ -331,7 +274,7 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    import re\n    vars['fetch_tries'] = str(int(float(vars.get('fetch_tries') or 0)) + 1)\n    def load_list():\n        v = vars.get('products')\n        if isinstance(v, str):\n            try:\n                v = json.loads(v)\n            except Exception:\n                import ast\n                v = ast.literal_eval(v)\n        if isinstance(v, list):\n            return v\n        found = dict()\n        for k in list(vars.keys()):\n            m = re.search(r'products[.\\[](\\d+)\\]?\\.(\\w+)$', str(k))\n            if m:\n                found.setdefault(int(m.group(1)), dict())[m.group(2)] = vars.get(k)\n        return [found[i] for i in sorted(found)]\n    BANDS = [['early', 7, 1], ['late', 45, 2]]\n    WORDS = {'credit_card': 'credit card ending ', 'personal_loan': 'personal loan', 'car_loan': 'car loan'}\n    FLOORS = {'credit_card': 'minimum_payment', 'personal_loan': 'instalment_amount', 'car_loan': 'instalment_amount'}\n    items, facts, said = [], [], []\n    for p in load_list():\n        days_late = int(float(p.get('days_late')))\n        band = [b for b in BANDS if days_late <= b[1]][0]\n        kind = str(p.get('type'))\n        full, floor = float(p.get('past_due')), float(p.get(FLOORS.get(kind, '')) or 0)\n        deadline = vars.get('deadline_' + band[0])\n        word = WORDS.get(kind, kind.replace('_', ' '))\n        if word.endswith(' '):\n            word = word + str(p.get('card_last4') or '')\n        a1 = min(vars.get('attempt1_day'), deadline)\n        items.append(dict(id=str(p.get('product_id')), word=word, full=full, floor=floor, deadline=deadline, a1=a1,\n                          attempts=band[2], used=0, status='open'))\n        facts.append('Product ' + str(p.get('product_id')) + ': ' + word + ', past due ' + money(full) + ', ' + str(days_late) + ' days late.')\n        said.append('Your ' + word + ' has a past-due amount of ' + money(full) + ', ' + str(days_late) + ' days late.')\n    if items:\n        items[0]['asked'] = 'yes'   # the statement asks about today for every product (14.5)\n    vars['neg_state'] = json.dumps(dict(items=items))\n    vars['item_count'] = str(len(items))\n    vars['all_deadline'] = min([x['deadline'] for x in items]) if items else ''\n    vars['account_facts'] = '\\n'.join(facts)\n    vars['debt_statement'] = ('Thank you. I am calling from the collections team about a late payment. ' + ' '.join(said) + ' '\n                              + ('Can you make this payment today?' if len(items) == 1 else 'Can you make these payments today, for all of them?'))\n    vars['guide'] = 'Wait for the answer. Say nothing new.'\n    pass\nexcept Exception as exc:\n    vars['item_count'] = '0'\n    vars['account_facts'] = 'No data.'\n    vars['debt_statement'] = 'Thank you.'\n    vars['guide'] = 'Say you cannot see the account now.'\n    vars['prepare_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    import re\n    def load_list():\n        v = vars.get('products')\n        if isinstance(v, str):\n            try:\n                v = json.loads(v)\n            except Exception:\n                import ast\n                v = ast.literal_eval(v)\n        if isinstance(v, list):\n            return v\n        found = dict()\n        for k in list(vars.keys()):\n            m = re.search(r'products[.\\[](\\d+)\\]?\\.(\\w+)$', str(k))\n            if m:\n                found.setdefault(int(m.group(1)), dict())[m.group(2)] = vars.get(k)\n        return [found[i] for i in sorted(found)]\n    BANDS = [['early', 7, 1], ['late', 45, 2]]\n    WORDS = {'credit_card': 'credit card ending ', 'personal_loan': 'personal loan', 'car_loan': 'car loan'}\n    FLOORS = {'credit_card': 'minimum_payment', 'personal_loan': 'instalment_amount', 'car_loan': 'instalment_amount'}\n    items, facts, said = [], [], []\n    for p in load_list():\n        days_late = int(float(p.get('days_late')))\n        band = ([b for b in BANDS if days_late <= b[1]] or BANDS[-1:])[0]\n        kind = str(p.get('type'))\n        full, floor = float(p.get('past_due')), float(p.get(FLOORS.get(kind, 'instalment_amount'), 0) or 0)\n        word = WORDS.get(kind, kind.replace('_', ' '))\n        if kind == 'credit_card':\n            word = word + str(p.get('card_last4') or '')\n        deadline = vars.get('deadline_' + band[0])\n        items.append(dict(id=str(p.get('product_id')), word=word, full=full, floor=floor, deadline=deadline, max=band[2], used=0,\n                          status='open', pending=[full, vars.get('today_iso')], offered=[]))\n        facts.append('Product ' + str(p.get('product_id')) + ': ' + word + ', past due ' + money(full) + ', ' + str(days_late) + ' days late.')\n        said.append('Your ' + word + ' has ' + money(full) + ' past due and is ' + str(days_late) + ' days late.')\n    items[0]['asked'] = 'yes'   # the statement asks about today for every product (14.5)\n    vars['neg_state'] = json.dumps(dict(items=items))\n    vars['item_count'] = str(len(items))\n    vars['account_facts'] = '\\n'.join(facts)\n    vars['debt_statement'] = ('Thank you. ' + 'I am calling from the collections team about a late payment.' + ' ' + ' '.join(said) + ' '\n                              + ('Can you make this payment today?' if len(items) == 1 else 'Can you make all these payments today?'))\n    vars['guide'] = 'Wait for the answer. Say nothing new.'\n    pass\nexcept Exception as exc:\n    vars['item_count'] = '0'\n    vars['account_facts'] = 'No data.'\n    vars['debt_statement'] = 'Thank you.'\n    vars['guide'] = 'Say you cannot see the account now.'\n    vars['prepare_code_error'] = repr(exc)[:300]\n"
          },
          "timeout_ms": {
           "type": "number",
@@ -349,32 +292,6 @@
        "logic": "or",
        "conditions": [
         {
-         "logic": "and",
-         "conditions": [
-          {
-           "mode": "exact",
-           "operand": "0",
-           "operator": "equals",
-           "variable": "item_count"
-          },
-          {
-           "mode": "exact",
-           "operand": "1",
-           "operator": "equals",
-           "variable": "fetch_tries"
-          }
-         ]
-        }
-       ]
-      },
-      "description": "one more try",
-      "target_node": "fetch_account"
-     },
-     {
-      "condition": {
-       "logic": "or",
-       "conditions": [
-        {
          "mode": "exact",
          "operand": "0",
          "operator": "equals",
@@ -383,7 +300,7 @@
        ]
       },
       "description": "no account data",
-      "target_node": "close_no_account"
+      "target_node": "close_service_error"
      },
      {
       "condition": {
@@ -542,13 +459,13 @@
          }
         }
        },
-       "description": "CALL it every time the customer refuses to answer a security question or asks what the call is about instead."
+       "description": "CALL it every time the customer refuses to answer a security question or asks what the call is about instead of answering, or says they do not want to talk."
       }
      },
      {
       "type": "function",
       "function": {
-       "name": "customer_wants_person",
+       "name": "wants_person",
        "handler": "__function__:code_exec",
        "parameters": {
         "type": "object",
@@ -556,11 +473,11 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    \n    if vars.get('help_first_said') == 'yes':\n        vars['transfer_queue'], vars['close_key'], vars['id_human'] = 'general', 'close_human', 'yes'\n    else:\n        vars['help_first_said'] = 'yes'\n        vars['id_guide'] = 'Say only: Can I help you with this first?'\n    pass\nexcept Exception as exc:\n    vars['customer_wants_person_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    \n    n = int(float(vars.get('person_asks') or 0)) + 1\n    vars['person_asks'] = n\n    if n >= 2:\n        vars['transfer_queue'], vars['close_key'], vars['pre_transfer'] = 'general', 'close_human', 'yes'\n    else:\n        vars['id_guide'] = 'Say only: \"Can I help you with this first?\" Then wait.'\n    pass\nexcept Exception as exc:\n    vars['wants_person_code_error'] = repr(exc)[:300]\n"
          }
         }
        },
-       "description": "CALL it every time the customer asks for a person or a human agent."
+       "description": "CALL it every time the customer asks to speak to a person."
       }
      }
     ],
@@ -581,12 +498,12 @@
          "mode": "exact",
          "operand": "yes",
          "operator": "equals",
-         "variable": "id_human"
+         "variable": "pre_transfer"
         }
        ]
       },
       "description": "insists on a person",
-      "target_node": "transfer"
+      "target_node": "do_transfer"
      },
      {
       "condition": {
@@ -615,12 +532,12 @@
         }
        ]
       },
-      "description": "refused",
+      "description": "refused twice",
       "target_node": "close_declined"
      }
     ],
     "role_message": "",
-    "task_message": "NEXT STEP (obey it): {{id_guide}}\n\nNEXT STEP is about the answer checked last. A new answer is not checked yet: call answer_given with it first, also right after you said that an answer does not match, and also after messages that were cut off.\nThe person confirmed they are {{title}} {{last_name}}. Check identity before anything else, one question at a time, in this order: (1) date_of_birth: \"What is your date of birth?\" (2) phone_last4: \"What are the last four digits of the phone number on file?\". Every time the customer says anything that is part of an answer, call answer_given with the parts said in this message, also when it looks wrong, and also when the same message holds a complaint or a question. A date said only as numbers is day, then month, then year. Never guess a missing part. Never tell the right answer. Only NEXT STEP chooses the next question.\nBefore identity passes, you know nothing about the account: never say a product, a figure, a date or why you call. If asked, say you can tell after the security questions.\nIf the customer asks for a person, call customer_wants_person and follow NEXT STEP. If the customer refuses to answer, says they do not want to talk, asks what the call is about instead of answering, or asks you to skip the questions or to tell account facts first, call customer_refuses, then explain once that the questions are there to protect their account. When the customer asks something else back, answer in one sentence and stop: do not repeat the question, the customer answers next.",
+    "task_message": "NEXT STEP (obey it): {{id_guide}}\n\nNEXT STEP is about the answer checked last. A new answer is not checked yet: call answer_given with it first.\nThe person confirmed they are {{title}} {{last_name}}. Check identity first, one question at a time, in this order: (1) date_of_birth: \"What is your date of birth?\" (2) phone_last4: \"What are the last four digits of the phone number on file?\". Every time the customer says anything that is part of an answer, call answer_given with the parts said in this message, also when it looks wrong, and also when the message holds a complaint or a question. A date said only in numbers is day, then month, then year. Never guess a missing part. Never tell the right answer.\nBefore identity passes you know nothing about the account: never name a product, a figure, a date or why you call. If asked, say you can tell after the security questions.\nIf the customer refuses to answer, asks to skip the questions, or asks what the call is about instead of answering, call customer_refuses, then say: \"These questions are there to protect your account.\" and ask the question again. When the customer asks something else back, answer in one sentence and stop.",
     "interruptible": true,
     "max_node_turns": 30,
     "response_mapping": [],
@@ -632,63 +549,6 @@
     "on_enter_first_entry_only": true,
     "disable_inactivity_monitor": false,
     "passthrough_default_transition": null,
-    "return_to_previous_on_interrupt": false
-   },
-   "transfer": {
-    "name": "transfer",
-    "tools": [],
-    "on_enter": {
-     "type": "silent"
-    },
-    "node_type": "code",
-    "assertions": [],
-    "passthrough": true,
-    "pre_actions": [
-     {
-      "type": "function",
-      "function": {
-       "name": "code_exec",
-       "handler": "__function__:code_exec",
-       "parameters": {
-        "type": "object",
-        "properties": {
-         "code": {
-          "type": "string",
-          "default": "try:\n    vars['transfer_1_response.data.ok'] = 'pending'\n    pass\nexcept Exception as exc:\n    vars['transfer_code_error'] = repr(exc)[:300]\n"
-         },
-         "timeout_ms": {
-          "type": "number",
-          "default": 10000
-         }
-        }
-       },
-       "description": ""
-      }
-     }
-    ],
-    "transitions": [
-     {
-      "condition": {
-       "mode": "exact",
-       "operator": "always"
-      },
-      "description": "always",
-      "target_node": "transfer_1"
-     }
-    ],
-    "role_message": "",
-    "task_message": "",
-    "interruptible": true,
-    "max_node_turns": null,
-    "response_mapping": [],
-    "extraction_schema": [],
-    "max_turn_transition": null,
-    "truncation_strategy": "keep_all",
-    "suppress_tool_results": false,
-    "truncation_window_size": 10,
-    "on_enter_first_entry_only": false,
-    "disable_inactivity_monitor": true,
-    "passthrough_default_transition": "transfer_1",
     "return_to_previous_on_interrupt": false
    },
    "negotiate": {
@@ -708,7 +568,7 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    LINES = {'today_one': 'Can you make this payment today?', 'today_many': 'Can you make these payments today, for all of them?', 'confirm': 'Do you confirm?', 'sms': 'You will receive a text message confirming this promise.', 'paid': 'Payments can take one business day to show.', 'hardship': 'I am sorry to hear that. Would you like me to connect you with our customer support team?', 'help_first': 'Can I help you with this first?', 'app_change': 'You can change it in the mobile app.'}\n    QUEUES = {'restructuring': 'close_restructuring', 'support': 'close_support', 'general': 'close_human'}\n    def offer(it, amount, day):\n        it['pending'] = [round(float(amount), 2), day]\n        return 'Could you pay ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?'\n    def agree(it, amount, day):\n        it['agreed'] = [round(float(amount), 2), day]\n        it['status'] = 'agreed'\n        return ''\n    def stop(it, note):\n        it.pop('agreed', None)\n        it['status'] = 'noted'\n        it['note'] = note\n        return ''\n    def add_reply(text):   # a sentence said before the next line, for a product that is finished now\n        global reply\n        reply = (reply + ' ' + text).strip()\n    def attempt(it):\n        \"\"\"The next persuasion attempt (10.3), or the stop (10.4).\"\"\"\n        it['used'] = it['used'] + 1\n        if it['used'] > it['attempts']:\n            return stop(it, 'refused')\n        if it['used'] == 1:\n            return offer(it, it['floor'] if it.get('too_much') else it['full'], it['a1'])\n        return offer(it, it['floor'], it['deadline'])\n    def transfer(queue):\n        vars['negotiation_action'] = 'transfer'\n        vars['transfer_queue'] = queue\n        vars['close_key'] = QUEUES[queue]\n        vars['guide'] = 'SAY: \"One moment, please.\"'\n        return ''\n    def fix_day(it, day, deadline):\n        \"\"\"8.3, 8.4, 8.7: the day to use and whether it moved to the deadline.\"\"\"\n        d = iso_day(day)\n        if day < vars.get('today_iso'):\n            return None\n        if day > deadline:\n            return deadline\n        if not is_business_day(d, HOLIDAYS):\n            d = next_business_day_on_or_after(d, HOLIDAYS)\n            if d.isoformat() > deadline:\n                return deadline\n        return d.isoformat()\n    def proposal(it, amount, day, deadline):\n        pending = it.get('pending') or [it['full'], vars.get('today_iso')]\n        amount = pending[0] if amount is None else min(amount, it['full'])\n        day = day or pending[1]\n        good = fix_day(it, day, deadline)\n        if good is None:\n            return 'Which day from today could you pay for your ' + it['word'] + '?'\n        if amount < it['floor'] - 0.001:\n            if it.get('below_done'):\n                return attempt(it)\n            it['below_done'] = 'yes'\n            return 'I cannot record an amount below ' + money(it['floor']) + '. ' + offer(it, it['floor'], good)\n        if good != day and good == deadline and day > deadline:\n            return ('The latest date I can record for your ' + it['word'] + ' is ' + say(iso_day(deadline)) + '. '\n                    + offer(it, amount, deadline))\n        return agree(it, amount, good)\n    def decide(it, kind, amount, day):\n        if it.get('hardship') == 'asked':          # 10.5 comes before 10.3 and 12.3\n            if kind == 'accepts':\n                return transfer('support')\n            if kind in ('proposes', 'proposes_all'):\n                it['hardship'] = 'done'\n            elif kind in ('other',):\n                return ''\n            else:\n                for x in items:\n                    if x['status'] == 'open':\n                        stop(x, 'hardship')\n                return ''\n        if kind == 'confirms' and it.get('agreed'):\n            it['status'] = 'agreed'\n            return ''\n        if kind == 'hardship':\n            it['hardship'] = 'asked'\n            return LINES['hardship']\n        if kind == 'wants_plan':\n            return transfer('restructuring')\n        if kind == 'wants_person':\n            if vars.get('help_first_said') == 'yes':\n                return transfer('general')\n            vars['help_first_said'] = 'yes'\n            return LINES['help_first']\n        if kind == 'paid':\n            add_reply(LINES['paid'])\n            return stop(it, 'paid')\n        if kind == 'dispute':\n            add_reply('Thank you for telling me.')\n            return stop(it, 'dispute')\n        if kind == 'no_talk':\n            n = int(float(vars.get('no_talk') or 0)) + 1\n            vars['no_talk'] = n\n            if n > 1:\n                for x in items:\n                    if x['status'] in ('open', 'agreed'):\n                        stop(x, 'refused')\n                return ''\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            return attempt(it)\n        if kind == 'accepts':\n            amount, day = it.get('pending') or [it['full'], vars.get('today_iso')]\n            return agree(it, amount, day)\n        if kind == 'too_much':\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            if it.get('too_much') or (it.get('pending') and it['pending'][0] <= it['floor'] + 0.001):\n                return attempt(it)\n            it['too_much'] = 'yes'\n            if it['used'] == 0:\n                it['used'] = 1\n                day = it['a1']\n            else:\n                day = (it.get('pending') or [0, it['a1']])[1]\n            return 'The remaining balance stays overdue. ' + offer(it, it['floor'], day)\n        if kind == 'proposes_all':                  # memo COL-2026-21: one day for every product\n            day = day or vars.get('today_iso')\n            latest = vars.get('all_deadline')\n            if day > latest:\n                day = latest\n                vars['moved_all'] = 'yes'\n            for x in items:\n                if x['status'] in ('open', 'agreed'):\n                    x.pop('agreed', None)\n                    x['status'] = 'open'\n                    line = proposal(x, amount if x is it else None, day, latest)\n                    if line:\n                        x['line'] = line\n            return it.get('line', '')\n        if kind == 'proposes':\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            return proposal(it, amount, day, it['deadline'])\n        if kind == 'vague':\n            if it.get('vague_asked'):\n                pending = it.get('pending') or [it['full'], it['deadline']]\n                return ('The latest date I can record is ' + say(iso_day(it['deadline'])) + '. '\n                        + offer(it, pending[0], it['deadline']))\n            it['vague_asked'] = 'yes'\n            return 'On which exact day could you pay for your ' + it['word'] + '?'\n        if kind == 'refuses':\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            return attempt(it)\n        return ''\n    def first_ask(it):   # 14.5: no second question about today; each product starts at attempt 1\n        return attempt(it) or ''\n    def finish(items, confirmed):\n        agreed = [x for x in items if x['status'] == 'agreed']\n        if not agreed:\n            return 'wrap'\n        if confirmed:\n            return [dict(product_id=x['id'], amount=x['agreed'][0], date=x['agreed'][1]) for x in agreed]\n        parts = [money(x['agreed'][0]) + ' for your ' + x['word'] + ' on ' + say(iso_day(x['agreed'][1])) for x in agreed]\n        text = 'To confirm: ' + '; '.join(parts) + '.'\n        if vars.get('moved_all') == 'yes':\n            text = text + ' ' + say(iso_day(vars.get('all_deadline'))) + ' is the latest date that works for all of them.'\n        return dict(say=text + ' ' + LINES['confirm'])\n    \n    \n    import json\n    st = json.loads(vars.get('neg_state'))\n    items = st['items']\n    vars['say_turn'] = 'no'\n    reply = str(params.get('reply') or '').strip()\n    def speak_line(text):\n        text = (reply + ' ' + text).strip()     # the model's answer to a question, then the code's line\n        vars['guide'] = 'SAY: \"' + text + '\"'\n        vars['say_now'], vars['say_turn'] = text, 'yes'     # the next node speaks it with fixed text\n        asks = [q.strip() + '?' for q in text.split('?')[:-1]]\n        if asks:\n            st['last_question'] = asks[-1].split('. ')[-1]     # the last question said, to ask again\n    answers = params.get('answers') or []\n    answers = json.loads(answers) if isinstance(answers, str) else answers\n    answers = [answers] if isinstance(answers, dict) else answers\n    kinds = [str(a.get('kind') or '') for a in answers]\n    unfinished = bool(kinds) and all(k == 'unfinished' for k in kinds)\n    done = []\n    for a, kind in zip(answers, kinds):\n        if kind == 'unfinished':\n            continue\n        want = str(a.get('item') or '')\n        open_items = [x for x in items if x.get('status') == 'open']\n        picked = [x for x in open_items if str(x.get('id')) == want]\n        it = picked[0] if picked else (open_items or items)[0]\n        if it['id'] in done:\n            continue                            # one answer per product and message: the first is the main point\n        done.append(it['id'])\n        amount = a.get('amount')\n        amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None\n        day = str(a.get('date') or '')[:10]\n        line = decide(it, kind, amount, day)\n        if line and line == it.get('_said_line') and (amount is not None or day):\n            line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)\n        it['line'] = line or ''\n        if vars.get('close_key') or vars.get('negotiation_action'):\n            break\n    if unfinished:\n        speak_line('Please go on.' if reply else 'Sorry, please go on.')     # a cut-off message changes nothing\n    elif vars.get('close_key') or vars.get('negotiation_action'):\n        pass\n    else:\n        open_items = [x for x in items if x.get('status') == 'open']\n        todo = [x for x in open_items if x.get('line')]\n        if todo:\n            speak_line(todo[0]['line'])\n            todo[0]['_said_line'], todo[0]['line'] = todo[0]['line'], ''      # said now; '_' keeps the key away from the policy's keys\n        elif open_items:\n            nx = open_items[0]\n            if not nx.get('asked'):\n                nx['asked'] = 'yes'\n                speak_line(first_ask(nx))\n            elif reply:\n                speak_line('')\n            else:\n                ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again\n                # only the question: the judge counts \"I understand\" after small talk as sympathy (reference agent, 10 Oct)\n                speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')\n        else:\n            confirmed = 'confirms' in kinds and bool(st.get('final_shown'))\n            end = finish(items, confirmed)\n            if isinstance(end, dict) and end.get('say'):\n                st['final_shown'] = 'yes'\n                speak_line(end['say'])\n            elif isinstance(end, list) and end:\n                vars['promise_writes_list'] = json.dumps([dict(fields=f, status='pending') for f in end])\n                vars['record_now'] = 'yes'\n                vars['guide'] = 'SAY: \"One moment, please.\"'\n            else:\n                vars['close_key'] = str(end or '')\n    vars['neg_state'] = json.dumps(st)\n    pass\nexcept Exception as exc:\n    vars['customer_said_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    def all_items():\n        return items      # the engine's list (same snippet)\n    def offer(it, amount, day, before=''):\n        pair = [round(float(amount), 2), day]\n        if pair in it['offered']:\n            return refuse(it)          # never say an offer twice (10.4): a repeat is a flat refusal\n        it['offered'].append(pair)\n        it['pending'] = pair\n        return (before + ' Could you pay ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?').strip()\n    def handoff(it, ack):\n        \"\"\"`it` is finished: say `ack` and go on with the next open product in account order.\"\"\"\n        nxt = [x for x in all_items() if x['status'] == 'open' and x is not it]\n        if nxt:\n            nx = nxt[0]\n            if not nx.get('asked'):\n                nx['asked'] = 'yes'\n                nx['line'] = (ack + ' ' + first_ask(nx)).strip()\n            elif ack:\n                nx['line'] = ack\n        elif ack:\n            st['ack'] = ack\n        return ''\n    def note(it, reason, ack=''):\n        it['status'] = 'noted'\n        it['note'] = reason\n        return handoff(it, ack)\n    def agree(it, amount, day):\n        it['status'] = 'agreed'\n        it['agreed'] = [round(float(amount), 2), day]\n        vars['neg_conf'] = 'no'\n        return handoff(it, '')\n    def refuse(it):\n        if st.get('hardship'):\n            return note(it, 'hardship')   # 10.5: no persuasion attempt after hardship\n        it['used'] = it['used'] + 1\n        if it['used'] > it['max']:\n            return note(it, 'refused')\n        if it['used'] == 1:\n            return offer(it, it['floor'] if it.get('too_much') else it['full'], vars.get('attempt1_day'))\n        return offer(it, it['floor'], it['deadline'])\n    def check_day(it, day):\n        \"\"\"-> (day to use, words before the offer) or (day, '') when the day is fine.\"\"\"\n        try:\n            d = iso_day(day)\n        except Exception:\n            return None, ''\n        dl = iso_day(it['deadline'])\n        if day < vars.get('today_iso'):\n            return it['deadline'], 'I can record a day from today to ' + say(dl) + '.'\n        if d > dl:\n            return it['deadline'], 'The latest date I can record is ' + say(dl) + '.'\n        if not is_business_day(d, HOLIDAYS):\n            nb = next_business_day_on_or_after(d, HOLIDAYS)\n            if nb > dl:\n                nb = dl\n            return nb.isoformat(), say(d) + ' is not a business day.'\n        return day, ''\n    def proposes(it, amount, day):\n        pend = it.get('pending') or [it['full'], vars.get('today_iso')]\n        amount = pend[0] if amount is None else min(float(amount), it['full'])\n        day = day or pend[1]\n        day, why = check_day(it, day)\n        if day is None:\n            return 'Which exact day can you pay?'\n        if amount < it['floor'] - 0.001:\n            if it.get('below_done'):\n                return refuse(it)\n            it['below_done'] = 'yes'\n            it['too_much'] = 'yes'     # an amount below the full one: attempt 1 is then for the floor (10.3)\n            return offer(it, it['floor'], day, (why + ' I cannot record less than ' + money(it['floor']) + '.').strip())\n        if why:\n            return offer(it, amount, day, why)\n        return agree(it, amount, day)\n    def all_on_day(day):\n        \"\"\"One day for every product (memo COL-2026-21): after any deadline -> the earliest deadline for all.\"\"\"\n        todo = [x for x in all_items() if x['status'] in ('open', 'agreed')]\n        if not todo or not day:\n            return ''\n        earliest = min(x['deadline'] for x in todo)\n        if day > earliest:\n            use = earliest\n            st['single_note'] = say(iso_day(earliest)) + ' is the latest date that works for all of them.'\n        else:\n            use, why = check_day(todo[0], day)\n            if use is None or use < vars.get('today_iso') or use > earliest:\n                use = earliest\n            if why:\n                st['single_note'] = why + ' I used ' + say(iso_day(use)) + '.'\n        for x in todo:\n            x['status'] = 'agreed'\n            x['agreed'] = [round(float((x.get('agreed') or x.get('pending') or [x['full']])[0]), 2), use]\n        vars['neg_conf'] = 'no'\n        return ''\n    def transfer(queue, key):\n        vars['transfer_queue'] = queue\n        vars['negotiation_action'] = 'transfer'\n        vars['close_key'] = key\n        vars['guide'] = 'SAY: \"One moment, please.\"'\n        return ''\n    def decide(it, kind, amount, day):\n        # the engine picks only open products; a change at the read-back names an agreed one (`a` = the engine's answer)\n        named = [x for x in all_items() if x['id'] == str(a.get('item') or '')]\n        if named and named[0] is not it and named[0]['status'] == 'agreed':\n            it = named[0]\n        # 10.5 comes first, for every kind\n        if st.get('hardship') == 'offered':\n            if kind in ('accepts', 'confirms'):\n                return transfer('support', 'close_support')\n            if kind in ('proposes', 'all_on_day'):\n                st['hardship'] = 'declined'\n            else:\n                st['hardship'] = 'declined'\n                for x in all_items():\n                    if x['status'] == 'open':\n                        x['status'], x['note'] = 'noted', 'hardship'\n                return ''\n        if kind == 'hardship':\n            st['hardship'] = 'offered'\n            return 'I am sorry to hear that. Would you like me to connect you with our customer support team?'\n        if kind == 'restructuring':\n            return transfer('restructuring', 'close_restructuring')\n        if kind == 'wants_person':\n            if st.get('person_asked'):\n                return transfer('general', 'close_human')\n            st['person_asked'] = 'yes'\n            return 'Can I help you with this first?'\n        if kind == 'paid':\n            return note(it, 'paid', 'Thank you. Payments can take one business day to show.')\n        if kind == 'dispute':\n            return note(it, 'dispute', 'Thank you, I have noted that.')\n        if kind in ('confirms', 'accepts') and st.get('final_shown') and it['status'] == 'agreed':\n            vars['neg_conf'] = 'yes'\n            return ''\n        if kind == 'accepts' and len(answers) == 1 and not any(x['used'] or x['status'] != 'open' for x in all_items()):\n            for x in all_items():      # one yes to \"all these payments today\" (14.5)\n                x['status'], x['agreed'] = 'agreed', [x['full'], vars.get('today_iso')]\n            vars['neg_conf'] = 'no'\n            return ''\n        if kind == 'accepts' or kind == 'confirms':\n            pend = it.get('pending') or [it['full'], vars.get('today_iso')]\n            return agree(it, pend[0], pend[1])\n        if kind == 'all_on_day':\n            return all_on_day(day)\n        if kind == 'proposes':\n            if it['status'] == 'agreed':\n                it['status'] = 'open'\n                it['pending'] = it['agreed']\n            return proposes(it, amount, day)\n        if kind == 'too_much':\n            if it.get('too_much'):\n                return refuse(it)\n            it['too_much'] = 'yes'\n            day = it['pending'][1] if it['used'] >= 1 else vars.get('attempt1_day')\n            if it['used'] == 0:\n                it['used'] = 1     # the counter-offer before any attempt is attempt 1 (lesson 4h)\n            return offer(it, it['floor'], day, 'The remaining balance stays overdue.')\n        if kind == 'vague':\n            if it.get('vague'):\n                return offer(it, it['pending'][0], it['deadline'])\n            it['vague'] = 'yes'\n            return 'Which exact day can you pay?'\n        if kind == 'stop':\n            st['stops'] = int(st.get('stops') or 0) + 1\n            if st['stops'] >= 2:\n                for x in all_items():\n                    if x['status'] == 'open':\n                        x['status'], x['note'] = 'noted', 'refused'\n                return ''\n            return refuse(it)\n        if kind == 'refuses':\n            return refuse(it)\n        return ''\n    def first_ask(it):\n        it['used'] = 1     # 14.5: each next product starts at attempt 1, no second question about today\n        return offer(it, it['full'], vars.get('attempt1_day'), 'Now your ' + it['word'] + '.')\n    def finish(items, confirmed):\n        agreed = [x for x in items if x['status'] == 'agreed']\n        if not agreed:\n            return 'close_notes'\n        if not (confirmed or vars.get('neg_conf') == 'yes'):\n            parts = [money(x['agreed'][0]) + ' for your ' + x['word'] + ' on ' + say(iso_day(x['agreed'][1])) for x in agreed]\n            text = (st.get('ack', '') + ' To read back: ' + '; '.join(parts) + '. ' + st.get('single_note', '') + ' ' + 'Do you confirm?')\n            st['ack'] = ''\n            return dict(say=' '.join(text.split()))\n        return [dict(product_id=x['id'], amount=x['agreed'][0], date=x['agreed'][1]) for x in agreed]\n    \n    \n    import json\n    st = json.loads(vars.get('neg_state'))\n    items = st['items']\n    vars['say_turn'] = 'no'\n    reply = str(params.get('reply') or '').strip()\n    def speak_line(text):\n        text = (reply + ' ' + text).strip()     # the model's answer to a question, then the code's line\n        vars['guide'] = 'SAY: \"' + text + '\"'\n        vars['say_now'], vars['say_turn'] = text, 'yes'     # the next node speaks it with fixed text\n        asks = [q.strip() + '?' for q in text.split('?')[:-1]]\n        if asks:\n            st['last_question'] = asks[-1].split('. ')[-1]     # the last question said, to ask again\n    answers = params.get('answers') or []\n    answers = json.loads(answers) if isinstance(answers, str) else answers\n    answers = [answers] if isinstance(answers, dict) else answers\n    kinds = [str(a.get('kind') or '') for a in answers]\n    unfinished = bool(kinds) and all(k == 'unfinished' for k in kinds)\n    done = []\n    for a, kind in zip(answers, kinds):\n        if kind == 'unfinished':\n            continue\n        want = str(a.get('item') or '')\n        open_items = [x for x in items if x.get('status') == 'open']\n        picked = [x for x in open_items if str(x.get('id')) == want]\n        it = picked[0] if picked else (open_items or items)[0]\n        if it['id'] in done:\n            continue                            # one answer per product and message: the first is the main point\n        done.append(it['id'])\n        amount = a.get('amount')\n        amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None\n        day = str(a.get('date') or '')[:10]\n        line = decide(it, kind, amount, day)\n        if line and line == it.get('_said_line') and (amount is not None or day):\n            line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)\n        it['line'] = line or ''\n        if vars.get('close_key') or vars.get('negotiation_action'):\n            break\n    if unfinished:\n        speak_line('Please go on.' if reply else 'Sorry, please go on.')     # a cut-off message changes nothing\n    elif vars.get('close_key') or vars.get('negotiation_action'):\n        pass\n    else:\n        open_items = [x for x in items if x.get('status') == 'open']\n        todo = [x for x in open_items if x.get('line')]\n        if todo:\n            speak_line(todo[0]['line'])\n            todo[0]['_said_line'], todo[0]['line'] = todo[0]['line'], ''      # said now; '_' keeps the key away from the policy's keys\n        elif open_items:\n            nx = open_items[0]\n            if not nx.get('asked'):\n                nx['asked'] = 'yes'\n                speak_line(first_ask(nx))\n            elif reply:\n                speak_line('')\n            else:\n                ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again\n                # only the question: the judge counts \"I understand\" after small talk as sympathy (reference agent, 10 Oct)\n                speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')\n        else:\n            confirmed = 'confirms' in kinds and bool(st.get('final_shown'))\n            end = finish(items, confirmed)\n            if isinstance(end, dict) and end.get('say'):\n                st['final_shown'] = 'yes'\n                speak_line(end['say'])\n            elif isinstance(end, list) and end:\n                vars['promise_writes_list'] = json.dumps([dict(fields=f, status='pending') for f in end])\n                vars['record_now'] = 'yes'\n                vars['guide'] = 'SAY: \"One moment, please.\"'\n            else:\n                vars['close_key'] = str(end or '')\n    vars['neg_state'] = json.dumps(st)\n    pass\nexcept Exception as exc:\n    vars['customer_said_code_error'] = repr(exc)[:300]\n"
          },
          "reply": {
           "type": "string",
@@ -738,21 +598,21 @@
               "accepts",
               "confirms",
               "refuses",
-              "too_much",
               "proposes",
-              "proposes_all",
+              "all_on_day",
+              "too_much",
               "vague",
+              "hardship",
               "paid",
               "dispute",
-              "hardship",
-              "wants_plan",
+              "restructuring",
               "wants_person",
-              "no_talk",
+              "stop",
               "other",
               "unfinished"
              ],
              "type": "string",
-             "description": "What the customer said. accepts: yes to your last offer or question, also yes to paying today; also yes to the support team. confirms: a clear yes to the read-back 'Do you confirm?', with no change, no correction word such as sorry or I mean, and not cut off. refuses: a flat no with no day and no amount (also 'no' to paying today, or 'I am not sure when'); also no answer at all. too_much: says the full amount is too much or they cannot pay that much, with no other amount named. proposes: names a day or an amount for this product, also inside a question ('What is the minimum for Friday?'). proposes_all: names ONE day for all products together ('I can pay everything on the 30th'). Send one entry only. vague: names a period, not a day: 'next week', 'end of the month', 'when my salary comes'. paid: says they already paid this product. dispute: says this debt or product is not theirs, they never held it, or it was closed or settled in the past. hardship: mentions illness, a death in the family or loss of employment. wants_plan: asks for a new payment plan, lower instalments or restructuring. wants_person: asks for a person or a human agent. no_talk: says they do not want to talk. other: anything else, with no day and no amount (a question). unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before the cut-off still gets its answer in reply."
+             "description": "What the customer said. accepts: yes to your last offer or question about paying. confirms: a clear yes to the read-back 'Do you confirm?', with no change, no correction word (sorry, I mean, actually), not cut off. refuses: no, with no day and no amount (also 'no' to paying today, 'I am not sure when'); a day or an amount is never a refusal. proposes: names a day or an amount for this product, also inside a question ('What about Friday?'). all_on_day: names one single day to pay all the products. too_much: says the full amount is too much, with no amount of their own. vague: names only a period, not a day: next week, end of the month, when my salary comes. hardship: mentions illness, a death in the family, or loss of a job. paid: says they already paid this product's past-due amount. dispute: says this product or debt is not theirs, they never held it, or it was closed or settled in the past. restructuring: asks for a new payment plan or lower instalments. wants_person: asks to speak to a person. stop: says they do not want to talk, or wants to end the call. other: anything else, with no day and no amount. unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before the cut-off still gets its answer in reply."
             },
             "amount": {
              "type": "string",
@@ -798,6 +658,21 @@
        "conditions": [
         {
          "mode": "exact",
+         "operand": "transfer",
+         "operator": "equals",
+         "variable": "negotiation_action"
+        }
+       ]
+      },
+      "description": "transfer",
+      "target_node": "do_transfer"
+     },
+     {
+      "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
          "operand": "yes",
          "operator": "equals",
          "variable": "record_now"
@@ -813,38 +688,23 @@
        "conditions": [
         {
          "mode": "exact",
-         "operand": "transfer",
-         "operator": "equals",
-         "variable": "negotiation_action"
-        }
-       ]
-      },
-      "description": "transfer",
-      "target_node": "transfer"
-     },
-     {
-      "condition": {
-       "logic": "or",
-       "conditions": [
-        {
-         "mode": "exact",
-         "operand": "wrap",
+         "operand": "close_notes",
          "operator": "equals",
          "variable": "close_key"
         }
        ]
       },
-      "description": "no promise agreed",
-      "target_node": "wrap"
+      "description": "no promise",
+      "target_node": "end_router"
      }
     ],
     "role_message": "",
-    "task_message": "NEXT STEP: {{guide}}\n\nIdentity is verified. You stated the late products. Every time the customer answers about paying, call customer_said FIRST, before you say anything, with the product and the kind. A message that stops in the middle of a sentence is kind unfinished. If one message answers for several products, call customer_said once, with one entry per product in answers. The call then speaks the next line itself. If NEXT STEP has no line, follow it. Never name an amount or a day yourself: the code chose them. Never describe a plan. Never say that something is recorded: the call says it at the end. A recorded promise cannot be changed in this call: You can change it in the mobile app.\n\nACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}",
+    "task_message": "NEXT STEP: {{guide}}\n\nIdentity is verified. You stated the products. Every time the customer answers, call customer_said FIRST, before you say anything, with the product and the kind. If one message answers for several products, call customer_said once, with one entry per product in answers. When the customer names ONE day for all products, send one entry with kind all_on_day and that day. A message that stops in the middle of a sentence is kind unfinished. The call then speaks the next line itself. Never name an amount or a day yourself, and never ask how much the customer can pay: the code chose them. Never say that something is recorded.\n\nPRODUCTS (account order)\n{{account_facts}}\n\nDATES\n{{date_facts}}",
     "interruptible": true,
     "max_node_turns": 30,
     "response_mapping": [],
     "extraction_schema": [],
-    "max_turn_transition": "wrap",
+    "max_turn_transition": "end_router",
     "truncation_strategy": "keep_all",
     "suppress_tool_results": false,
     "truncation_window_size": 10,
@@ -1024,6 +884,21 @@
        "conditions": [
         {
          "mode": "exact",
+         "operand": "close_refused",
+         "operator": "equals",
+         "variable": "close_key"
+        }
+       ]
+      },
+      "description": "close_refused",
+      "target_node": "close_refused"
+     },
+     {
+      "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
          "operand": "close_hardship",
          "operator": "equals",
          "variable": "close_key"
@@ -1170,26 +1045,11 @@
      },
      {
       "condition": {
-       "logic": "or",
-       "conditions": [
-        {
-         "mode": "exact",
-         "operand": "close_no_account",
-         "operator": "equals",
-         "variable": "close_key"
-        }
-       ]
-      },
-      "description": "close_no_account",
-      "target_node": "close_no_account"
-     },
-     {
-      "condition": {
        "mode": "exact",
        "operator": "always"
       },
       "description": "always",
-      "target_node": "close_refused"
+      "target_node": "after_writes"
      }
     ],
     "role_message": "",
@@ -1204,97 +1064,42 @@
     "truncation_window_size": 10,
     "on_enter_first_entry_only": false,
     "disable_inactivity_monitor": true,
-    "passthrough_default_transition": "close_refused",
+    "passthrough_default_transition": "after_writes",
     "return_to_previous_on_interrupt": false
    },
-   "transfer_1": {
-    "name": "transfer_1",
+   "after_notes": {
+    "name": "after_notes",
     "tools": [],
     "on_enter": {
      "type": "silent"
     },
-    "node_type": "api_request",
+    "node_type": "code",
     "assertions": [],
     "passthrough": true,
     "pre_actions": [
      {
       "type": "function",
-      "config": {
-       "timeoutMs": 10000,
-       "maxRetries": 0
-      },
       "function": {
-       "name": "transfer_to_agent",
-       "handler": "__function__:api_call",
+       "name": "code_exec",
+       "handler": "__function__:code_exec",
        "parameters": {
         "type": "object",
         "properties": {
-         "url": {
+         "code": {
           "type": "string",
-          "default": "https://freya-bank-mock.freyavoice.workers.dev/v1/transfer_to_agent"
+          "default": "try:\n    \n    import json\n    st = json.loads(vars.get('neg_state') or '{\"items\": []}')\n    ws = json.loads(vars.get('promise_writes_list') or '[]')\n    ok = [w for w in ws if w['status'] == 'ok']\n    failed = [w for w in ws if w['status'] == 'failed']\n    ack = str(st.get('ack') or '')\n    words = dict((it['id'], it['word']) for it in st['items'])\n    if ok:\n        line = 'Your promise is recorded.' if not failed else ('Your promise for your ' + ', '.join(words.get(str(w['fields']['product_id']), '') for w in ok)\n                + ' is recorded. I could not record the promise for your ' + ', '.join(words.get(str(w['fields']['product_id']), '') for w in failed) + '.')\n        vars['promise_line'] = line + ' ' + 'You will receive a text message confirming this promise.' + ' Thank you, goodbye.'\n        vars['close_key'] = 'close_promise'\n    else:\n        reasons = [it.get('note') or 'refused' for it in st['items']]\n        if reasons and all(r == 'paid' for r in reasons):\n            vars['close_key'] = 'close_paid'\n        else:\n            vars['close_key'] = 'close_' + [r for r in reasons if r != 'paid'][0]\n        sorry = 'I am sorry, I could not record the promise. ' if 'service_error' in reasons else ''\n        vars['bye_line'] = ' '.join((ack + ' ' + sorry + 'Thank you for your time. Goodbye.').split())\n    pass\nexcept Exception as exc:\n    vars['close_key'] = 'close_refused'\n    vars['bye_line'] = 'Thank you for your time. Goodbye.'\n    vars['promise_line'] = 'Thank you, goodbye.'\n    vars['after_notes_code_error'] = repr(exc)[:300]\n"
          },
-         "body": {
-          "type": "object",
-          "required": [],
-          "properties": {
-           "queue": {
-            "enum": [
-             "restructuring",
-             "general",
-             "support"
-            ],
-            "type": "string",
-            "default": "{{transfer_queue}}",
-            "description": "One of: restructuring, general, support."
-           },
-           "customer_id": {
-            "type": "string",
-            "default": "{{customer_id}}"
-           }
-          }
-         },
-         "method": {
-          "type": "string",
-          "default": "POST"
-         },
-         "headers": {
-          "type": "object",
-          "properties": {
-           "Content-Type": {
-            "type": "string",
-            "default": "application/json"
-           }
-          }
+         "timeout_ms": {
+          "type": "number",
+          "default": 10000
          }
         }
        },
        "description": ""
-      },
-      "post_process_code": "try:\n    if isinstance(result, dict):\n        result.pop('header', None)\n        d = result.get('data')\n        if not isinstance(d, dict):\n            d = dict()\n            result['data'] = d\nexcept Exception:\n    pass\n"
+      }
      }
     ],
     "transitions": [
-     {
-      "condition": {
-       "logic": "or",
-       "conditions": [
-        {
-         "mode": "exact",
-         "operand": "true",
-         "operator": "equals",
-         "variable": "transfer_1_response.data.ok"
-        },
-        {
-         "mode": "exact",
-         "operand": "True",
-         "operator": "equals",
-         "variable": "transfer_1_response.data.ok"
-        }
-       ]
-      },
-      "description": "recorded",
-      "target_node": "end_router"
-     },
      {
       "condition": {
        "mode": "exact",
@@ -1376,6 +1181,63 @@
     "passthrough_default_transition": "close_human_end",
     "return_to_previous_on_interrupt": false
    },
+   "do_transfer": {
+    "name": "do_transfer",
+    "tools": [],
+    "on_enter": {
+     "type": "silent"
+    },
+    "node_type": "code",
+    "assertions": [],
+    "passthrough": true,
+    "pre_actions": [
+     {
+      "type": "function",
+      "function": {
+       "name": "code_exec",
+       "handler": "__function__:code_exec",
+       "parameters": {
+        "type": "object",
+        "properties": {
+         "code": {
+          "type": "string",
+          "default": "try:\n    vars['do_transfer_1_response.data.ok'] = 'pending'\n    pass\nexcept Exception as exc:\n    vars['do_transfer_code_error'] = repr(exc)[:300]\n"
+         },
+         "timeout_ms": {
+          "type": "number",
+          "default": 10000
+         }
+        }
+       },
+       "description": ""
+      }
+     }
+    ],
+    "transitions": [
+     {
+      "condition": {
+       "mode": "exact",
+       "operator": "always"
+      },
+      "description": "always",
+      "target_node": "do_transfer_1"
+     }
+    ],
+    "role_message": "",
+    "task_message": "",
+    "interruptible": true,
+    "max_node_turns": null,
+    "response_mapping": [],
+    "extraction_schema": [],
+    "max_turn_transition": null,
+    "truncation_strategy": "keep_all",
+    "suppress_tool_results": false,
+    "truncation_window_size": 10,
+    "on_enter_first_entry_only": false,
+    "disable_inactivity_monitor": true,
+    "passthrough_default_transition": "do_transfer_1",
+    "return_to_previous_on_interrupt": false
+   },
    "note_writes": {
     "name": "note_writes",
     "tools": [],
@@ -1422,7 +1284,7 @@
        ]
       },
       "description": "all written",
-      "target_node": "end_router"
+      "target_node": "after_notes"
      },
      {
       "condition": {
@@ -1473,11 +1335,11 @@
          },
          "code": {
           "type": "string",
-          "default": "try:\n    \n    day = str(params.get('day') or '').strip()[:10]\n    at = str(params.get('at') or '').strip()[:5]\n    today = str(vars.get('today_iso'))\n    late = at and day == today and at <= str(vars.get('now_hhmm'))\n    if (day and day not in str(vars.get('callback_days')).split(',')) or (at and not ('10:00' <= at <= '19:00')) or late:\n        n = int(float(vars.get('cb_outside') or 0)) + 1\n        vars['cb_outside'] = n\n        vars['tp_guide'] = 'That time is outside the window. Say so in one sentence, and ask for a day and time inside it.'\n        if n > 1:\n            vars['cb_close'] = 'yes'\n    elif day and at:\n        vars['cb_day'], vars['cb_at'], vars['cb_book'] = day, at, 'yes'\n        vars['tp_guide'] = 'Say only: one moment, please.'\n    else:\n        vars['tp_guide'] = 'Ask only for the ' + ('time' if day else 'day') + ' of the callback.'\n    pass\nexcept Exception as exc:\n    vars['time_named_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    \n    day = str(params.get('day') or '').strip()[:10]\n    at = str(params.get('at') or '').strip()[:5]\n    days = str(vars.get('callback_days')).split(',')\n    bad = (day and day not in days) or (at and not ('10:00' <= at <= '19:00')) or (day and at and day == days[0] and at <= str(vars.get('now_hhmm')))\n    if bad:\n        n = int(float(vars.get('cb_outside') or 0)) + 1\n        vars['cb_outside'] = n\n        vars['tp_guide'] = 'That time is not possible. Say so in one sentence, and ask for a time today later than now or on the next business day, between 10:00 and 19:00.'\n        if n > 1:\n            vars['cb_close'] = 'yes'\n    elif day and at:\n        vars['cb_day'], vars['cb_at'], vars['cb_book'] = day, at, 'yes'\n        vars['tp_guide'] = 'Say only: one moment, please.'\n    else:\n        vars['tp_guide'] = 'Ask only for the ' + ('time' if day else 'day') + ' when the customer can be reached.'\n    pass\nexcept Exception as exc:\n    vars['time_named_code_error'] = repr(exc)[:300]\n"
          }
         }
        },
-       "description": "CALL it every time the person names a day or a time for a callback."
+       "description": "CALL it every time the person names a day or a time when the customer can be reached."
       }
      }
     ],
@@ -1516,23 +1378,8 @@
         }
        ]
       },
-      "description": "outside the window after the one more ask",
+      "description": "outside the window twice",
       "target_node": "close_no_callback"
-     },
-     {
-      "condition": {
-       "logic": "or",
-       "conditions": [
-        {
-         "mode": "exact",
-         "operand": "deceased",
-         "operator": "equals",
-         "variable": "tp_event"
-        }
-       ]
-      },
-      "description": "the customer passed away",
-      "target_node": "close_deceased"
      },
      {
       "condition": {
@@ -1542,7 +1389,7 @@
          "mode": "exact",
          "operand": "wrong_number",
          "operator": "equals",
-         "variable": "tp_event"
+         "variable": "tp_party"
         }
        ]
       },
@@ -1551,25 +1398,40 @@
      },
      {
       "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
+         "operand": "deceased",
+         "operator": "equals",
+         "variable": "tp_party"
+        }
+       ]
+      },
+      "description": "deceased",
+      "target_node": "close_deceased"
+     },
+     {
+      "condition": {
        "mode": "exact",
        "operator": "matches_intent",
-       "description": "no callback time inside the window"
+       "description": "no time to reach the customer after the second ask"
       },
-      "description": "no callback time inside the window",
+      "description": "no time to reach the customer after the second ask",
       "target_node": "close_no_callback",
       "is_tool_call": true
      }
     ],
     "role_message": "",
-    "task_message": "NEXT STEP: {{tp_guide}}\n\nThe person is not {{title}} {{last_name}}. Never say why you are calling, and give no hint of it. If the person asks what it is about, offers to pay or offers to take a message, say only that you can speak about it with {{title}} {{last_name}} only. Do not say what you can or cannot accept.\n{{callback_facts}}\nEvery time the person names a day or a time, also a vague one ('Saturday morning', 'after eight', 'tonight'), call time_named FIRST with the day as YYYY-MM-DD and the time as HH:MM, each empty when not named; the code checks the window and counts. Then follow NEXT STEP. If the person gives no time at all after NEXT STEP asked again, call transition_to_close_no_callback.\n\nDATES\n{{date_facts}}",
+    "task_message": "NEXT STEP: {{tp_guide}}\n\nThe person is not {{title}} {{last_name}}. Never say why you are calling and give no hint of it. To any question, offer to pay, or offer to answer for the customer, say only that you can speak about it with {{title}} {{last_name}} only, then ask when {{title}} {{last_name}} can be reached.\n{{callback_facts}}\nEvery time the person names a day or a time, also a vague one, call time_named FIRST with the day as YYYY-MM-DD and the time as HH:MM, each empty when not named. Then follow NEXT STEP. If the person gives no time at all after you asked twice, call transition_to_close_no_callback.\n{{date_facts}}",
     "interruptible": true,
     "max_node_turns": 20,
     "response_mapping": [],
     "extraction_schema": [
      {
-      "name": "tp_event",
+      "name": "tp_party",
       "type": "string",
-      "description": "From the latest message only. wrong_number: says plainly the number does not belong to the customer and gives no time. deceased: says the customer has passed away. other: anything else.",
+      "description": "From the latest message only. wrong_number: says this number does not belong to the customer. deceased: says the customer has passed away. other: anything else.",
       "enum_values": [
        "wrong_number",
        "deceased",
@@ -1585,6 +1447,63 @@
     "on_enter_first_entry_only": false,
     "disable_inactivity_monitor": false,
     "passthrough_default_transition": null,
+    "return_to_previous_on_interrupt": false
+   },
+   "after_writes": {
+    "name": "after_writes",
+    "tools": [],
+    "on_enter": {
+     "type": "silent"
+    },
+    "node_type": "code",
+    "assertions": [],
+    "passthrough": true,
+    "pre_actions": [
+     {
+      "type": "function",
+      "function": {
+       "name": "code_exec",
+       "handler": "__function__:code_exec",
+       "parameters": {
+        "type": "object",
+        "properties": {
+         "code": {
+          "type": "string",
+          "default": "try:\n    \n    import json\n    st = json.loads(vars.get('neg_state') or '{\"items\": []}')\n    ws = json.loads(vars.get('promise_writes_list') or '[]')\n    status = dict((str(w['fields']['product_id']), w['status']) for w in ws)\n    notes = []\n    for it in st['items']:\n        s = status.get(it['id'])\n        if s == 'ok':\n            continue\n        reason = 'service_error' if s == 'failed' else (it.get('note') or 'refused')\n        it['note'] = reason\n        notes.append(dict(fields=dict(product_id=it['id'], reason=reason), status='pending'))\n    vars['neg_state'] = json.dumps(st)\n    vars['note_writes_list'] = json.dumps(notes if len(st['items']) > 1 else [])\n    pass\nexcept Exception as exc:\n    vars['note_writes_list'] = '[]'\n    vars['after_writes_code_error'] = repr(exc)[:300]\n"
+         },
+         "timeout_ms": {
+          "type": "number",
+          "default": 10000
+         }
+        }
+       },
+       "description": ""
+      }
+     }
+    ],
+    "transitions": [
+     {
+      "condition": {
+       "mode": "exact",
+       "operator": "always"
+      },
+      "description": "always",
+      "target_node": "note_writes"
+     }
+    ],
+    "role_message": "",
+    "task_message": "",
+    "interruptible": true,
+    "max_node_turns": null,
+    "response_mapping": [],
+    "extraction_schema": [],
+    "max_turn_transition": null,
+    "truncation_strategy": "keep_all",
+    "suppress_tool_results": false,
+    "truncation_window_size": 10,
+    "on_enter_first_entry_only": false,
+    "disable_inactivity_monitor": true,
+    "passthrough_default_transition": "note_writes",
     "return_to_previous_on_interrupt": false
    },
    "close_failed": {
@@ -1986,6 +1905,118 @@
     "passthrough_default_transition": "close_unclear_end",
     "return_to_previous_on_interrupt": false
    },
+   "do_transfer_1": {
+    "name": "do_transfer_1",
+    "tools": [],
+    "on_enter": {
+     "type": "silent"
+    },
+    "node_type": "api_request",
+    "assertions": [],
+    "passthrough": true,
+    "pre_actions": [
+     {
+      "type": "function",
+      "config": {
+       "timeoutMs": 10000,
+       "maxRetries": 0
+      },
+      "function": {
+       "name": "transfer_to_agent",
+       "handler": "__function__:api_call",
+       "parameters": {
+        "type": "object",
+        "properties": {
+         "url": {
+          "type": "string",
+          "default": "https://freya-bank-mock.freyavoice.workers.dev/v1/transfer_to_agent"
+         },
+         "body": {
+          "type": "object",
+          "required": [],
+          "properties": {
+           "queue": {
+            "enum": [
+             "restructuring",
+             "general",
+             "support"
+            ],
+            "type": "string",
+            "default": "{{transfer_queue}}",
+            "description": "One of: restructuring, general, support."
+           },
+           "customer_id": {
+            "type": "string",
+            "default": "{{customer_id}}"
+           }
+          }
+         },
+         "method": {
+          "type": "string",
+          "default": "POST"
+         },
+         "headers": {
+          "type": "object",
+          "properties": {
+           "Content-Type": {
+            "type": "string",
+            "default": "application/json"
+           }
+          }
+         }
+        }
+       },
+       "description": ""
+      },
+      "post_process_code": "try:\n    if isinstance(result, dict):\n        result.pop('header', None)\n        d = result.get('data')\n        if not isinstance(d, dict):\n            d = dict()\n            result['data'] = d\nexcept Exception:\n    pass\n"
+     }
+    ],
+    "transitions": [
+     {
+      "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
+         "operand": "true",
+         "operator": "equals",
+         "variable": "do_transfer_1_response.data.ok"
+        },
+        {
+         "mode": "exact",
+         "operand": "True",
+         "operator": "equals",
+         "variable": "do_transfer_1_response.data.ok"
+        }
+       ]
+      },
+      "description": "recorded",
+      "target_node": "end_router"
+     },
+     {
+      "condition": {
+       "mode": "exact",
+       "operator": "always"
+      },
+      "description": "always",
+      "target_node": "end_router"
+     }
+    ],
+    "role_message": "",
+    "task_message": "",
+    "interruptible": true,
+    "max_node_turns": null,
+    "response_mapping": [],
+    "extraction_schema": [],
+    "max_turn_transition": null,
+    "truncation_strategy": "keep_all",
+    "suppress_tool_results": false,
+    "truncation_window_size": 10,
+    "on_enter_first_entry_only": false,
+    "disable_inactivity_monitor": true,
+    "passthrough_default_transition": "end_router",
+    "return_to_previous_on_interrupt": false
+   },
    "fetch_account": {
     "name": "fetch_account",
     "tools": [],
@@ -2149,13 +2180,13 @@
          }
         }
        },
-       "description": "CALL it every time the customer refuses to answer a security question or asks what the call is about instead."
+       "description": "CALL it every time the customer refuses to answer a security question or asks what the call is about instead of answering, or says they do not want to talk."
       }
      },
      {
       "type": "function",
       "function": {
-       "name": "customer_wants_person",
+       "name": "wants_person",
        "handler": "__function__:code_exec",
        "parameters": {
         "type": "object",
@@ -2163,11 +2194,11 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    \n    if vars.get('help_first_said') == 'yes':\n        vars['transfer_queue'], vars['close_key'], vars['id_human'] = 'general', 'close_human', 'yes'\n    else:\n        vars['help_first_said'] = 'yes'\n        vars['id_guide'] = 'Say only: Can I help you with this first?'\n    pass\nexcept Exception as exc:\n    vars['customer_wants_person_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    \n    n = int(float(vars.get('person_asks') or 0)) + 1\n    vars['person_asks'] = n\n    if n >= 2:\n        vars['transfer_queue'], vars['close_key'], vars['pre_transfer'] = 'general', 'close_human', 'yes'\n    else:\n        vars['id_guide'] = 'Say only: \"Can I help you with this first?\" Then wait.'\n    pass\nexcept Exception as exc:\n    vars['wants_person_code_error'] = repr(exc)[:300]\n"
          }
         }
        },
-       "description": "CALL it every time the customer asks for a person or a human agent."
+       "description": "CALL it every time the customer asks to speak to a person."
       }
      }
     ],
@@ -2188,12 +2219,12 @@
          "mode": "exact",
          "operand": "yes",
          "operator": "equals",
-         "variable": "id_human"
+         "variable": "pre_transfer"
         }
        ]
       },
       "description": "insists on a person",
-      "target_node": "transfer"
+      "target_node": "do_transfer"
      },
      {
       "condition": {
@@ -2222,12 +2253,12 @@
         }
        ]
       },
-      "description": "refused",
+      "description": "refused twice",
       "target_node": "close_declined"
      }
     ],
     "role_message": "",
-    "task_message": "NEXT STEP (obey it): {{id_guide}}\n\nNEXT STEP is about the answer checked last. A new answer is not checked yet: call answer_given with it first, also right after you said that an answer does not match, and also after messages that were cut off.\nThe person confirmed they are {{title}} {{last_name}}. Check identity before anything else, one question at a time, in this order: (1) date_of_birth: \"What is your date of birth?\" (2) phone_last4: \"What are the last four digits of the phone number on file?\". Every time the customer says anything that is part of an answer, call answer_given with the parts said in this message, also when it looks wrong, and also when the same message holds a complaint or a question. A date said only as numbers is day, then month, then year. Never guess a missing part. Never tell the right answer. Only NEXT STEP chooses the next question.\nBefore identity passes, you know nothing about the account: never say a product, a figure, a date or why you call. If asked, say you can tell after the security questions.\nIf the customer asks for a person, call customer_wants_person and follow NEXT STEP. If the customer refuses to answer, says they do not want to talk, asks what the call is about instead of answering, or asks you to skip the questions or to tell account facts first, call customer_refuses, then explain once that the questions are there to protect their account. When the customer asks something else back, answer in one sentence and stop: do not repeat the question, the customer answers next.",
+    "task_message": "NEXT STEP (obey it): {{id_guide}}\n\nNEXT STEP is about the answer checked last. A new answer is not checked yet: call answer_given with it first.\nThe person confirmed they are {{title}} {{last_name}}. Check identity first, one question at a time, in this order: (1) date_of_birth: \"What is your date of birth?\" (2) phone_last4: \"What are the last four digits of the phone number on file?\". Every time the customer says anything that is part of an answer, call answer_given with the parts said in this message, also when it looks wrong, and also when the message holds a complaint or a question. A date said only in numbers is day, then month, then year. Never guess a missing part. Never tell the right answer.\nBefore identity passes you know nothing about the account: never name a product, a figure, a date or why you call. If asked, say you can tell after the security questions.\nIf the customer refuses to answer, asks to skip the questions, or asks what the call is about instead of answering, call customer_refuses, then say: \"These questions are there to protect your account.\" and ask the question again. When the customer asks something else back, answer in one sentence and stop.",
     "interruptible": true,
     "max_node_turns": 30,
     "response_mapping": [],
@@ -2546,7 +2577,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "Payments can take one business day to show. Thank you for your time. Goodbye."
+         "default": "{{bye_line}}"
         }
        }
       },
@@ -2593,7 +2624,7 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    def r(f):\n        return str(vars.get('id_check_check_response.data.' + f))\n    if str(vars.get('id_check_check_response.status')) != 'success':\n        vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n        vars['id_guide'] = 'The check is not available. Wait for the answer again.'\n    else:\n        \n        import json\n        ASKS = [['date_of_birth', 'What is your date of birth?'], ['phone_last4', 'What are the last four digits of the phone number on file?']]\n        order = [q for q, ask in ASKS]\n        q = str(vars.get('id_question') or '')\n        done = json.loads(vars.get('id_correct') or '[]')\n        if q in order and r('verified') == 'true' and q not in done:\n            done.append(q)\n        vars['id_correct'] = json.dumps(done)\n        todo = [x for x in order if x not in done]\n        if r('all_verified') == 'true' or (r('all_verified') in ('None', '') and not todo):\n            vars['id_passed'] = 'yes'\n            vars['id_guide'] = 'Both answers are correct. Say thank you.'\n        else:\n            ask = dict(ASKS).get(q, ASKS[0][1])\n            if r('hint') == 'day_month_swapped':\n                ask = 'Could you say your date of birth again, with the month as a word?'\n                line = ask\n            elif r('ok') == 'false':\n                line = 'Sorry, I could not read that. ' + ask\n            elif r('verified') == 'true':\n                ask = dict(ASKS)[todo[0]] if todo else ASKS[0][1]\n                line = 'Thank you. ' + ask\n            else:\n                line = 'That does not match. ' + ask\n            vars['id_say'] = line\n            vars['id_guide'] = 'You asked: \"' + ask + '\" Wait for the answer. Give no hint.'\n    pass\nexcept Exception as exc:\n    vars['id_guide'] = 'Wait for the answer again.'\n    vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n    vars['id_check_after_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    def r(f):\n        return str(vars.get('id_check_check_response.data.' + f))\n    if str(vars.get('id_check_check_response.status')) != 'success':\n        vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n        vars['id_guide'] = 'The check is not available. Wait for the answer again.'\n    else:\n        \n        import json\n        ASKS = [['date_of_birth', 'What is your date of birth?'], ['phone_last4', 'What are the last four digits of the phone number on file?']]\n        order = [q for q, ask in ASKS]\n        q = str(vars.get('id_question') or '')\n        done = json.loads(vars.get('id_correct') or '[]')\n        if q in order and r('verified') == 'true' and q not in done:\n            done.append(q)\n        vars['id_correct'] = json.dumps(done)\n        todo = [x for x in order if x not in done]\n        if r('all_verified') == 'true' or (r('all_verified') in ('None', '') and not todo and r('ok') != 'false'):\n            vars['id_passed'] = 'yes'\n            vars['id_guide'] = 'Both answers are correct. Say thank you.'\n        else:\n            ask = dict(ASKS).get(q, ASKS[0][1])\n            if r('hint') == 'day_month_swapped':\n                ask = 'Could you say the month of your date of birth as a word, please?'\n                line = ask\n            elif r('ok') == 'false':\n                line = 'Sorry, I could not read that. ' + ask\n            elif r('verified') == 'true':\n                ask = dict(ASKS)[todo[0]] if todo else ASKS[0][1]\n                line = 'Thank you. ' + ask\n            else:\n                line = 'That does not match. ' + ask\n            vars['id_say'] = line\n            vars['id_guide'] = 'You asked: \"' + ask + '\" Wait for the answer. Give no hint.'\n    pass\nexcept Exception as exc:\n    vars['id_guide'] = 'Wait for the answer again.'\n    vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n    vars['id_check_after_code_error'] = repr(exc)[:300]\n"
          },
          "timeout_ms": {
           "type": "number",
@@ -2772,7 +2803,7 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    LINES = {'today_one': 'Can you make this payment today?', 'today_many': 'Can you make these payments today, for all of them?', 'confirm': 'Do you confirm?', 'sms': 'You will receive a text message confirming this promise.', 'paid': 'Payments can take one business day to show.', 'hardship': 'I am sorry to hear that. Would you like me to connect you with our customer support team?', 'help_first': 'Can I help you with this first?', 'app_change': 'You can change it in the mobile app.'}\n    QUEUES = {'restructuring': 'close_restructuring', 'support': 'close_support', 'general': 'close_human'}\n    def offer(it, amount, day):\n        it['pending'] = [round(float(amount), 2), day]\n        return 'Could you pay ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?'\n    def agree(it, amount, day):\n        it['agreed'] = [round(float(amount), 2), day]\n        it['status'] = 'agreed'\n        return ''\n    def stop(it, note):\n        it.pop('agreed', None)\n        it['status'] = 'noted'\n        it['note'] = note\n        return ''\n    def add_reply(text):   # a sentence said before the next line, for a product that is finished now\n        global reply\n        reply = (reply + ' ' + text).strip()\n    def attempt(it):\n        \"\"\"The next persuasion attempt (10.3), or the stop (10.4).\"\"\"\n        it['used'] = it['used'] + 1\n        if it['used'] > it['attempts']:\n            return stop(it, 'refused')\n        if it['used'] == 1:\n            return offer(it, it['floor'] if it.get('too_much') else it['full'], it['a1'])\n        return offer(it, it['floor'], it['deadline'])\n    def transfer(queue):\n        vars['negotiation_action'] = 'transfer'\n        vars['transfer_queue'] = queue\n        vars['close_key'] = QUEUES[queue]\n        vars['guide'] = 'SAY: \"One moment, please.\"'\n        return ''\n    def fix_day(it, day, deadline):\n        \"\"\"8.3, 8.4, 8.7: the day to use and whether it moved to the deadline.\"\"\"\n        d = iso_day(day)\n        if day < vars.get('today_iso'):\n            return None\n        if day > deadline:\n            return deadline\n        if not is_business_day(d, HOLIDAYS):\n            d = next_business_day_on_or_after(d, HOLIDAYS)\n            if d.isoformat() > deadline:\n                return deadline\n        return d.isoformat()\n    def proposal(it, amount, day, deadline):\n        pending = it.get('pending') or [it['full'], vars.get('today_iso')]\n        amount = pending[0] if amount is None else min(amount, it['full'])\n        day = day or pending[1]\n        good = fix_day(it, day, deadline)\n        if good is None:\n            return 'Which day from today could you pay for your ' + it['word'] + '?'\n        if amount < it['floor'] - 0.001:\n            if it.get('below_done'):\n                return attempt(it)\n            it['below_done'] = 'yes'\n            return 'I cannot record an amount below ' + money(it['floor']) + '. ' + offer(it, it['floor'], good)\n        if good != day and good == deadline and day > deadline:\n            return ('The latest date I can record for your ' + it['word'] + ' is ' + say(iso_day(deadline)) + '. '\n                    + offer(it, amount, deadline))\n        return agree(it, amount, good)\n    def decide(it, kind, amount, day):\n        if it.get('hardship') == 'asked':          # 10.5 comes before 10.3 and 12.3\n            if kind == 'accepts':\n                return transfer('support')\n            if kind in ('proposes', 'proposes_all'):\n                it['hardship'] = 'done'\n            elif kind in ('other',):\n                return ''\n            else:\n                for x in items:\n                    if x['status'] == 'open':\n                        stop(x, 'hardship')\n                return ''\n        if kind == 'confirms' and it.get('agreed'):\n            it['status'] = 'agreed'\n            return ''\n        if kind == 'hardship':\n            it['hardship'] = 'asked'\n            return LINES['hardship']\n        if kind == 'wants_plan':\n            return transfer('restructuring')\n        if kind == 'wants_person':\n            if vars.get('help_first_said') == 'yes':\n                return transfer('general')\n            vars['help_first_said'] = 'yes'\n            return LINES['help_first']\n        if kind == 'paid':\n            add_reply(LINES['paid'])\n            return stop(it, 'paid')\n        if kind == 'dispute':\n            add_reply('Thank you for telling me.')\n            return stop(it, 'dispute')\n        if kind == 'no_talk':\n            n = int(float(vars.get('no_talk') or 0)) + 1\n            vars['no_talk'] = n\n            if n > 1:\n                for x in items:\n                    if x['status'] in ('open', 'agreed'):\n                        stop(x, 'refused')\n                return ''\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            return attempt(it)\n        if kind == 'accepts':\n            amount, day = it.get('pending') or [it['full'], vars.get('today_iso')]\n            return agree(it, amount, day)\n        if kind == 'too_much':\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            if it.get('too_much') or (it.get('pending') and it['pending'][0] <= it['floor'] + 0.001):\n                return attempt(it)\n            it['too_much'] = 'yes'\n            if it['used'] == 0:\n                it['used'] = 1\n                day = it['a1']\n            else:\n                day = (it.get('pending') or [0, it['a1']])[1]\n            return 'The remaining balance stays overdue. ' + offer(it, it['floor'], day)\n        if kind == 'proposes_all':                  # memo COL-2026-21: one day for every product\n            day = day or vars.get('today_iso')\n            latest = vars.get('all_deadline')\n            if day > latest:\n                day = latest\n                vars['moved_all'] = 'yes'\n            for x in items:\n                if x['status'] in ('open', 'agreed'):\n                    x.pop('agreed', None)\n                    x['status'] = 'open'\n                    line = proposal(x, amount if x is it else None, day, latest)\n                    if line:\n                        x['line'] = line\n            return it.get('line', '')\n        if kind == 'proposes':\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            return proposal(it, amount, day, it['deadline'])\n        if kind == 'vague':\n            if it.get('vague_asked'):\n                pending = it.get('pending') or [it['full'], it['deadline']]\n                return ('The latest date I can record is ' + say(iso_day(it['deadline'])) + '. '\n                        + offer(it, pending[0], it['deadline']))\n            it['vague_asked'] = 'yes'\n            return 'On which exact day could you pay for your ' + it['word'] + '?'\n        if kind == 'refuses':\n            it.pop('agreed', None)\n            it['status'] = 'open'\n            return attempt(it)\n        return ''\n    def first_ask(it):   # 14.5: no second question about today; each product starts at attempt 1\n        return attempt(it) or ''\n    def finish(items, confirmed):\n        agreed = [x for x in items if x['status'] == 'agreed']\n        if not agreed:\n            return 'wrap'\n        if confirmed:\n            return [dict(product_id=x['id'], amount=x['agreed'][0], date=x['agreed'][1]) for x in agreed]\n        parts = [money(x['agreed'][0]) + ' for your ' + x['word'] + ' on ' + say(iso_day(x['agreed'][1])) for x in agreed]\n        text = 'To confirm: ' + '; '.join(parts) + '.'\n        if vars.get('moved_all') == 'yes':\n            text = text + ' ' + say(iso_day(vars.get('all_deadline'))) + ' is the latest date that works for all of them.'\n        return dict(say=text + ' ' + LINES['confirm'])\n    \n    \n    import json\n    st = json.loads(vars.get('neg_state'))\n    items = st['items']\n    vars['say_turn'] = 'no'\n    reply = str(params.get('reply') or '').strip()\n    def speak_line(text):\n        text = (reply + ' ' + text).strip()     # the model's answer to a question, then the code's line\n        vars['guide'] = 'SAY: \"' + text + '\"'\n        vars['say_now'], vars['say_turn'] = text, 'yes'     # the next node speaks it with fixed text\n        asks = [q.strip() + '?' for q in text.split('?')[:-1]]\n        if asks:\n            st['last_question'] = asks[-1].split('. ')[-1]     # the last question said, to ask again\n    answers = params.get('answers') or []\n    answers = json.loads(answers) if isinstance(answers, str) else answers\n    answers = [answers] if isinstance(answers, dict) else answers\n    kinds = [str(a.get('kind') or '') for a in answers]\n    unfinished = bool(kinds) and all(k == 'unfinished' for k in kinds)\n    done = []\n    for a, kind in zip(answers, kinds):\n        if kind == 'unfinished':\n            continue\n        want = str(a.get('item') or '')\n        open_items = [x for x in items if x.get('status') == 'open']\n        picked = [x for x in open_items if str(x.get('id')) == want]\n        it = picked[0] if picked else (open_items or items)[0]\n        if it['id'] in done:\n            continue                            # one answer per product and message: the first is the main point\n        done.append(it['id'])\n        amount = a.get('amount')\n        amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None\n        day = str(a.get('date') or '')[:10]\n        line = decide(it, kind, amount, day)\n        if line and line == it.get('_said_line') and (amount is not None or day):\n            line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)\n        it['line'] = line or ''\n        if vars.get('close_key') or vars.get('negotiation_action'):\n            break\n    if unfinished:\n        speak_line('Please go on.' if reply else 'Sorry, please go on.')     # a cut-off message changes nothing\n    elif vars.get('close_key') or vars.get('negotiation_action'):\n        pass\n    else:\n        open_items = [x for x in items if x.get('status') == 'open']\n        todo = [x for x in open_items if x.get('line')]\n        if todo:\n            speak_line(todo[0]['line'])\n            todo[0]['_said_line'], todo[0]['line'] = todo[0]['line'], ''      # said now; '_' keeps the key away from the policy's keys\n        elif open_items:\n            nx = open_items[0]\n            if not nx.get('asked'):\n                nx['asked'] = 'yes'\n                speak_line(first_ask(nx))\n            elif reply:\n                speak_line('')\n            else:\n                ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again\n                # only the question: the judge counts \"I understand\" after small talk as sympathy (reference agent, 10 Oct)\n                speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')\n        else:\n            confirmed = 'confirms' in kinds and bool(st.get('final_shown'))\n            end = finish(items, confirmed)\n            if isinstance(end, dict) and end.get('say'):\n                st['final_shown'] = 'yes'\n                speak_line(end['say'])\n            elif isinstance(end, list) and end:\n                vars['promise_writes_list'] = json.dumps([dict(fields=f, status='pending') for f in end])\n                vars['record_now'] = 'yes'\n                vars['guide'] = 'SAY: \"One moment, please.\"'\n            else:\n                vars['close_key'] = str(end or '')\n    vars['neg_state'] = json.dumps(st)\n    pass\nexcept Exception as exc:\n    vars['customer_said_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    from datetime import date, timedelta\n    \n    \n    def is_business_day(day, holidays):\n        return day.weekday() < 5 and day.isoformat() not in holidays\n    \n    \n    def nth_business_day_after(day, n, holidays):\n        while n > 0:\n            day = day + timedelta(days=1)\n            if is_business_day(day, holidays):\n                n = n - 1\n        return day\n    \n    \n    def next_business_day_on_or_after(day, holidays):\n        while not is_business_day(day, holidays):\n            day = day + timedelta(days=1)\n        return day\n    \n    \n    def last_business_day_of_week(day, holidays):\n        friday = day + timedelta(days=4 - day.weekday())\n        for back in range(5):\n            candidate = friday - timedelta(days=back)\n            if is_business_day(candidate, holidays):\n                return candidate\n        return None\n    \n    \n    def this_weekday(day, weekday):\n        return day + timedelta(days=weekday - day.weekday())\n    \n    \n    def next_weekday(day, weekday):\n        return this_weekday(day, weekday) + timedelta(days=7)\n    \n    \n    import json\n    HOLIDAYS = set(['2026-10-26', '2026-11-11', '2026-11-26', '2026-12-25', '2027-01-01'])\n    WD = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']\n    MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']\n    def say(d):\n        return WD[d.weekday()] + ' ' + str(d.day) + ' ' + MON[d.month - 1] + ' ' + str(d.year)\n    def iso_day(s):\n        s = str(s)\n        return date(int(s[0:4]), int(s[5:7]), int(s[8:10]))\n    def money(x):\n        return '%.2f' % float(x)\n    \n    def all_items():\n        return items      # the engine's list (same snippet)\n    def offer(it, amount, day, before=''):\n        pair = [round(float(amount), 2), day]\n        if pair in it['offered']:\n            return refuse(it)          # never say an offer twice (10.4): a repeat is a flat refusal\n        it['offered'].append(pair)\n        it['pending'] = pair\n        return (before + ' Could you pay ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day)) + '?').strip()\n    def handoff(it, ack):\n        \"\"\"`it` is finished: say `ack` and go on with the next open product in account order.\"\"\"\n        nxt = [x for x in all_items() if x['status'] == 'open' and x is not it]\n        if nxt:\n            nx = nxt[0]\n            if not nx.get('asked'):\n                nx['asked'] = 'yes'\n                nx['line'] = (ack + ' ' + first_ask(nx)).strip()\n            elif ack:\n                nx['line'] = ack\n        elif ack:\n            st['ack'] = ack\n        return ''\n    def note(it, reason, ack=''):\n        it['status'] = 'noted'\n        it['note'] = reason\n        return handoff(it, ack)\n    def agree(it, amount, day):\n        it['status'] = 'agreed'\n        it['agreed'] = [round(float(amount), 2), day]\n        vars['neg_conf'] = 'no'\n        return handoff(it, '')\n    def refuse(it):\n        if st.get('hardship'):\n            return note(it, 'hardship')   # 10.5: no persuasion attempt after hardship\n        it['used'] = it['used'] + 1\n        if it['used'] > it['max']:\n            return note(it, 'refused')\n        if it['used'] == 1:\n            return offer(it, it['floor'] if it.get('too_much') else it['full'], vars.get('attempt1_day'))\n        return offer(it, it['floor'], it['deadline'])\n    def check_day(it, day):\n        \"\"\"-> (day to use, words before the offer) or (day, '') when the day is fine.\"\"\"\n        try:\n            d = iso_day(day)\n        except Exception:\n            return None, ''\n        dl = iso_day(it['deadline'])\n        if day < vars.get('today_iso'):\n            return it['deadline'], 'I can record a day from today to ' + say(dl) + '.'\n        if d > dl:\n            return it['deadline'], 'The latest date I can record is ' + say(dl) + '.'\n        if not is_business_day(d, HOLIDAYS):\n            nb = next_business_day_on_or_after(d, HOLIDAYS)\n            if nb > dl:\n                nb = dl\n            return nb.isoformat(), say(d) + ' is not a business day.'\n        return day, ''\n    def proposes(it, amount, day):\n        pend = it.get('pending') or [it['full'], vars.get('today_iso')]\n        amount = pend[0] if amount is None else min(float(amount), it['full'])\n        day = day or pend[1]\n        day, why = check_day(it, day)\n        if day is None:\n            return 'Which exact day can you pay?'\n        if amount < it['floor'] - 0.001:\n            if it.get('below_done'):\n                return refuse(it)\n            it['below_done'] = 'yes'\n            it['too_much'] = 'yes'     # an amount below the full one: attempt 1 is then for the floor (10.3)\n            return offer(it, it['floor'], day, (why + ' I cannot record less than ' + money(it['floor']) + '.').strip())\n        if why:\n            return offer(it, amount, day, why)\n        return agree(it, amount, day)\n    def all_on_day(day):\n        \"\"\"One day for every product (memo COL-2026-21): after any deadline -> the earliest deadline for all.\"\"\"\n        todo = [x for x in all_items() if x['status'] in ('open', 'agreed')]\n        if not todo or not day:\n            return ''\n        earliest = min(x['deadline'] for x in todo)\n        if day > earliest:\n            use = earliest\n            st['single_note'] = say(iso_day(earliest)) + ' is the latest date that works for all of them.'\n        else:\n            use, why = check_day(todo[0], day)\n            if use is None or use < vars.get('today_iso') or use > earliest:\n                use = earliest\n            if why:\n                st['single_note'] = why + ' I used ' + say(iso_day(use)) + '.'\n        for x in todo:\n            x['status'] = 'agreed'\n            x['agreed'] = [round(float((x.get('agreed') or x.get('pending') or [x['full']])[0]), 2), use]\n        vars['neg_conf'] = 'no'\n        return ''\n    def transfer(queue, key):\n        vars['transfer_queue'] = queue\n        vars['negotiation_action'] = 'transfer'\n        vars['close_key'] = key\n        vars['guide'] = 'SAY: \"One moment, please.\"'\n        return ''\n    def decide(it, kind, amount, day):\n        # the engine picks only open products; a change at the read-back names an agreed one (`a` = the engine's answer)\n        named = [x for x in all_items() if x['id'] == str(a.get('item') or '')]\n        if named and named[0] is not it and named[0]['status'] == 'agreed':\n            it = named[0]\n        # 10.5 comes first, for every kind\n        if st.get('hardship') == 'offered':\n            if kind in ('accepts', 'confirms'):\n                return transfer('support', 'close_support')\n            if kind in ('proposes', 'all_on_day'):\n                st['hardship'] = 'declined'\n            else:\n                st['hardship'] = 'declined'\n                for x in all_items():\n                    if x['status'] == 'open':\n                        x['status'], x['note'] = 'noted', 'hardship'\n                return ''\n        if kind == 'hardship':\n            st['hardship'] = 'offered'\n            return 'I am sorry to hear that. Would you like me to connect you with our customer support team?'\n        if kind == 'restructuring':\n            return transfer('restructuring', 'close_restructuring')\n        if kind == 'wants_person':\n            if st.get('person_asked'):\n                return transfer('general', 'close_human')\n            st['person_asked'] = 'yes'\n            return 'Can I help you with this first?'\n        if kind == 'paid':\n            return note(it, 'paid', 'Thank you. Payments can take one business day to show.')\n        if kind == 'dispute':\n            return note(it, 'dispute', 'Thank you, I have noted that.')\n        if kind in ('confirms', 'accepts') and st.get('final_shown') and it['status'] == 'agreed':\n            vars['neg_conf'] = 'yes'\n            return ''\n        if kind == 'accepts' and len(answers) == 1 and not any(x['used'] or x['status'] != 'open' for x in all_items()):\n            for x in all_items():      # one yes to \"all these payments today\" (14.5)\n                x['status'], x['agreed'] = 'agreed', [x['full'], vars.get('today_iso')]\n            vars['neg_conf'] = 'no'\n            return ''\n        if kind == 'accepts' or kind == 'confirms':\n            pend = it.get('pending') or [it['full'], vars.get('today_iso')]\n            return agree(it, pend[0], pend[1])\n        if kind == 'all_on_day':\n            return all_on_day(day)\n        if kind == 'proposes':\n            if it['status'] == 'agreed':\n                it['status'] = 'open'\n                it['pending'] = it['agreed']\n            return proposes(it, amount, day)\n        if kind == 'too_much':\n            if it.get('too_much'):\n                return refuse(it)\n            it['too_much'] = 'yes'\n            day = it['pending'][1] if it['used'] >= 1 else vars.get('attempt1_day')\n            if it['used'] == 0:\n                it['used'] = 1     # the counter-offer before any attempt is attempt 1 (lesson 4h)\n            return offer(it, it['floor'], day, 'The remaining balance stays overdue.')\n        if kind == 'vague':\n            if it.get('vague'):\n                return offer(it, it['pending'][0], it['deadline'])\n            it['vague'] = 'yes'\n            return 'Which exact day can you pay?'\n        if kind == 'stop':\n            st['stops'] = int(st.get('stops') or 0) + 1\n            if st['stops'] >= 2:\n                for x in all_items():\n                    if x['status'] == 'open':\n                        x['status'], x['note'] = 'noted', 'refused'\n                return ''\n            return refuse(it)\n        if kind == 'refuses':\n            return refuse(it)\n        return ''\n    def first_ask(it):\n        it['used'] = 1     # 14.5: each next product starts at attempt 1, no second question about today\n        return offer(it, it['full'], vars.get('attempt1_day'), 'Now your ' + it['word'] + '.')\n    def finish(items, confirmed):\n        agreed = [x for x in items if x['status'] == 'agreed']\n        if not agreed:\n            return 'close_notes'\n        if not (confirmed or vars.get('neg_conf') == 'yes'):\n            parts = [money(x['agreed'][0]) + ' for your ' + x['word'] + ' on ' + say(iso_day(x['agreed'][1])) for x in agreed]\n            text = (st.get('ack', '') + ' To read back: ' + '; '.join(parts) + '. ' + st.get('single_note', '') + ' ' + 'Do you confirm?')\n            st['ack'] = ''\n            return dict(say=' '.join(text.split()))\n        return [dict(product_id=x['id'], amount=x['agreed'][0], date=x['agreed'][1]) for x in agreed]\n    \n    \n    import json\n    st = json.loads(vars.get('neg_state'))\n    items = st['items']\n    vars['say_turn'] = 'no'\n    reply = str(params.get('reply') or '').strip()\n    def speak_line(text):\n        text = (reply + ' ' + text).strip()     # the model's answer to a question, then the code's line\n        vars['guide'] = 'SAY: \"' + text + '\"'\n        vars['say_now'], vars['say_turn'] = text, 'yes'     # the next node speaks it with fixed text\n        asks = [q.strip() + '?' for q in text.split('?')[:-1]]\n        if asks:\n            st['last_question'] = asks[-1].split('. ')[-1]     # the last question said, to ask again\n    answers = params.get('answers') or []\n    answers = json.loads(answers) if isinstance(answers, str) else answers\n    answers = [answers] if isinstance(answers, dict) else answers\n    kinds = [str(a.get('kind') or '') for a in answers]\n    unfinished = bool(kinds) and all(k == 'unfinished' for k in kinds)\n    done = []\n    for a, kind in zip(answers, kinds):\n        if kind == 'unfinished':\n            continue\n        want = str(a.get('item') or '')\n        open_items = [x for x in items if x.get('status') == 'open']\n        picked = [x for x in open_items if str(x.get('id')) == want]\n        it = picked[0] if picked else (open_items or items)[0]\n        if it['id'] in done:\n            continue                            # one answer per product and message: the first is the main point\n        done.append(it['id'])\n        amount = a.get('amount')\n        amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None\n        day = str(a.get('date') or '')[:10]\n        line = decide(it, kind, amount, day)\n        if line and line == it.get('_said_line') and (amount is not None or day):\n            line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)\n        it['line'] = line or ''\n        if vars.get('close_key') or vars.get('negotiation_action'):\n            break\n    if unfinished:\n        speak_line('Please go on.' if reply else 'Sorry, please go on.')     # a cut-off message changes nothing\n    elif vars.get('close_key') or vars.get('negotiation_action'):\n        pass\n    else:\n        open_items = [x for x in items if x.get('status') == 'open']\n        todo = [x for x in open_items if x.get('line')]\n        if todo:\n            speak_line(todo[0]['line'])\n            todo[0]['_said_line'], todo[0]['line'] = todo[0]['line'], ''      # said now; '_' keeps the key away from the policy's keys\n        elif open_items:\n            nx = open_items[0]\n            if not nx.get('asked'):\n                nx['asked'] = 'yes'\n                speak_line(first_ask(nx))\n            elif reply:\n                speak_line('')\n            else:\n                ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again\n                # only the question: the judge counts \"I understand\" after small talk as sympathy (reference agent, 10 Oct)\n                speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')\n        else:\n            confirmed = 'confirms' in kinds and bool(st.get('final_shown'))\n            end = finish(items, confirmed)\n            if isinstance(end, dict) and end.get('say'):\n                st['final_shown'] = 'yes'\n                speak_line(end['say'])\n            elif isinstance(end, list) and end:\n                vars['promise_writes_list'] = json.dumps([dict(fields=f, status='pending') for f in end])\n                vars['record_now'] = 'yes'\n                vars['guide'] = 'SAY: \"One moment, please.\"'\n            else:\n                vars['close_key'] = str(end or '')\n    vars['neg_state'] = json.dumps(st)\n    pass\nexcept Exception as exc:\n    vars['customer_said_code_error'] = repr(exc)[:300]\n"
          },
          "reply": {
           "type": "string",
@@ -2802,21 +2833,21 @@
               "accepts",
               "confirms",
               "refuses",
-              "too_much",
               "proposes",
-              "proposes_all",
+              "all_on_day",
+              "too_much",
               "vague",
+              "hardship",
               "paid",
               "dispute",
-              "hardship",
-              "wants_plan",
+              "restructuring",
               "wants_person",
-              "no_talk",
+              "stop",
               "other",
               "unfinished"
              ],
              "type": "string",
-             "description": "What the customer said. accepts: yes to your last offer or question, also yes to paying today; also yes to the support team. confirms: a clear yes to the read-back 'Do you confirm?', with no change, no correction word such as sorry or I mean, and not cut off. refuses: a flat no with no day and no amount (also 'no' to paying today, or 'I am not sure when'); also no answer at all. too_much: says the full amount is too much or they cannot pay that much, with no other amount named. proposes: names a day or an amount for this product, also inside a question ('What is the minimum for Friday?'). proposes_all: names ONE day for all products together ('I can pay everything on the 30th'). Send one entry only. vague: names a period, not a day: 'next week', 'end of the month', 'when my salary comes'. paid: says they already paid this product. dispute: says this debt or product is not theirs, they never held it, or it was closed or settled in the past. hardship: mentions illness, a death in the family or loss of employment. wants_plan: asks for a new payment plan, lower instalments or restructuring. wants_person: asks for a person or a human agent. no_talk: says they do not want to talk. other: anything else, with no day and no amount (a question). unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before the cut-off still gets its answer in reply."
+             "description": "What the customer said. accepts: yes to your last offer or question about paying. confirms: a clear yes to the read-back 'Do you confirm?', with no change, no correction word (sorry, I mean, actually), not cut off. refuses: no, with no day and no amount (also 'no' to paying today, 'I am not sure when'); a day or an amount is never a refusal. proposes: names a day or an amount for this product, also inside a question ('What about Friday?'). all_on_day: names one single day to pay all the products. too_much: says the full amount is too much, with no amount of their own. vague: names only a period, not a day: next week, end of the month, when my salary comes. hardship: mentions illness, a death in the family, or loss of a job. paid: says they already paid this product's past-due amount. dispute: says this product or debt is not theirs, they never held it, or it was closed or settled in the past. restructuring: asks for a new payment plan or lower instalments. wants_person: asks to speak to a person. stop: says they do not want to talk, or wants to end the call. other: anything else, with no day and no amount. unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before the cut-off still gets its answer in reply."
             },
             "amount": {
              "type": "string",
@@ -2862,6 +2893,21 @@
        "conditions": [
         {
          "mode": "exact",
+         "operand": "transfer",
+         "operator": "equals",
+         "variable": "negotiation_action"
+        }
+       ]
+      },
+      "description": "transfer",
+      "target_node": "do_transfer"
+     },
+     {
+      "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
          "operand": "yes",
          "operator": "equals",
          "variable": "record_now"
@@ -2877,38 +2923,23 @@
        "conditions": [
         {
          "mode": "exact",
-         "operand": "transfer",
-         "operator": "equals",
-         "variable": "negotiation_action"
-        }
-       ]
-      },
-      "description": "transfer",
-      "target_node": "transfer"
-     },
-     {
-      "condition": {
-       "logic": "or",
-       "conditions": [
-        {
-         "mode": "exact",
-         "operand": "wrap",
+         "operand": "close_notes",
          "operator": "equals",
          "variable": "close_key"
         }
        ]
       },
-      "description": "no promise agreed",
-      "target_node": "wrap"
+      "description": "no promise",
+      "target_node": "end_router"
      }
     ],
     "role_message": "",
-    "task_message": "NEXT STEP: {{guide}}\n\nIdentity is verified. You stated the late products. Every time the customer answers about paying, call customer_said FIRST, before you say anything, with the product and the kind. A message that stops in the middle of a sentence is kind unfinished. If one message answers for several products, call customer_said once, with one entry per product in answers. The call then speaks the next line itself. If NEXT STEP has no line, follow it. Never name an amount or a day yourself: the code chose them. Never describe a plan. Never say that something is recorded: the call says it at the end. A recorded promise cannot be changed in this call: You can change it in the mobile app.\n\nACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}",
+    "task_message": "NEXT STEP: {{guide}}\n\nIdentity is verified. You stated the products. Every time the customer answers, call customer_said FIRST, before you say anything, with the product and the kind. If one message answers for several products, call customer_said once, with one entry per product in answers. When the customer names ONE day for all products, send one entry with kind all_on_day and that day. A message that stops in the middle of a sentence is kind unfinished. The call then speaks the next line itself. Never name an amount or a day yourself, and never ask how much the customer can pay: the code chose them. Never say that something is recorded.\n\nPRODUCTS (account order)\n{{account_facts}}\n\nDATES\n{{date_facts}}",
     "interruptible": true,
     "max_node_turns": 30,
     "response_mapping": [],
     "extraction_schema": [],
-    "max_turn_transition": "wrap",
+    "max_turn_transition": "end_router",
     "truncation_strategy": "keep_all",
     "suppress_tool_results": false,
     "truncation_window_size": 10,
@@ -3020,7 +3051,7 @@
        ]
       },
       "description": "all written",
-      "target_node": "wrap"
+      "target_node": "after_writes"
      },
      {
       "condition": {
@@ -3178,7 +3209,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I will connect you with a colleague now. Thank you, goodbye."
+         "default": "I will transfer you to a colleague now. Thank you, goodbye."
         }
        }
       },
@@ -3225,7 +3256,7 @@
         "properties": {
          "code": {
           "type": "string",
-          "default": "try:\n    vars['note_writes_rec_1_response.data.ok'] = 'pending'\n    pass\nexcept Exception as exc:\n    vars['note_writes_rec_code_error'] = repr(exc)[:300]\n"
+          "default": "try:\n    vars['note_writes_rec_1_response.data.ok'] = 'pending'\n    vars['note_writes_rec_2_response.data.ok'] = 'pending'\n    pass\nexcept Exception as exc:\n    vars['note_writes_rec_code_error'] = repr(exc)[:300]\n"
          },
          "timeout_ms": {
           "type": "number",
@@ -3282,7 +3313,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I cannot continue without the security check. Please use the mobile app or visit a branch. Thank you, goodbye."
+         "default": "I cannot continue without the security check. Please use the Freya Bank mobile app or visit a branch. Thank you, goodbye."
         }
        }
       },
@@ -3309,63 +3340,6 @@
     "passthrough_default_transition": null,
     "return_to_previous_on_interrupt": false
    },
-   "close_no_account": {
-    "name": "close_no_account",
-    "tools": [],
-    "on_enter": {
-     "type": "silent"
-    },
-    "node_type": "code",
-    "assertions": [],
-    "passthrough": true,
-    "pre_actions": [
-     {
-      "type": "function",
-      "function": {
-       "name": "code_exec",
-       "handler": "__function__:code_exec",
-       "parameters": {
-        "type": "object",
-        "properties": {
-         "code": {
-          "type": "string",
-          "default": "try:\n    vars['close_result'] = 'no_promise'\n    vars['close_code'] = 'service_error'\n    pass\nexcept Exception as exc:\n    vars['close_no_account_code_error'] = repr(exc)[:300]\n"
-         },
-         "timeout_ms": {
-          "type": "number",
-          "default": 10000
-         }
-        }
-       },
-       "description": ""
-      }
-     }
-    ],
-    "transitions": [
-     {
-      "condition": {
-       "mode": "exact",
-       "operator": "always"
-      },
-      "description": "always",
-      "target_node": "close_no_account_end"
-     }
-    ],
-    "role_message": "",
-    "task_message": "",
-    "interruptible": true,
-    "max_node_turns": null,
-    "response_mapping": [],
-    "extraction_schema": [],
-    "max_turn_transition": null,
-    "truncation_strategy": "keep_all",
-    "suppress_tool_results": false,
-    "truncation_window_size": 10,
-    "on_enter_first_entry_only": false,
-    "disable_inactivity_monitor": true,
-    "passthrough_default_transition": "close_no_account_end",
-    "return_to_previous_on_interrupt": false
-   },
    "close_dispute_end": {
     "name": "close_dispute_end",
     "tools": [],
@@ -3386,7 +3360,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "Thank you for telling me. Thank you for your time. Goodbye."
+         "default": "{{bye_line}}"
         }
        }
       },
@@ -3537,7 +3511,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "Thank you for your time. Goodbye."
+         "default": "{{bye_line}}"
         }
        }
       },
@@ -3584,7 +3558,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I will connect you with our customer support team now. Thank you, goodbye."
+         "default": "I will transfer you to our customer support team now. Thank you, goodbye."
         }
        }
       },
@@ -3762,6 +3736,128 @@
        "operator": "always"
       },
       "description": "always",
+      "target_node": "note_writes_rec_2"
+     }
+    ],
+    "role_message": "",
+    "task_message": "",
+    "interruptible": true,
+    "max_node_turns": null,
+    "response_mapping": [],
+    "extraction_schema": [],
+    "max_turn_transition": null,
+    "truncation_strategy": "keep_all",
+    "suppress_tool_results": false,
+    "truncation_window_size": 10,
+    "on_enter_first_entry_only": false,
+    "disable_inactivity_monitor": true,
+    "passthrough_default_transition": "note_writes_rec_2",
+    "return_to_previous_on_interrupt": false
+   },
+   "note_writes_rec_2": {
+    "name": "note_writes_rec_2",
+    "tools": [],
+    "on_enter": {
+     "type": "silent"
+    },
+    "node_type": "api_request",
+    "assertions": [],
+    "passthrough": true,
+    "pre_actions": [
+     {
+      "type": "function",
+      "config": {
+       "timeoutMs": 10000,
+       "maxRetries": 0
+      },
+      "function": {
+       "name": "add_note",
+       "handler": "__function__:api_call",
+       "parameters": {
+        "type": "object",
+        "properties": {
+         "url": {
+          "type": "string",
+          "default": "https://freya-bank-mock.freyavoice.workers.dev/v1/add_note"
+         },
+         "body": {
+          "type": "object",
+          "required": [],
+          "properties": {
+           "text": {
+            "type": "string",
+            "default": "{{add_note__text}}"
+           },
+           "reason": {
+            "enum": [
+             "refused",
+             "hardship",
+             "dispute",
+             "paid",
+             "service_error"
+            ],
+            "type": "string",
+            "default": "{{note_writes_reason}}",
+            "description": "One of: refused, hardship, dispute, paid, service_error."
+           },
+           "product_id": {
+            "type": "string",
+            "default": "{{note_writes_product_id}}"
+           },
+           "customer_id": {
+            "type": "string",
+            "default": "{{customer_id}}"
+           }
+          }
+         },
+         "method": {
+          "type": "string",
+          "default": "POST"
+         },
+         "headers": {
+          "type": "object",
+          "properties": {
+           "Content-Type": {
+            "type": "string",
+            "default": "application/json"
+           }
+          }
+         }
+        }
+       },
+       "description": ""
+      },
+      "post_process_code": "try:\n    if isinstance(result, dict):\n        result.pop('header', None)\n        d = result.get('data')\n        if not isinstance(d, dict):\n            d = dict()\n            result['data'] = d\nexcept Exception:\n    pass\n"
+     }
+    ],
+    "transitions": [
+     {
+      "condition": {
+       "logic": "or",
+       "conditions": [
+        {
+         "mode": "exact",
+         "operand": "true",
+         "operator": "equals",
+         "variable": "note_writes_rec_2_response.data.ok"
+        },
+        {
+         "mode": "exact",
+         "operand": "True",
+         "operator": "equals",
+         "variable": "note_writes_rec_2_response.data.ok"
+        }
+       ]
+      },
+      "description": "recorded",
+      "target_node": "note_writes_ok"
+     },
+     {
+      "condition": {
+       "mode": "exact",
+       "operator": "always"
+      },
+      "description": "always",
       "target_node": "note_writes_failed"
      }
     ],
@@ -3904,7 +4000,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I am sorry for your loss. Thank you, goodbye."
+         "default": "I am sorry for your loss. Goodbye."
         }
        }
       },
@@ -3951,7 +4047,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I cannot continue without the security check. Thank you for your time. Goodbye."
+         "default": "I cannot continue without the security check. Thank you for your time, goodbye."
         }
        }
       },
@@ -3998,7 +4094,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "Thank you for your time. Goodbye."
+         "default": "{{bye_line}}"
         }
        }
       },
@@ -4308,53 +4404,6 @@
     "on_enter_first_entry_only": false,
     "disable_inactivity_monitor": true,
     "passthrough_default_transition": "close_service_error_end",
-    "return_to_previous_on_interrupt": false
-   },
-   "close_no_account_end": {
-    "name": "close_no_account_end",
-    "tools": [],
-    "on_enter": {
-     "type": "silent"
-    },
-    "terminal": {
-     "type": "function",
-     "function": {
-      "name": "close_no_account",
-      "handler": "__function__:end_call",
-      "parameters": {
-       "type": "object",
-       "properties": {
-        "message_mode": {
-         "type": "string",
-         "default": "custom"
-        },
-        "spoken_message": {
-         "type": "string",
-         "default": "I cannot see the account details right now because of a system problem. Thank you for your time. Goodbye."
-        }
-       }
-      },
-      "description": ""
-     }
-    },
-    "node_type": "end_call",
-    "assertions": [],
-    "passthrough": false,
-    "pre_actions": [],
-    "transitions": [],
-    "role_message": "",
-    "task_message": "",
-    "interruptible": true,
-    "max_node_turns": null,
-    "response_mapping": [],
-    "extraction_schema": [],
-    "max_turn_transition": null,
-    "truncation_strategy": "keep_all",
-    "suppress_tool_results": false,
-    "truncation_window_size": 10,
-    "on_enter_first_entry_only": false,
-    "disable_inactivity_monitor": true,
-    "passthrough_default_transition": null,
     "return_to_previous_on_interrupt": false
    },
    "promise_writes_rec_1": {
@@ -4711,7 +4760,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "Thank you for telling me. Goodbye."
+         "default": "Thank you, I apologise for the call. Goodbye."
         }
        }
       },
@@ -4758,7 +4807,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I will connect you with a colleague now. Thank you, goodbye."
+         "default": "I will transfer you to a colleague now. Thank you, goodbye."
         }
        }
       },
@@ -4805,7 +4854,7 @@
         },
         "spoken_message": {
          "type": "string",
-         "default": "I could not record the promise because of a system problem. Thank you for your time. Goodbye."
+         "default": "{{bye_line}}"
         }
        }
       },
@@ -5131,7 +5180,7 @@
   },
   "global_nodes": {},
   "initial_node": "start",
-  "system_prompt": "You are the digital assistant of Freya Bank, on an outbound phone call. Speak English. Keep every turn to one or two short sentences. No lists, no brackets.\nYou call {{title}} {{last_name}}. Address the customer by title and surname only. The current date and time is {{now}}. Never use another clock.\nIf asked whether you are a robot or an AI, say you are Freya Bank's digital assistant and continue.\nIf asked whether this call is a scam, say they can verify the call by phoning Freya Bank's customer service number, and continue.\nIf asked something your tools do not tell you, say you do not have that information.\nIf the message stops in the middle of a sentence and holds no full answer to your question, say only: \"Sorry, please go on.\" A full answer before the cut is an answer: use it as usual.\nNever offer a discount, a waiver or a plan. Never invent figures, dates or reasons. One tool per message. After every tool result, speak or call the next tool. A tool result can hold what_to_do_next: follow it.",
+  "system_prompt": "You are the digital assistant of Freya Bank, on an outbound phone call. Speak English. Keep every turn to one or two short sentences. No lists, no brackets.\nYou call {{title}} {{last_name}}. Address the customer only as {{title}} {{last_name}}. The current date and time is {{now}}. Never use another clock.\nIf asked whether you are a robot or an AI, say you are Freya Bank's digital assistant and continue.\nIf asked whether this call is a scam, say they can verify the call by phoning Freya Bank's customer service number, and continue.\nIf the message stops in the middle of a sentence and holds no full answer, say only: \"Sorry, please go on.\" A full answer before the cut is an answer: use it as usual.\nIf you do not have some information, say you do not have it. Never invent figures, dates or reasons. Never offer a discount, a waiver or any other plan. When a rule says to call a tool, call it. One tool per message. After every tool result, speak or call the next tool.",
   "test_variables": {
    "now": "2026-10-14T11:00",
    "title": "Ms",
