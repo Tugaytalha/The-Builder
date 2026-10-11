@@ -2,12 +2,42 @@
 
 The hidden briefs open at 17:00 UTC. The submission closes at 20:00 UTC. After 17:00 we fix crashes only. Nothing from a hidden brief goes into `builder/`: no rule, no value, no name.
 
-## Before 17:00
+## 16:30 preflight
 
-1. `git status` is clean on the frozen commit. Note the commit id.
-2. `source env.sh`. Unset `ANTHROPIC_API_KEY` if the Max login should be used, and check it: `.venv/lib/python3.12/site-packages/claude_agent_sdk/_bundled/claude auth status`.
-3. Move `kit/results/` to `runs/<time>-kit-results/` if it exists.
-4. `.venv/bin/python -m pytest builder/tests -q` and `.venv/bin/python eval/contamination.py`: all pass, exit 0.
+Do every step on the machine that runs the hidden builds, in a plain terminal (not inside Claude Code). Tick each line. If a line fails, fix it before 17:00. The commands are for macOS; on Windows use `.venv/Scripts/python` and `.venv/Lib/site-packages/...`.
+
+**People and form**
+
+1. One person runs the builds. One person watches the time, the logs and the keys.
+2. Have these ready: the kit email (the form address), the team name, the repository URL, the hidden-brief email or page open.
+
+**Code**
+
+3. `git status` is clean on the frozen commit.
+4. `git fetch && git rev-parse HEAD origin/main` prints the same id twice. The organizers clone the pushed commit, not our disk. Note the id.
+5. Fresh-clone check: `git clone <repo URL> /tmp/fresh && cd /tmp/fresh && <repo>/.venv/bin/python -m pytest -q builder/tests`. All pass. This shows that the builder needs no git-ignored file. Delete `/tmp/fresh` after.
+
+**Environment**
+
+6. `source env.sh`, then `unset ANTHROPIC_API_KEY CLAUDECODE CLAUDE_CODE_ENTRYPOINT CLAUDE_CODE_SESSION_ID CLAUDE_CODE_CHILD_SESSION CLAUDE_CODE_MESSAGING_SOCKET CLAUDE_CODE_MESSAGING_TOKEN CLAUDE_PID`.
+7. `env | grep -E 'FREYA_AGENT_|BUILDER_MODEL|FREYA_SIM_CONCURRENCY'` prints nothing. The phone agent must run on the model in `freya.py`, and the builder on its default model.
+8. Claude login: `.venv/lib/python3.12/site-packages/claude_agent_sdk/_bundled/claude auth status` shows the Max account.
+9. Freya: `.venv/bin/python -c "from builder.blocks.check import freya; ws = freya.workspace_id(); print(freya.api('GET', '/api/v2/workflow', workspaceId=ws, limit=100)['total'])"` prints a number. It must be at most 196: each build can make one new workflow, and the limit is 200 (17 at 11:45 UTC).
+
+**Tests**
+
+10. `.venv/bin/python -m pytest -q builder/tests eval` and `.venv/bin/python eval/contamination.py`: all pass, exit 0.
+
+**Folders**
+
+11. `mkdir -p briefs traces submission`. `tee` fails when `traces/` does not exist.
+12. `ls traces submission` shows no rehearsal files. Move `kit/results/` to `runs/<time>-kit-results/` if it exists.
+13. `grep hidden .freya-agents.json` prints nothing, so a hidden build cannot update an old workflow.
+
+**Machine**
+
+14. The laptop is on power. Sleep is off for 3 hours (macOS: `caffeinate -dims &`). The network is stable.
+15. No other simulation and no `persona_sim` or `run_eval` run from 17:00 until the builds end.
 
 ## Per hidden brief (n = 1, 2)
 
