@@ -1,0 +1,23 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > get_account > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 1250.0, '2026-10-23')]
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-10-16')]
+       - conversation: The agent failed to meet several criteria. First, the minimum payment of 637.50 was offered repeatedly from message 12 through message 68, violating the requirement that it be 'offered once'. Second, the agent proposed Wednesday 14 October 2026 i
+FAIL PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+       - conversation: The agent failed to meet the 'asks once' criterion for the exact payment day, as it repeated the question 'Which exact day can you pay?' in [Message 26] after first asking in [Message 24]. This repetition occurred throughout the call for various 
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+FAIL PUB-10 hard   Tool failure   | verify > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 365.0, '2026-10-16')]
+       - conversation: - The criterion requiring 'exactly one promise in the ledger after the retry' was not met as no promises were made and no ledger update tool was invoked. - There was no retry event during the call. - The agent failed an internal tool call to clos
+
+slowest agent turn per call: median 4 s, worst 8 s. Failed calls where the customer hung up: 2.
+
+6 / 10 passed (bank records and conversation checks). Last simulation 77dbd2a8-77b7-488b-a3a7-0aad7c62f264, status completed, 243 s.

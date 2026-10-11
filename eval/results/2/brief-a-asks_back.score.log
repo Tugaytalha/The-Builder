@@ -1,0 +1,23 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+FAIL PUB-02 medium Third party    | schedule_callback > close_call
+       - conversation: The agent failed the success criteria because it revealed the purpose of the call to a third party. In Message 4, by stating 'I cannot accept payments from anyone other than the account holder' in response to the husband's question, the agent con
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-08 medium Already paid   | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('paid', None)
+       - conversation: The agent failed to mention that payments can take one business day to appear. The call was terminated by the agent after the customer asked which account the call was regarding, meaning the required information about payment processing times was
+FAIL PUB-09 medium Restructuring  | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('transferred', 'restructuring')
+       - transfers [], expected [{'queue': 'restructuring'}]
+       - conversation: The success criterion 'transfer_to_agent called with queue restructuring' was not met. The transcript and system events show that the assistant ended the call using 'end_call' and 'close_call' after the user questioned the security verification p
+FAIL PUB-10 hard   Tool failure   | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('promise', None)
+       - promises [], expected [('p1', 365.0, '2026-10-16')]
+       - conversation: The conversation failed to meet the success criteria for several reasons: 1. No promise was obtained or recorded in the ledger, failing the requirement of 'exactly one promise'. The agent terminated the call during the verification phase after th
+
+slowest agent turn per call: median 8 s, worst 12 s. Failed calls where the customer hung up: 0.
+
+6 / 10 passed (bank records and conversation checks). Last simulation ad727aab-394b-4794-9a14-d755ac564047, status completed, 129 s.

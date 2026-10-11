@@ -1,0 +1,172 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "e7dc7b1d-d66d-4294-bc53-9102833dc97a",
+ "iteration_id": "51e60d4c-e4e7-4814-a45e-db35a30b69ac",
+ "seconds": 190,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "cd12baa0-2ae6-432c-a526-a251e0e22f75",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_df2ec6c3-64d",
+   "slowest_turn_s": 21.6,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p2', 1320.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]",
+    "notes [('p1', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: The conversation failed several success criteria. 1. The promise was recorded for the personal loan (p2) instead of the credit card (p1) according to system events, which are ground truth. 2. A 'refused' note was added for the credit card (p1) instead of the personal loan (p2). 3. There were four specific attempts to collect on the personal loan ([Message 18], [24], [28], [32]) instead of the requ"
+   ],
+   "call_id": "db474487-8152-428d-a80b-4281945d9a27",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_d987a9c2-c77",
+   "slowest_turn_s": 21.3,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-16')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "conversation: The success criteria were not fully met. While the credit card payment was recorded for 30 October as required, the personal loan was recorded for 16 October instead of the 23 October deadline specified in the success criteria. The assistant proposed 16 October in message 14 and finalized it in the read-back in message 18, which contradicts the requirement for 23 October. The call ended correctly "
+   ],
+   "call_id": "ada7bb09-b06a-4703-a198-1e6d5b597313",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_0f10f838-322",
+   "slowest_turn_s": 8.6,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "cd12baa0-2ae6-432c-a526-a251e0e22f75",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_df2ec6c3-64d",
+    "slowest_turn_s": 21.6,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p2', 1320.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]",
+     "notes [('p1', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: The conversation failed several success criteria. 1. The promise was recorded for the personal loan (p2) instead of the credit card (p1) according to system events, which are ground truth. 2. A 'refused' note was added for the credit card (p1) instead of the personal loan (p2). 3. There were four specific attempts to collect on the personal loan ([Message 18], [24], [28], [32]) instead of the requ"
+    ],
+    "call_id": "db474487-8152-428d-a80b-4281945d9a27",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_d987a9c2-c77",
+    "slowest_turn_s": 21.3,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-16')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "conversation: The success criteria were not fully met. While the credit card payment was recorded for 30 October as required, the personal loan was recorded for 16 October instead of the 23 October deadline specified in the success criteria. The assistant proposed 16 October in message 14 and finalized it in the read-back in message 18, which contradicts the requirement for 23 October. The call ended correctly "
+    ],
+    "call_id": "ada7bb09-b06a-4703-a198-1e6d5b597313",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_0f10f838-322",
+    "slowest_turn_s": 8.6,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

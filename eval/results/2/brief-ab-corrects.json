@@ -1,0 +1,178 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "664f2508-c457-4f47-b9fc-db5fe6a5b5fa",
+ "iteration_id": "4f6fa4dd-f721-4e38-912d-04a91a5482a5",
+ "seconds": 285,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'service_error'), expected ('promise', None)",
+    "promises [], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+    "notes [('p1', 'service_error'), ('p2', 'service_error'), ('p3', 'service_error')], expected []",
+    "conversation: The call failed to meet the success criteria for several reasons: 1. No 'create_promise' calls were made for any of the products; instead, the agent logged 'service_error' notes. 2. Although the agent introduced the products correctly in message 6, it entered a repetitive loop (messages 20-64) where it repeatedly read back an incorrect date (October 15 for the car loan) despite the customer consis"
+   ],
+   "call_id": "0afd44c7-a96a-4066-9de5-ac684a7c18c1",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "add_note",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_8b6fe86d-62e",
+   "slowest_turn_s": 27.9,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'refused'), expected ('promise', None)",
+    "promises [], expected [('p1', 510.0, '2026-10-15')]",
+    "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: The conversation failed several success criteria. First, although the user agreed to pay the credit card in message 9, the assistant failed to record a promise and instead logged a 'refused' note for all three products (p1, p2, and p3), violating the requirement for exactly one promise on the credit card and only two refused notes total. Second, the car loan received two collection attempts (the g"
+   ],
+   "call_id": "f7e8d440-5a78-4649-96e8-7e78bd802743",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "add_note",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_36fdd76a-2b7",
+   "slowest_turn_s": 29.8,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "a1d6abc6-faad-49cc-93c6-633c0ac7dad0",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_5b1ad255-be1",
+   "slowest_turn_s": 22.3,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'service_error'), expected ('promise', None)",
+     "promises [], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+     "notes [('p1', 'service_error'), ('p2', 'service_error'), ('p3', 'service_error')], expected []",
+     "conversation: The call failed to meet the success criteria for several reasons: 1. No 'create_promise' calls were made for any of the products; instead, the agent logged 'service_error' notes. 2. Although the agent introduced the products correctly in message 6, it entered a repetitive loop (messages 20-64) where it repeatedly read back an incorrect date (October 15 for the car loan) despite the customer consis"
+    ],
+    "call_id": "0afd44c7-a96a-4066-9de5-ac684a7c18c1",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "add_note",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_8b6fe86d-62e",
+    "slowest_turn_s": 27.9,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'refused'), expected ('promise', None)",
+     "promises [], expected [('p1', 510.0, '2026-10-15')]",
+     "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: The conversation failed several success criteria. First, although the user agreed to pay the credit card in message 9, the assistant failed to record a promise and instead logged a 'refused' note for all three products (p1, p2, and p3), violating the requirement for exactly one promise on the credit card and only two refused notes total. Second, the car loan received two collection attempts (the g"
+    ],
+    "call_id": "f7e8d440-5a78-4649-96e8-7e78bd802743",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "add_note",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_36fdd76a-2b7",
+    "slowest_turn_s": 29.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "a1d6abc6-faad-49cc-93c6-633c0ac7dad0",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_5b1ad255-be1",
+    "slowest_turn_s": 22.3,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

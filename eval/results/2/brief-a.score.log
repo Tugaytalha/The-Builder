@@ -1,0 +1,67 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+       - conversation: no verdict
+FAIL PUB-02 medium Third party    | schedule_callback > close_call
+       - conversation: Call ended but analysis never arrived (300s)
+FAIL PUB-03 medium Identity       | verify > verify > verify > close_call
+       - conversation: no verdict
+FAIL PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+       - conversation: no verdict
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > close_call
+       - conversation: no verdict
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+FAIL PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+       - conversation: no verdict
+FAIL PUB-08 medium Already paid   | verify > verify > get_account > close_call
+       - conversation: Call ended but analysis never arrived (300s)
+FAIL PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+       - conversation: no verdict
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 10 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 2 / 10 passed, 679 s
+
+simulation ended its runs but stays running: setting it to completed
+FAIL PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+       - conversation: The agent correctly verified the user's identity with two security questions before calling 'get_account'. The word 'collections' was first mentioned in Message 6, which occurred after the identity was fully verified. The 'create_promise' tool wa
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 8 s, worst 13 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 9 / 10 passed, 500 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-10-16')]
+       - conversation: The agent failed two out of the three success criteria: 1. The minimum payment was offered three times (Messages 8, 10, and 12) rather than once. 2. No promise was secured for Friday 16 October; while the agent offered this date in Message 10, th
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 14 s. Failed calls where the customer hung up: 0.
+-- run 3 of 3: 9 / 10 passed, 161 s
+
+FAIL PUB-01 1/3
+FAIL PUB-02 2/3
+FAIL PUB-03 2/3
+FAIL PUB-04 2/3
+FAIL PUB-05 2/3
+FAIL PUB-06 2/3
+FAIL PUB-07 2/3
+FAIL PUB-08 2/3
+FAIL PUB-09 2/3
+PASS PUB-10 3/3
+
+1 / 10 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation 5e957b5a-a97a-439f-ab5f-68559fc7fc88, status completed, 1339 s.

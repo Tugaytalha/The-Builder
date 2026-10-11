@@ -1,0 +1,13 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - promises [('p2', 1320.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]
+       - notes [('p1', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The conversation failed several success criteria. 1. The promise was recorded for the personal loan (p2) instead of the credit card (p1) according to system events, which are ground truth. 2. A 'refused' note was added for the credit card (p1) in
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-16')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]
+       - conversation: The success criteria were not fully met. While the credit card payment was recorded for 30 October as required, the personal loan was recorded for 16 October instead of the 23 October deadline specified in the success criteria. The assistant prop
+
+slowest agent turn per call: median 21 s, worst 22 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+1 / 3 passed (bank records and conversation checks). Last simulation e7dc7b1d-d66d-4294-bc53-9102833dc97a, status completed, 190 s.

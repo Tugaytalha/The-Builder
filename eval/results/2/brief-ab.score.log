@@ -1,0 +1,44 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]
+       - conversation: The agent failed to meet the requirement for the number of attempts on the car loan. According to the success criteria, there should have been only one attempt on the car loan (early band), but the agent made two attempts: one in [Message 14] and
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 11 s, worst 12 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 1 of 3: 2 / 3 passed, 138 s
+
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-16')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]
+       - conversation: The success criteria required the loan to be recorded on the deadline of 23 October, but the assistant proposed and recorded it for 16 October (Message 8, Message 10, and system event for p2). Although the credit card was correctly recorded for 3
+
+slowest agent turn per call: median 15 s, worst 19 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 2 of 3: 2 / 3 passed, 149 s
+
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > add_note > add_note > add_note > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-15')]
+       - notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The evaluation of the conversation reveals several failures regarding the success criteria: 1. A promise was not recorded for the credit card; although the user agreed to pay in [Message 9], the assistant later added a 'refused' note for the cred
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 9 s, worst 10 s. Failed calls where the customer hung up: 0.
+-- run 3 of 3: 2 / 3 passed, 96 s
+
+PASS PUB-11 3/3
+FAIL PUB-12 1/3
+FAIL PUB-13 2/3
+
+1 / 3 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation e02aa643-2e5a-4921-84b1-7bfe8d9fa641, status completed, 382 s.
+Traceback (most recent call last):
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 66, in <module>
+    main(sys.argv[1:])
+  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 62, in main
+    run_cases.main()
+  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 78, in main
+    with open(ROOT / "results" / "log.jsonl", "a") as f:      # one line per run, the record of how the score moved over time
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/resit/orca/workspaces/The-Builder/mola/kit/results/log.jsonl'
