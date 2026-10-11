@@ -73,6 +73,9 @@ def _check_tool(where, tool, api, problems):
             problems.append(f"{where}: tool {fn.get('name')} maps path {m.get('path')!r}, which does not start with data.")
 
 
+MIN_TURN_CAP = 20
+
+
 def lint(workflow, api, rules):
     problems = []
     nodes, globals_ = _all_nodes(workflow)
@@ -110,6 +113,10 @@ def lint(workflow, api, rules):
         # 11. cap without target
         if "max_node_turns" in n and not n.get("max_turn_transition"):
             problems.append(f"{name}: max_node_turns without max_turn_transition")
+        # 14. a talkative customer's message is cut off about half the time, and each cut uses a turn (round 5:
+        # identity_next with cap 16 closed before the third wrong answer, third_party with cap 10 booked no callback)
+        if int(n.get("max_node_turns") or MIN_TURN_CAP) < MIN_TURN_CAP:
+            problems.append(f"{name}: max_node_turns {n['max_node_turns']} is below {MIN_TURN_CAP}; cut-off messages use turns too")
         # 12. a node whose state tool reads the customer's words must not leave on an intent (round 4: a broken
         # message matched "the customer says goodbye" and ended a negotiation)
         if any(t.get("function", {}).get("handler") == "__function__:code_exec" for t in n.get("tools", [])):

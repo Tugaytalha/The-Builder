@@ -273,20 +273,20 @@ nodes = [
               fallbacks={"date_facts": "Date facts are not available.", "callback_facts": "", "callback_days": "",
                          "id_guide": "Wait for the answer to the first question."}),
     conversation("opening", OPENING_TASK, on_enter=tts(SPEC["opening_line"]), first_entry_only=True, extract=[party],
-                 max_turns=6, max_turn_target="close_unsure", transitions=[
+                 max_turns=20, max_turn_target="close_unsure", transitions=[
                      go("identity", any_of(cond("party", "equals", "customer")), "the customer confirmed"),
                      go("third_party", any_of(cond("party", "equals", "someone_else")), "someone else answered"),
                      go("close_unsure", all_of(cond("party", "equals", "unclear"), cond("opening.total_turns", "greater_than", 1)),
                         "still unclear after the second ask"),
                      always("opening")]),
-    conversation("third_party", THIRD_PARTY_TASK, tools=[callback], max_turns=10, max_turn_target="close_no_time", transitions=[
+    conversation("third_party", THIRD_PARTY_TASK, tools=[callback], max_turns=20, max_turn_target="close_no_time", transitions=[
         go("close_call_later", is_true("schedule_callback_response.data.ok"), "callback booked"),
         {**intent("close_no_time", "no callback time inside the window"), "is_tool_call": True}]),
     # The first entry speaks a fixed line; every return from the check speaks the next step (on_enter llm).
     *[conversation(node, IDENTITY_TASK, tools=[answer, refuses], first_entry_only=(node == "identity"),
                    on_enter=tts("Thank you. First I need to ask two security questions. " + QUESTIONS[0]["ask"])
                    if node == "identity" else {"type": "llm"},
-                   max_turns=16, max_turn_target="close_refused_check", transitions=[
+                   max_turns=30, max_turn_target="close_refused_check", transitions=[
                        go("id_check", any_of(cond("id_send", "equals", "yes")), "a complete answer"),
                        go("close_refused_check", any_of(cond("id_refusals", "greater_than", I["refusals_allowed"])), "refused")])
       for node in ("identity", "identity_next")],
