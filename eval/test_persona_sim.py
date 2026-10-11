@@ -62,3 +62,23 @@ def test_504_is_retried_and_the_call_id_is_kept(monkeypatch):
 
 def test_transcript_text():
     assert transcript_text([("agent", "Hi"), ("customer", "Yes")]) == "AGENT: Hi\nCUSTOMER: Yes"
+
+
+def test_converse_with_a_script_stops_when_the_call_ends(monkeypatch):
+    import asyncio
+    replies = iter([("Hello, Mr Reyes?", "c1"), ("Date of birth?", "c1"), (None, "c1")])
+    monkeypatch.setattr(persona_sim, "chat_turn", lambda *a, **k: next(replies))
+    monkeypatch.setattr(persona_sim, "end_chat", lambda call_id: None)
+    customer = persona_sim.ScriptCustomer(["Yes", "Bye", "never sent"])
+    turns, ended = asyncio.run(persona_sim.converse("w", {}, customer))
+    assert ended and turns[-1] == ("agent", persona_sim.ENDED)
+    assert [t for t in turns if t[0] == "customer"] == [("customer", "Yes"), ("customer", "Bye")]
+
+
+def test_write_results_saves_failed_transcripts(tmp_path):
+    ok = {"id": "PUB-01", "rep": 0, "pass": True, "failed": [], "ended": True, "turns": [], "tools": [], "seconds": 1}
+    bad = {"id": "PUB-02", "rep": 0, "pass": False, "failed": ["outcome x"], "ended": True,
+           "turns": [("agent", "Hi")], "tools": [], "seconds": 2}
+    summary = persona_sim.write_results({"PUB-01": [ok], "PUB-02": [bad]}, tmp_path, {})
+    assert (summary["passed"], summary["total"]) == (1, 2)
+    assert "AGENT: Hi" in (tmp_path / "failures" / "PUB-02-rep1.txt").read_text(encoding="utf-8")
