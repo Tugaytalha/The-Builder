@@ -87,6 +87,12 @@ def test_answer_tool_joins_digits_and_replaces_a_full_new_answer():
     assert v["id_answer"] == "9904" and v["id_send"] == "yes"
 
 
+def test_answer_tool_resets_the_refusal_count():
+    # "Why do you need that?", an answer, then "Which account is this about?" is not two refusals in a row
+    v = _answer({"id_refusals": 1}, question="birth", day="14")
+    assert v["id_refusals"] == 0
+
+
 def test_answer_tool_never_guesses_a_year():
     v = _answer({}, question="birth", day="5", month="12")
     assert "id_send" not in v

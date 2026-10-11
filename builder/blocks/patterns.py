@@ -116,6 +116,7 @@ else:
     vars['id_guide'] = ('The answer is not complete yet. Ask only for the missing part: ' + missing
                         + '. Do not repeat the question in full, and do not say the parts back.')
 vars['id_parts'] = json.dumps(parts)
+vars['id_refusals'] = 0     # refusals count in a row: an answer ends the row
 '''
 
 
@@ -123,7 +124,8 @@ def answer_tool(questions):
     """The model reports the parts of an identity answer; the code joins them over several turns and says when an
     answer is complete. `questions` maps each question value (as the tool API names it) to ["date", 0],
     ["digits", <count>] or ["text", 0]. A part given after a partial answer is joined to it. On a complete answer it sets id_question, id_answer and id_send = "yes".
-    Every turn it writes id_guide, the next step for the model."""
+    Every turn it writes id_guide, the next step for the model, and sets id_refusals to 0: a customer who asks back
+    and then answers has not refused twice."""
     names = list(questions)
     return state_tool("answer_given", "CALL it every time the customer says anything that is part of a security answer.", {
         "question": {"type": "string", "enum": names, "description": "Which question this is for. One of: " + ", ".join(names) + "."},

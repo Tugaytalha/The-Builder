@@ -6,7 +6,7 @@
 | R4 | No time in the window: absent / no_time | §3 | route | third_party: transition_to_close_no_time |
 | R5 | Postcode, then year of birth, each answer to verify_identity | §4 | code | answer_given joins parts; id_check sends each complete answer |
 | R6 | Two wrong answers close as unverified / wrong | §4 | route | id_check_after: tries_left equals 0 |
-| R7 | Two refusals close as unverified / refused_check | §5 | code | customer_refuses counts id_refusals; route > 1 |
+| R7 | Two refusals in a row close as unverified / refused_check | §5 | code | customer_refuses counts id_refusals; answer_given resets it; route > 1 |
 | R8 | After identity call get_account and state each item | §6 | code | fetch_account, prepare debt_statement |
 | R9 | Business days and holidays | §7 | code | setup: datelib with spec holidays |
 | R10 | Deadline 5th / 3rd business day by days overdue | §8 | code | setup deadline_<band>; prepare band |
