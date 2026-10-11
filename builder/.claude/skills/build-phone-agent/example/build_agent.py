@@ -179,12 +179,17 @@ I = SPEC["identity"]
 QUESTIONS = I["questions"]
 # Runs after the engine-run check; r(field) is the bank's result field (spike S10). Sets the model's next step.
 ID_GUIDE = r'''
+import json
 ASKS = %(asks)r
 order = [q for q, ask in ASKS]
 q = str(vars.get('id_question') or '')
 nxt = order[order.index(q) + 1] if q in order and order.index(q) + 1 < len(order) else ''
-# The passed field can be missing (round 6 PUB-04): a correct answer to the last question also passes.
-if r(%(passed)r) == 'true' or (r(%(correct)r) == 'true' and not nxt):
+done = json.loads(vars.get('id_correct') or '[]')       # the questions the bank confirmed in this call
+if q in order and r(%(correct)r) == 'true' and q not in done:
+    done.append(q)
+vars['id_correct'] = json.dumps(done)
+# The passed field can be missing (round 6 PUB-04): every question confirmed also passes.
+if r(%(passed)r) == 'true' or set(order) <= set(done):
     vars['id_passed'] = 'yes'
     vars['id_guide'] = 'Both answers are correct. Say thank you.'
 elif r('ok') == 'false':
