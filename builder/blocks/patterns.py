@@ -206,7 +206,7 @@ for a, kind in zip(answers, kinds):
     if vars.get('close_key') or vars.get('negotiation_action'):
         break
 if unfinished:
-    speak_line('Sorry, please go on.')     # a message cut off mid-sentence changes nothing
+    speak_line('Please go on.' if reply else 'Sorry, please go on.')     # a cut-off message changes nothing
 elif vars.get('close_key') or vars.get('negotiation_action'):
     pass
 else:
@@ -267,7 +267,8 @@ def negotiation_tool(kinds, policy, list_var):
         "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
         "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
-                 + " unfinished: the message stops in the middle of a sentence; nothing is decided yet."},
+                 + " unfinished: the message stops in the middle of a sentence; nothing is decided yet. A full question before "
+                 "the cut-off still gets its answer in reply."},
         "date": {"type": "string", "description": "The day the customer named in full in this message, YYYY-MM-DD, "
                  "or empty. Never a day from an earlier message that was cut off."},
         "amount": {"type": "string", "description": "The amount the customer named in full in this message, digits only, "
@@ -278,7 +279,8 @@ def negotiation_tool(kinds, policy, list_var):
         "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about, "
                     "never two for the same product: pick the kind of the main point."},
         "reply": {"type": "string", "description": "If the customer asked a question in this message, your answer in one "
-                  "sentence from ACCOUNT, with no amount and no day; else empty. The call says it before the next line."}},
+                  "sentence from ACCOUNT, with no amount and no day; else empty. Also when the kind is unfinished: 'Which loan is "
+                  "this? I' needs the answer. The call says it before the next line."}},
         policy + "\n" + engine)
 
 

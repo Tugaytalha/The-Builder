@@ -285,3 +285,17 @@ def test_negotiation_says_the_reply_to_a_question_before_the_line():
     assert v["say_now"] == "It is 6 days late. Could you pay half for a?"
     v = run_tool(code, v, {"answers": [{"item": "a", "kind": "other", "date": "", "amount": ""}], "reply": "Yes, it is."})
     assert v["say_now"] == "Yes, it is." and v["say_turn"] == "yes"
+
+
+def test_negotiation_answers_a_question_before_a_cut_off():
+    # round 5 A PUB-04: "Am I talking to a robot? I" went to unfinished with no reply, so the question got no answer
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    tool = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")
+    props = tool["function"]["parameters"]["properties"]
+    assert "question" in props["answers"]["items"]["properties"]["kind"]["description"].split("unfinished:")[1]
+    assert "unfinished" in props["reply"]["description"]
+    v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}]})}
+    v = run_tool(props["code"]["default"], v, {"answers": [{"item": "a", "kind": "unfinished", "date": "", "amount": ""}],
+                                               "reply": "Yes, I am a digital assistant."})
+    assert v["say_now"] == "Yes, I am a digital assistant. Please go on."
