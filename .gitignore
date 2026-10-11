@@ -9,3 +9,4 @@ kit/results/
 __pycache__/
 .pytest_cache/
 .freya-agents.json.lock
+reference-agent/out/

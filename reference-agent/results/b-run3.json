@@ -1,0 +1,162 @@
+{
+ "agent_id": "282c9130-fd52-4bed-92b9-7708e584de6f",
+ "simulation_id": "b9578e69-a08e-4f4a-ac34-c08ac4030336",
+ "iteration_id": "5c90250f-5ff0-4494-8b45-4441ca252764",
+ "seconds": 62,
+ "passed": 2,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "498ae190-1806-4d73-855b-e4c57aae0952",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_136cbd29-7ea",
+   "slowest_turn_s": 6.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "conversation: The agent failed to follow the specific attempt requirements for the persuasion phase. For the personal loan (late band), the criteria required two attempts, but the agent made three (full today in [Message 10], full later in [Message 12], and minimum later in [Message 14]). For the car loan (early band), the criteria required one attempt, but the agent made two (full today in [Message 16] and ful"
+   ],
+   "call_id": "9c77f132-f114-4892-a1d0-9124930f88d1",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_28f9cb9a-9b7",
+   "slowest_turn_s": 4.6,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "7835681c-20c8-4956-9129-11f5ad09ed4d",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_9ea08520-e4c",
+   "slowest_turn_s": 6.4,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "498ae190-1806-4d73-855b-e4c57aae0952",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_136cbd29-7ea",
+    "slowest_turn_s": 6.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: The agent failed to follow the specific attempt requirements for the persuasion phase. For the personal loan (late band), the criteria required two attempts, but the agent made three (full today in [Message 10], full later in [Message 12], and minimum later in [Message 14]). For the car loan (early band), the criteria required one attempt, but the agent made two (full today in [Message 16] and ful"
+    ],
+    "call_id": "9c77f132-f114-4892-a1d0-9124930f88d1",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_28f9cb9a-9b7",
+    "slowest_turn_s": 4.6,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "7835681c-20c8-4956-9129-11f5ad09ed4d",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_9ea08520-e4c",
+    "slowest_turn_s": 6.4,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

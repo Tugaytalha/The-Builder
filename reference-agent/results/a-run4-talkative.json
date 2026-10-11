@@ -1,0 +1,445 @@
+{
+ "agent_id": "76ed8678-09fd-43d4-9c3e-cab2e9cfd216",
+ "simulation_id": "8e7c5182-ebde-4645-933c-7bc4a20f39fa",
+ "iteration_id": "e78382e8-5013-4983-8d35-ee605dfed173",
+ "seconds": 143,
+ "passed": 7,
+ "total": 10,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-01",
+   "family": "Happy path",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-02",
+   "family": "Third party",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-03",
+   "family": "Identity",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-04",
+   "family": "Dates",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-05",
+   "family": "Hardship",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-06",
+   "family": "Amounts",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-07",
+   "family": "Dates",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-08",
+   "family": "Already paid",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-09",
+   "family": "Restructuring",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-10",
+   "family": "Tool failure",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-01",
+   "level": "easy",
+   "family": "Happy path",
+   "pass": true,
+   "failed": [],
+   "call_id": "69cf9c0a-73c0-4798-bc9d-edbec20c15a2",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_6c7f4310-ff5",
+   "slowest_turn_s": 2.5,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-02",
+   "level": "medium",
+   "family": "Third party",
+   "pass": true,
+   "failed": [],
+   "call_id": "e10b5853-e13e-4057-a7ac-a862b6d826f8",
+   "tools": [
+    "schedule_callback",
+    "close_call"
+   ],
+   "customer_id": "c_c4d49900-e2f",
+   "slowest_turn_s": 3.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-03",
+   "level": "medium",
+   "family": "Identity",
+   "pass": true,
+   "failed": [],
+   "call_id": "322622d5-9b5b-4a7d-a5b1-2139c770fcc0",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_9a036f70-c5e",
+   "slowest_turn_s": 3.0,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-04",
+   "level": "medium",
+   "family": "Dates",
+   "pass": true,
+   "failed": [],
+   "call_id": "f8a1cbbc-f2fc-466a-a2f0-00f8a07ade5c",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_768ad072-123",
+   "slowest_turn_s": 1.8,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-05",
+   "level": "medium",
+   "family": "Hardship",
+   "pass": false,
+   "failed": [
+    "conversation: The agent failed the 'one sentence of sympathy' criterion because it provided two separate instances of sympathy/empathy: Message 14 ('I understand you've had a stressful day') and Message 16 ('I am very sorry to hear about your job loss'). All other criteria were met: no persuasion was attempted (the assistant asked for payment but did not use persuasive arguments or continue asking after the use"
+   ],
+   "call_id": "a702bdb8-cf16-461c-9c1b-64e847c2a832",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_11d244ee-d93",
+   "slowest_turn_s": 2.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-06",
+   "level": "hard",
+   "family": "Amounts",
+   "pass": false,
+   "failed": [
+    "conversation: The agent failed to meet the criterion that the minimum payment be 'offered once'. It offered the minimum payment amount of 637.50 in Message 8, Message 10, and Message 14. While the note regarding the rest staying overdue was correctly included in the first instance (Message 8), the subsequent repetitions of the offer violate the frequency constraint. The other criteria were met: the agent never "
+   ],
+   "call_id": "f909c0b7-f53f-425c-9104-ecad7bbd163c",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_6cc4b11a-cc1",
+   "slowest_turn_s": 4.0,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-07",
+   "level": "hard",
+   "family": "Dates",
+   "pass": true,
+   "failed": [],
+   "call_id": "ab84642c-d15b-421f-8612-e5a73c12f55a",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_a83103fb-2c2",
+   "slowest_turn_s": 3.2,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-08",
+   "level": "medium",
+   "family": "Already paid",
+   "pass": true,
+   "failed": [],
+   "call_id": "c7f4b24c-a627-4eda-82e6-782dc2af224d",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_a87ddb82-0b8",
+   "slowest_turn_s": 4.2,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-09",
+   "level": "medium",
+   "family": "Restructuring",
+   "pass": true,
+   "failed": [],
+   "call_id": "f45579de-6d1d-48b0-92c6-f960ae7aab5a",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "transfer_to_agent",
+    "close_call"
+   ],
+   "customer_id": "c_e03ec783-378",
+   "slowest_turn_s": 1.4,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-10",
+   "level": "hard",
+   "family": "Tool failure",
+   "pass": false,
+   "failed": [
+    "outcome ('not_verified', 'declined'), expected ('promise', None)",
+    "promises [], expected [('p1', 365.0, '2026-10-16')]",
+    "conversation: The conversation failed to meet the success criteria because exactly one promise was required in the ledger after the retry, but zero promises were recorded. The agent attempted several retries to obtain the last four digits of the user's phone number (Messages 6, 8, 10, 12) to complete identity verification, but the user failed to provide the information. Consequently, the agent properly terminat"
+   ],
+   "call_id": "2b90e9ae-3709-4b0a-bc7a-52f920cc5a37",
+   "tools": [
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_4efa2c4f-888",
+   "slowest_turn_s": 1.2,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-01",
+    "level": "easy",
+    "family": "Happy path",
+    "pass": true,
+    "failed": [],
+    "call_id": "69cf9c0a-73c0-4798-bc9d-edbec20c15a2",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_6c7f4310-ff5",
+    "slowest_turn_s": 2.5,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-02",
+    "level": "medium",
+    "family": "Third party",
+    "pass": true,
+    "failed": [],
+    "call_id": "e10b5853-e13e-4057-a7ac-a862b6d826f8",
+    "tools": [
+     "schedule_callback",
+     "close_call"
+    ],
+    "customer_id": "c_c4d49900-e2f",
+    "slowest_turn_s": 3.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-03",
+    "level": "medium",
+    "family": "Identity",
+    "pass": true,
+    "failed": [],
+    "call_id": "322622d5-9b5b-4a7d-a5b1-2139c770fcc0",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_9a036f70-c5e",
+    "slowest_turn_s": 3.0,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-04",
+    "level": "medium",
+    "family": "Dates",
+    "pass": true,
+    "failed": [],
+    "call_id": "f8a1cbbc-f2fc-466a-a2f0-00f8a07ade5c",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_768ad072-123",
+    "slowest_turn_s": 1.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-05",
+    "level": "medium",
+    "family": "Hardship",
+    "pass": false,
+    "failed": [
+     "conversation: The agent failed the 'one sentence of sympathy' criterion because it provided two separate instances of sympathy/empathy: Message 14 ('I understand you've had a stressful day') and Message 16 ('I am very sorry to hear about your job loss'). All other criteria were met: no persuasion was attempted (the assistant asked for payment but did not use persuasive arguments or continue asking after the use"
+    ],
+    "call_id": "a702bdb8-cf16-461c-9c1b-64e847c2a832",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_11d244ee-d93",
+    "slowest_turn_s": 2.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-06",
+    "level": "hard",
+    "family": "Amounts",
+    "pass": false,
+    "failed": [
+     "conversation: The agent failed to meet the criterion that the minimum payment be 'offered once'. It offered the minimum payment amount of 637.50 in Message 8, Message 10, and Message 14. While the note regarding the rest staying overdue was correctly included in the first instance (Message 8), the subsequent repetitions of the offer violate the frequency constraint. The other criteria were met: the agent never "
+    ],
+    "call_id": "f909c0b7-f53f-425c-9104-ecad7bbd163c",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_6cc4b11a-cc1",
+    "slowest_turn_s": 4.0,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-07",
+    "level": "hard",
+    "family": "Dates",
+    "pass": true,
+    "failed": [],
+    "call_id": "ab84642c-d15b-421f-8612-e5a73c12f55a",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_a83103fb-2c2",
+    "slowest_turn_s": 3.2,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-08",
+    "level": "medium",
+    "family": "Already paid",
+    "pass": true,
+    "failed": [],
+    "call_id": "c7f4b24c-a627-4eda-82e6-782dc2af224d",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_a87ddb82-0b8",
+    "slowest_turn_s": 4.2,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-09",
+    "level": "medium",
+    "family": "Restructuring",
+    "pass": true,
+    "failed": [],
+    "call_id": "f45579de-6d1d-48b0-92c6-f960ae7aab5a",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "transfer_to_agent",
+     "close_call"
+    ],
+    "customer_id": "c_e03ec783-378",
+    "slowest_turn_s": 1.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-10",
+    "level": "hard",
+    "family": "Tool failure",
+    "pass": false,
+    "failed": [
+     "outcome ('not_verified', 'declined'), expected ('promise', None)",
+     "promises [], expected [('p1', 365.0, '2026-10-16')]",
+     "conversation: The conversation failed to meet the success criteria because exactly one promise was required in the ledger after the retry, but zero promises were recorded. The agent attempted several retries to obtain the last four digits of the user's phone number (Messages 6, 8, 10, 12) to complete identity verification, but the user failed to provide the information. Consequently, the agent properly terminat"
+    ],
+    "call_id": "2b90e9ae-3709-4b0a-bc7a-52f920cc5a37",
+    "tools": [
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_4efa2c4f-888",
+    "slowest_turn_s": 1.2,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}
