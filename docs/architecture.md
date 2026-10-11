@@ -5,7 +5,7 @@ State at 11 October 2026, 17:15 UTC. Diagrams are Mermaid: GitHub draws them.
 ## 1. Components
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph IN["Input"]
         CASE["Case folder<br/>(md, Word, PDF, Excel)"]
         MOCK["mock/<br/>Cloudflare Worker<br/>/openapi.json"]
@@ -99,10 +99,10 @@ flowchart TD
     W --> W3["default encoding cp1254:<br/>Turkish text becomes mojibake,<br/>then UnicodeEncodeError"]
     W1 & W2 & W3 --> P["Prototype fix: 10 files, ~71 lines<br/>119 tests pass on Windows and Linux<br/>(not applied to the repo)"]
 
-    style M fill:#dff5e1,stroke:#2e7d32
-    style L fill:#dff5e1,stroke:#2e7d32
-    style W fill:#fde0dc,stroke:#c62828
-    style P fill:#fff4d6,stroke:#b26a00
+    style M fill:#dff5e1,stroke:#2e7d32,color:#000
+    style L fill:#dff5e1,stroke:#2e7d32,color:#000
+    style W fill:#fde0dc,stroke:#c62828,color:#000
+    style P fill:#fff4d6,stroke:#b26a00,color:#000
 ```
 
 | OS | Checked | Result |
