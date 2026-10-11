@@ -4,6 +4,8 @@
 
 **Update 11 Oct, 16:40 UTC:** `notes/multi-product-review.md` has a read-only multi-product review. It lists 10 engine and design defects with a local repro (`eval/repro_multi_product.py`), new B cases (`eval/cases/multi-b-*.json`), and fixes to the B labels in the table below.
 
+**Update 11 Oct, 16:55 UTC:** the builder is at `a8931bb` (on `main`); 157 tests pass, contamination 0. New since 15:30: d6e5e61 (a baked field that the tool API does not have stops the build), the merge of the teammates' final-case work, and preflight step 12 (practice traces and exports moved to `runs/practice-traces/` and `runs/practice-submission/`; `traces/` and `submission/` are empty). End-to-end tests: at 693aeec, practice brief A 9/10 and B 2/3 (both failures are memo test mismatches), and a build with renamed API fields used the new names; at 04d2ffe (merged), a build of practice brief A ended with exit 0 in 371 s (not scored). The silence after "Yes, I confirm" (D2 in the multi-product review) is platform step time × our step count: 0 of 619 calls ended in it at normal step times (0.2 s), 4 of 4 ended at 4–6 s per step (14:03–15:12); see `notes/eval-log.md`, 16:00 row. Not changed.
+
 Read this first in a new session. Then read `notes/hidden-runbook.md` (what to do at 17:00 UTC) and `notes/eval-log.md` (one row per round, with every root cause).
 
 ## Names
@@ -69,9 +71,8 @@ Builds: 468–656 s, all exit 0, no keys in the traces, no builder file changed.
 
 ## Next steps
 
-1. 16:45 UTC: do "Before 17:00" in `notes/hidden-runbook.md`.
-2. 17:00 UTC: run the builder on both hidden briefs, check, submit (runbook). Submit early; aim for 19:00.
-3. Only if time stays before 17:00: measure 0e145a8 with our simulator (`injection-a`) on a new phone agent for brief A.
+1. 17:00 UTC: follow "The final case" in `notes/hidden-runbook.md`: unzip to `briefs/<case folder>/`, fill and deploy the mock, run the builder with the case folder and the mock URL, check, submit. Submit early; aim for 19:00.
+2. The 16:30 preflight is done except step 5 (fresh clone) and step 14 (power, sleep off): do those by hand.
 
 ## Work rules (from the user)
 
