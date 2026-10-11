@@ -89,33 +89,35 @@ The final-case steps are in `notes/hidden-runbook.md` (written for macOS).
 
 ## 4. Which OS runs it
 
+Commit `84bdbf2` made Windows work. Before it, the builder did not import on Windows. The macOS and Linux code paths are unchanged.
+
 ```mermaid
 flowchart TD
     Q{"OS"} --> M["macOS<br/>team's build machine<br/>(not re-tested here)"]
-    Q --> L["Linux<br/>Ubuntu 24.04, Python 3.12<br/>119 builder tests pass"]
-    Q --> W["Windows<br/>fails as committed"]
-    W --> W1["import fcntl: ModuleNotFoundError"]
-    W --> W2["signal.SIGALRM does not exist"]
-    W --> W3["default encoding cp1254:<br/>Turkish text becomes mojibake,<br/>then UnicodeEncodeError"]
-    W1 & W2 & W3 --> P["Prototype fix: 10 files, ~71 lines<br/>119 tests pass on Windows and Linux<br/>(not applied to the repo)"]
+    Q --> L["Linux<br/>Ubuntu 24.04, Python 3.12<br/>121 builder tests pass"]
+    Q --> W["Windows<br/>Python 3.12<br/>121 builder tests pass"]
+    W -.->|"before 84bdbf2"| B["import fcntl failed<br/>no signal.SIGALRM<br/>cp1254 broke Turkish text"]
+    W -->|"fixed by"| F["msvcrt lock<br/>timer timeout<br/>UTF-8 file I/O<br/>short path for the agent shell"]
 
     style M fill:#dff5e1,stroke:#2e7d32,color:#000
     style L fill:#dff5e1,stroke:#2e7d32,color:#000
-    style W fill:#fde0dc,stroke:#c62828,color:#000
-    style P fill:#fff4d6,stroke:#b26a00,color:#000
+    style W fill:#dff5e1,stroke:#2e7d32,color:#000
+    style B fill:#fde0dc,stroke:#c62828,color:#000
+    style F fill:#fff4d6,stroke:#b26a00,color:#000
 ```
 
 | OS | Checked | Result |
 |---|---|---|
-| macOS | Live builds by the team | Works. Not re-tested on 11 October. |
-| Linux | Fresh install of the committed files in WSL Ubuntu (Python 3.12), `pytest builder/tests` | 119 pass. Needs `python3-venv`. |
-| Windows | Same tests, as committed | The import of `builder.blocks.deploy` fails, so nothing runs. |
+| macOS | Live builds by the team | Works. Not re-tested on 11 October. The code it runs is the same as before. |
+| Linux | Fresh export of the commit in WSL Ubuntu (Python 3.12): 121 builder tests, 38 eval tests, contamination 0 | Pass. Needs `python3-venv`. The `fcntl` and `SIGALRM` paths are still the ones used. |
+| Windows | 121 builder tests, 38 eval tests, contamination 0. A one-turn Claude Agent SDK run whose Bash tool ran `$BUILDER_PYTHON` and imported `builder` | Pass. |
 
-**Not verified:** a full live build on Windows (the agent's Bash tool needs Git Bash, and a `$BUILDER_PYTHON` path with backslashes may break there); Python 3.10 and 3.11.
+**How the Windows paths are kept apart:**
 
-**Windows fix, if wanted** (prototype, tested, not in `builder/`):
+- `deploy.py`: `fcntl.flock` is tried first; only if `fcntl` does not exist, `msvcrt.locking` waits in a loop.
+- `check.py`: `SIGALRM` is used when it exists; otherwise a `threading.Timer` calls `_thread.interrupt_main` and the code turns it into `SnippetTimeout`.
+- `build.py`: `PYTHONUTF8=1`, the UTF-8 stdout and the short DOS-style `BUILDER_PYTHON` path (a path with a space cannot be split by the agent's shell) apply only when `sys.platform == "win32"`.
+- Every `read_text`, `write_text` and `open` in `builder/` names `encoding="utf-8"`. That is the encoding macOS and Linux already used.
+- Two new tests cover the timeout and the lock on every OS.
 
-- `deploy.py`: `fcntl.flock` becomes a `msvcrt.locking` fallback that waits in a loop.
-- `check.py`: without `SIGALRM`, a `threading.Timer` calls `_thread.interrupt_main` and the code turns it into `SnippetTimeout`.
-- Every `read_text`, `write_text` and `open` gets `encoding="utf-8"`; the agent's child processes get `PYTHONUTF8=1`; stdout is reconfigured to UTF-8.
-- The test fixtures are written as UTF-8.
+**Not verified:** a full live build on Windows (it needs Freya workflow quota; the one-turn agent run above covers the agent shell only), and Python 3.10 and 3.11.
