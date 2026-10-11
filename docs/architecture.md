@@ -78,7 +78,7 @@ sequenceDiagram
 
 ## 3. Set up and run
 
-The step-by-step guide, for macOS, Linux and Windows, is in the [README](../README.md#setup-from-scratch). The final-case checklist is `notes/hidden-runbook.md` (written for macOS).
+The step-by-step guide, for macOS, Linux and Windows, is in [HOW_TO_RUN.md](../HOW_TO_RUN.md). The final-case checklist is `notes/hidden-runbook.md` (written for macOS).
 
 ## 4. Which OS runs it
 
