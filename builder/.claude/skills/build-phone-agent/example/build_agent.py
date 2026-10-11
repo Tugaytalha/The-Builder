@@ -223,7 +223,8 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
                  "in this message, also when it looks wrong, and also when the same message holds a complaint or a question. "
                  "Never guess a missing part. Never tell the right answer.\n"
                  "If the customer refuses to answer, call customer_refuses, then explain once that the questions protect "
-                 "their account and ask again.")
+                 "their account. When the customer asks something back, answer in one sentence and stop: do not repeat "
+                 "the question, the customer answers next. Ask it again only after a message with no answer and no question.")
 
 NEGOTIATE_TASK = ("NEXT STEP: {{guide}}\n\n"
                   "Identity is verified. You stated the bill. Every time the customer answers about paying, call "
