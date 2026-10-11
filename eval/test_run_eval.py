@@ -48,7 +48,7 @@ def test_unstick_completes_a_simulation_whose_runs_ended():
     assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "running"
     clock[0] = STUCK_S + 1
     assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "completed"
-    assert ("PUT", "/api/v2/simulations/s1") in calls
+    assert ("POST", "/api/v2/simulations/s1/cancel") in calls   # round 6: a PUT to completed did not hold
 
 
 def test_a_row_that_uses_another_slot_scores_that_slot():

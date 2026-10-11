@@ -45,8 +45,8 @@ def unstick(api, now=time.time):
                 its = its.get("iterations") or its.get("items") or its
                 runs = api("GET", f"{path}/iterations/{its[0]['id']}", limit=100).get("runs", [])
                 if runs and all(r.get("endedAt") for r in runs):
-                    print("simulation ended its runs but stays running: setting it to completed", flush=True)
-                    api("PUT", path, {"status": "completed"})
+                    print("simulation ended its runs but stays running: cancelling it", flush=True)
+                    api("POST", path + "/cancel", {})        # a PUT to completed did not hold (round 6)
                     sim["status"] = "completed"
         return out
     return wrapped
