@@ -77,6 +77,16 @@ def _move_kit_results():
         shutil.move(str(src), str(REPO / "runs" / (time.strftime("%Y%m%d-%H%M%S") + "-kit-results")))
 
 
+def score_with_retry(run, result):
+    """Run a score command; when it wrote no result file (a Freya API error stopped it), run it once more."""
+    result.unlink(missing_ok=True)
+    for _ in range(2):
+        run()
+        if result.exists():
+            return True
+    return False
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--round", required=True)
@@ -114,10 +124,14 @@ def main():
         runs = [("", ["--reps", "3"])] + ([(f"-{s}", ["--style", s]) for s in STYLES] if a.styles and e["set"] == "dev" and "uses" not in e else [])
         for suffix, extra in runs:
             result = out / f"{e['name']}{suffix}.json"
-            with open(out / f"{e['name']}{suffix}.score.log", "w") as log:
-                subprocess.run(["python3", "eval/run_cases_at.py", agent_id, "--cases", e["cases"], "--brief", e["case_brief"],
-                                "--out", str(result)] + extra, cwd=REPO, stdout=log, stderr=subprocess.STDOUT)
-            if result.exists():
+            log_path = out / f"{e['name']}{suffix}.score.log"
+            log_path.write_text("")
+
+            def run(cmd=["python3", "eval/run_cases_at.py", agent_id, "--cases", e["cases"], "--brief", e["case_brief"],
+                         "--out", str(result)] + extra, log_path=log_path):
+                with open(log_path, "a") as log:
+                    subprocess.run(cmd, cwd=REPO, stdout=log, stderr=subprocess.STDOUT)
+            if score_with_retry(run, result):
                 passed, total, failures = _failures(result)
                 if not suffix:
                     rows[e["name"]].update(passed=passed, total=total, failures=failures)

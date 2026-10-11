@@ -77,3 +77,21 @@ def test_a_write_is_never_tried_again():
         raise RuntimeError(f"{method} {path} -> 503: error code: 503")
     with pytest.raises(RuntimeError):
         retry_reads(api, wait=lambda s: None)("POST", "/x")
+
+
+def test_a_score_run_that_wrote_no_result_runs_once_more(tmp_path):
+    # rounds 5b and 5c: a Freya API error stopped a score run, and its result file was missing from the round
+    from run_eval import score_with_retry
+    result, calls = tmp_path / "r.json", []
+
+    def run():
+        calls.append(1)
+        if len(calls) == 2:
+            result.write_text("{}")
+    assert score_with_retry(run, result) and len(calls) == 2
+
+
+def test_a_score_run_is_tried_twice_at_most(tmp_path):
+    from run_eval import score_with_retry
+    calls = []
+    assert not score_with_retry(lambda: calls.append(1), tmp_path / "r.json") and len(calls) == 2
