@@ -52,10 +52,11 @@ def unstick(api, now=time.time):
     return wrapped
 
 
-def retry_reads(api, wait=time.sleep, tries=6):
+def retry_reads(api, wait=time.sleep, tries=45):
     """Wrap freya.api. A GET that fails with a server error (500, 502, 503, 504: seen in rounds 5b, 5c and 6) or a network
     error (round 6: DNS) is tried again;
-    a write is tried again only after a 503 (refused before anything was written)."""
+    a write is tried again only after a 503 (refused before anything was written).
+    The waits cover an outage of about 22 minutes (round 6: 504s for more than 2.5 minutes stopped a score run)."""
     def wrapped(method, path, body=None, **params):
         for i in range(tries):
             try:
@@ -66,7 +67,7 @@ def retry_reads(api, wait=time.sleep, tries=6):
                 if i == tries - 1 or not (refused or (method == "GET" and server_or_dns)):
                     raise
                 print(f"{method} {path} failed ({str(e)[-30:]}), trying again", flush=True)
-                wait(10 * (i + 1))
+                wait(min(30, 10 * (i + 1)))
     return wrapped
 
 

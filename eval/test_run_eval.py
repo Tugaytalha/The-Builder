@@ -117,3 +117,15 @@ def test_a_read_that_fails_on_dns_is_tried_again():
             raise urllib.error.URLError("[Errno 8] nodename nor servname provided, or not known")
         return {"ok": True}
     assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}
+
+
+def test_a_read_waits_out_a_20_minute_outage():
+    # round 6: Freya returned 504 for more than 2.5 minutes while a simulation ran, and the score run stopped
+    from run_cases_at import retry_reads
+    waited = []
+
+    def api(method, path, body=None, **params):
+        if sum(waited) < 20 * 60:
+            raise RuntimeError(f"{method} {path} -> 504: error code: 504")
+        return {"ok": True}
+    assert retry_reads(api, wait=waited.append)("GET", "/x") == {"ok": True}
