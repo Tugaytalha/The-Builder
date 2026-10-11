@@ -3,7 +3,7 @@ import json
 import re
 import time
 
-KEY_PATTERN = re.compile(r"fak_[A-Za-z0-9_\-]+")
+KEY_PATTERN = re.compile(r"(fak_|sk-ant-)[A-Za-z0-9_\-]+")     # Freya keys and Anthropic keys or tokens
 
 
 class Trace:
