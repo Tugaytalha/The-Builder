@@ -183,6 +183,9 @@ def speak_line(text):
     text = (reply + ' ' + text).strip()     # the model's answer to a question, then the code's line
     vars['guide'] = 'SAY: "' + text + '"'
     vars['say_now'], vars['say_turn'] = text, 'yes'     # the next node speaks it with fixed text
+    asks = [q.strip() + '?' for q in text.split('?')[:-1]]
+    if asks:
+        st['last_question'] = asks[-1].split('. ')[-1]     # the last question said, to ask again
 answers = params.get('answers') or []
 answers = json.loads(answers) if isinstance(answers, str) else answers
 answers = [answers] if isinstance(answers, dict) else answers
@@ -223,8 +226,8 @@ else:
         elif reply:
             speak_line('')
         else:
-            vars['guide'] = ('No new line. If the customer asked something, answer in one sentence from ACCOUNT. '
-                             'Name no amount and no day.')
+            ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again
+            speak_line('I understand. ' + (ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?'))
     else:
         confirmed = 'confirms' in kinds and bool(st.get('final_shown'))
         end = finish(items, confirmed)
@@ -290,7 +293,7 @@ def negotiation_tool(kinds, policy, list_var):
 def negotiation_nodes(name, task, tools, statement, transitions, max_turns, max_turn_target):
     """The negotiation node `name` (first entry speaks `statement`) and its loop: after each call of the negotiation tool
     that chose a line, `name`_say marks it spoken and `name`_next speaks vars['say_now'] with fixed text, so the model
-    cannot change an offer. With no line chosen, the model answers in its own words. `transitions` go first, on both nodes."""
+    cannot change an offer. With no new line, the code says the model's reply or asks the last question again (round 5: a free turn for the model came back empty). `transitions` go first, on both nodes."""
     to_say = go(name + "_say", any_of(cond("say_turn", "equals", "yes")), "the code chose the next line")
     done = "vars['say_turn'] = 'no'\nvars['guide'] = 'The line was said. Wait for the answer.'"
     return [conversation(name, task, tools=tools, on_enter=tts(statement), first_entry_only=True, max_turns=max_turns,

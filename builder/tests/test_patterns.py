@@ -155,10 +155,6 @@ def finish(items, confirmed):
 """
 
 
-ANSWER_GUIDE = ("No new line. If the customer asked something, answer in one sentence from ACCOUNT. "
-                "Name no amount and no day.")
-
-
 def _neg_call(v, turn, answers):
     import json as _json
     from builder.blocks.coderun import run_tool
@@ -184,8 +180,8 @@ def test_negotiation_two_answers_in_one_call_say_the_first_product_first():
 
 def test_negotiation_never_says_a_line_twice_and_finishes_with_writes():
     v = _neg({}, 1, item="a", kind="no")
-    v = _neg(v, 2, item="a", kind="human_question")    # an answer that changes nothing
-    assert v["guide"] == ANSWER_GUIDE and v["say_turn"] == "no"
+    v = _neg(v, 2, item="a", kind="human_question")    # an answer that changes nothing: the question again, no new offer
+    assert v["say_now"] == "I understand. Could you pay half for a?"
     v = _neg(v, 3, item="a", kind="yes")
     assert v["guide"] == 'SAY: "Could you pay b?"'    # b was never asked
     v = _neg(v, 4, item="b", kind="no")
@@ -253,8 +249,8 @@ def test_negotiation_puts_the_chosen_line_in_say_now_for_the_code_to_speak():
     # round 4 PUB-12: NEXT STEP held the read-back, and the model said its own offer instead
     v = _neg({}, 1, item="a", kind="no")
     assert v["say_turn"] == "yes" and v["say_now"] == "Could you pay half for a?"
-    v = _neg(v, 2, item="a", kind="human_question")    # no line: the model answers in its own words
-    assert v["say_turn"] == "no" and v["guide"] == ANSWER_GUIDE
+    v = _neg(v, 2, item="a", kind="human_question")    # no line and no reply: the code asks the last question again
+    assert v["say_turn"] == "yes" and v["say_now"] == "I understand. Could you pay half for a?"
 
 
 def test_negotiation_nodes_speak_say_now_with_fixed_text():
@@ -308,3 +304,19 @@ def test_negotiation_tail_of_a_cut_off_message_is_not_a_new_answer():
     props = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]
     assert "only ends" in props["answers"]["description"]
     assert "only ends" in props["answers"]["items"]["properties"]["date"]["description"]
+
+
+def test_negotiation_asks_the_last_question_again_after_a_message_with_no_answer():
+    # round 5 A talkative PUB-01, PUB-04: "I'm just so glad to be home" at the read-back gave the turn to the model,
+    # which returned no speakable content twice; the customer hung up
+    v = _neg({}, 1, item="a", kind="no")
+    v = _neg(v, 2, item="a", kind="other")
+    assert v["say_turn"] == "yes" and v["say_now"] == "I understand. Could you pay half for a?"
+
+
+def test_negotiation_never_asks_an_offer_with_a_number_again():
+    # round 1 PUB-06: an offer said again after a question back counted as a new attempt
+    v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}],
+                                                "last_question": "Could you pay 20.00 on Friday 23 October?"})}
+    v = _neg(v, 1, item="a", kind="other")
+    assert v["say_now"] == "I understand. What is your answer?"
