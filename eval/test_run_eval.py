@@ -31,3 +31,21 @@ def test_report_shows_change():
             "failures": [{"id": "PUB-03", "reasons": ["outcome ('not_verified', 'failed'), expected ('promise', None)"]}]}]
     text = report(new, old)
     assert "| brief-a | dev | 9 | 10 | 900 | 0 | +2 |" in text and "## identity (1)" in text
+
+
+def test_unstick_completes_a_simulation_whose_runs_ended():
+    from run_cases_at import STUCK_S, unstick
+    calls, clock = [], [0]
+
+    def api(method, path, body=None, **params):
+        calls.append((method, path))
+        if path.endswith("/iterations"):
+            return {"iterations": [{"id": "it1"}]}
+        if "/iterations/" in path:
+            return {"runs": [{"endedAt": "x"}, {"endedAt": "y"}]}
+        return {"simulation": {"status": "running"}}
+    wrapped = unstick(api, now=lambda: clock[0])
+    assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "running"
+    clock[0] = STUCK_S + 1
+    assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "completed"
+    assert ("PUT", "/api/v2/simulations/s1") in calls

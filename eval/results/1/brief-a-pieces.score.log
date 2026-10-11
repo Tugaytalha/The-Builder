@@ -1,0 +1,26 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > verify > verify > close_call
+       - outcome ('not_verified', 'failed'), expected ('promise', None)
+       - promises [], expected [('p1', 420.0, '2026-10-14')]
+       - conversation: The call failed multiple success criteria: - The security questions did not both pass; the second question (last four digits of the phone number) failed, as shown in the system events following Message 9. - 'create_promise' was never called (0 ti
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > verify > verify > close_call
+       - outcome ('not_verified', 'failed'), expected ('promise', None)
+       - promises [], expected [('p1', 1250.0, '2026-10-23')]
+       - conversation: The conversation failed to meet several success criteria because it was terminated early due to a security verification failure. Specifically: - The promise date of 23 October was never mentioned or agreed upon because the call ended at the authe
+PASS PUB-05 medium Hardship       | verify > verify > verify > verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > verify > verify > verify > get_account > promise > close_call
+       - conversation: The agent failed to meet the success criteria because the minimum payment was offered more than once. Specifically, the agent proposed the minimum payment amount (637.50) in [Message 14] and then again in [Message 16]. Furthermore, the second off
+FAIL PUB-07 hard   Dates          | verify > verify > verify > verify > verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 540.0, '2026-10-27')]
+       - conversation: The agent successfully met the first two criteria by asking for the exact payment day once (Message 16) and refusing the non-business day of October 26th to offer October 27th instead (Message 18). However, the promise was not correctly recorded.
+FAIL PUB-08 medium Already paid   | verify > verify > verify > verify > verify > close_call
+       - outcome ('not_verified', 'failed'), expected ('paid', None)
+       - conversation: - The agent did not state that payments can take one business day to appear. - The call ended early because the customer failed the security verification process thrice, preventing the agent from reaching the information about payment timelines.
+PASS PUB-09 medium Restructuring  | verify > verify > verify > verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > verify > verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 4 s. Failed calls where the customer hung up: 0.
+
+5 / 10 passed (bank records and conversation checks). Last simulation db41d2a9-f76d-4681-9bc7-cbaf511410e8, status completed, 117 s.

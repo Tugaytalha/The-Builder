@@ -1,0 +1,182 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "85b69254-1c25-40d7-9ab5-a0c4232ffda2",
+ "iteration_id": "7a9fcb89-c6a0-48f2-aa8f-f676a899cae7",
+ "seconds": 233,
+ "passed": 0,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 220.0, '2026-10-16')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+    "notes [('p2', 'refused'), ('p3', 'refused')], expected []",
+    "conversation: The agent failed the third success criterion. Although the agent stated all three products before asking for payment (Message 30) and performed a read-back and confirmation for each product (Messages 34/37, 42/43, and 46/47), it only executed a 'create_promise' for the credit card (p1). Despite the user agreeing to pay all three debts on Friday (Message 33) and confirming the details for each, the"
+   ],
+   "call_id": "057bc94b-99cc-4cfd-a947-8e8503a47019",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_c2f3c0e6-ee4",
+   "slowest_turn_s": 10.7,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 510.0, '2026-10-15'), ('p2', 1320.0, '2026-10-15'), ('p3', 140.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]",
+    "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: - The agent recorded promises for all three products (credit card, personal loan, and car loan) as shown in system events and message 77, violating the requirement for exactly one promise on the credit card. - No 'refused' notes were created for the personal loan or car loan as required. - The agent failed to perform the required attempts for the personal loan (two attempts) and car loan (one atte"
+   ],
+   "call_id": "281ce7ba-fb6a-4780-bf89-114961bed690",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_084db576-c35",
+   "slowest_turn_s": 22.1,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-30')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "notes [('p2', 'refused')], expected []",
+    "conversation: The evaluation failed because the loan was not recorded as required, and the dates mentioned in the criteria were not used correctly. While the credit card was successfully recorded for 30 October (System Event for p1), the personal loan was marked as 'refused' in the system events (System Event for p2) instead of being recorded. Furthermore, the criteria required the loan to be recorded on its de"
+   ],
+   "call_id": "2a0f4da2-dc7a-42ef-b91f-f22e405b9601",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_f5b3653f-b64",
+   "slowest_turn_s": 2.2,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 220.0, '2026-10-16')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+     "notes [('p2', 'refused'), ('p3', 'refused')], expected []",
+     "conversation: The agent failed the third success criterion. Although the agent stated all three products before asking for payment (Message 30) and performed a read-back and confirmation for each product (Messages 34/37, 42/43, and 46/47), it only executed a 'create_promise' for the credit card (p1). Despite the user agreeing to pay all three debts on Friday (Message 33) and confirming the details for each, the"
+    ],
+    "call_id": "057bc94b-99cc-4cfd-a947-8e8503a47019",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_c2f3c0e6-ee4",
+    "slowest_turn_s": 10.7,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 510.0, '2026-10-15'), ('p2', 1320.0, '2026-10-15'), ('p3', 140.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]",
+     "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: - The agent recorded promises for all three products (credit card, personal loan, and car loan) as shown in system events and message 77, violating the requirement for exactly one promise on the credit card. - No 'refused' notes were created for the personal loan or car loan as required. - The agent failed to perform the required attempts for the personal loan (two attempts) and car loan (one atte"
+    ],
+    "call_id": "281ce7ba-fb6a-4780-bf89-114961bed690",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_084db576-c35",
+    "slowest_turn_s": 22.1,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-30')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "notes [('p2', 'refused')], expected []",
+     "conversation: The evaluation failed because the loan was not recorded as required, and the dates mentioned in the criteria were not used correctly. While the credit card was successfully recorded for 30 October (System Event for p1), the personal loan was marked as 'refused' in the system events (System Event for p2) instead of being recorded. Furthermore, the criteria required the loan to be recorded on its de"
+    ],
+    "call_id": "2a0f4da2-dc7a-42ef-b91f-f22e405b9601",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_f5b3653f-b64",
+    "slowest_turn_s": 2.2,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

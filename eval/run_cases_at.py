@@ -6,7 +6,9 @@ It wraps run_cases' `http` so that a new practice session takes `now` from the c
 Nothing in kit/ changes.
 """
 import json
+import re
 import sys
+import time
 from pathlib import Path
 
 KIT = Path(__file__).resolve().parents[1] / "kit"
@@ -23,8 +25,36 @@ def wrap(http, nows):
     return wrapped
 
 
+STUCK_S = 8 * 60
+
+
+def unstick(api, now=time.time):
+    """Wrap freya.api. A simulation that stays "running" for STUCK_S after its start although every run has ended
+    (seen on the platform) is set to "completed", so the runner can read its results."""
+    first = {}
+
+    def wrapped(method, path, body=None, **params):
+        out = api(method, path, body, **params)
+        m = re.fullmatch(r"/api/v2/simulations/([\w-]+)", path)
+        if method == "GET" and m:
+            sim = out.get("simulation") or out
+            first.setdefault(m.group(1), now())
+            if sim.get("status") == "running" and now() - first[m.group(1)] > STUCK_S:
+                its = api("GET", path + "/iterations")
+                its = its.get("iterations") or its.get("items") or its
+                runs = api("GET", f"{path}/iterations/{its[0]['id']}", limit=100).get("runs", [])
+                if runs and all(r.get("endedAt") for r in runs):
+                    print("simulation ended its runs but stays running: setting it to completed", flush=True)
+                    api("PUT", path, {"status": "completed"})
+                    sim["status"] = "completed"
+        return out
+    return wrapped
+
+
 def main(argv):
+    import freya
     import run_cases
+    freya.api = unstick(freya.api)
     cases = argv[argv.index("--cases") + 1] if "--cases" in argv else str(KIT / "public-test-set.json")
     nows = {c["id"]: c["variables"]["now"] for c in json.load(open(cases)) if c.get("variables", {}).get("now")}
     run_cases.http = wrap(run_cases.http, nows)

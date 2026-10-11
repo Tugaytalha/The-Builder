@@ -1,0 +1,17 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > add_note > add_note > close_call
+       - promises [('p1', 220.0, '2026-10-16')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+       - notes [('p2', 'refused'), ('p3', 'refused')], expected []
+       - conversation: The agent failed the third success criterion. Although the agent stated all three products before asking for payment (Message 30) and performed a read-back and confirmation for each product (Messages 34/37, 42/43, and 46/47), it only executed a '
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 510.0, '2026-10-15'), ('p2', 1320.0, '2026-10-15'), ('p3', 140.0, '2026-10-15')], expected [('p1', 510.0, '2026-10-15')]
+       - notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: - The agent recorded promises for all three products (credit card, personal loan, and car loan) as shown in system events and message 77, violating the requirement for exactly one promise on the credit card. - No 'refused' notes were created for 
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > add_note > close_call
+       - promises [('p1', 300.0, '2026-10-30')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]
+       - notes [('p2', 'refused')], expected []
+       - conversation: The evaluation failed because the loan was not recorded as required, and the dates mentioned in the criteria were not used correctly. While the credit card was successfully recorded for 30 October (System Event for p1), the personal loan was mark
+
+slowest agent turn per call: median 11 s, worst 22 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+0 / 3 passed (bank records and conversation checks). Last simulation 85b69254-1c25-40d7-9ab5-a0c4232ffda2, status completed, 233 s.

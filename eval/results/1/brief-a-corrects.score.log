@@ -1,0 +1,22 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > verify > verify > close_call
+       - outcome ('not_verified', 'failed'), expected ('promise', None)
+       - promises [], expected [('p1', 1250.0, '2026-10-23')]
+       - conversation: The call failed to meet the success criteria because the conversation was terminated early due to the user failing identity verification. The user provided incorrect answers for the last four digits of their phone number in messages 5, 7, and 9. 
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+       - promises [('p1', 637.5, '2026-10-15')], expected [('p1', 637.5, '2026-10-16')]
+       - conversation: The conversation failed to meet the specific date requirement in the success criteria. While the agent correctly offered the minimum payment with the 'rest stays overdue' note and never asked the customer how much she could pay, the final promise
+FAIL PUB-07 hard   Dates          | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 540.0, '2026-10-27')]
+       - conversation: 1. The promise was not recorded in the system; the 'close_call' system event (ground truth) shows 'outcome: no_promise' and 'reason: refused', which contradicts the agent's verbal confirmation in Message 12. All other criteria, including asking f
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 4 s, worst 9 s. Failed calls where the customer hung up: 0.
+
+7 / 10 passed (bank records and conversation checks). Last simulation c28b8252-3dc0-4f12-ae30-2be237fc9f81, status completed, 118 s.

@@ -1,0 +1,11 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > verify > close_call
+       - outcome ('not_verified', 'failed'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-15')]
+       - notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The success criteria were not met because the assistant failed the identity verification process, preventing any product discussion. Additionally: 1) The date of birth question was asked twice (Messages 2 and 4), violating the requirement that it
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 12 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation 922de5f3-478d-4d75-943c-001d37c50dc8, status completed, 85 s.

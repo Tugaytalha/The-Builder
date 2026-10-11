@@ -1,0 +1,168 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "4ea2fe76-c1a0-4a77-85a0-2ccc7524d2ad",
+ "iteration_id": "4825f02b-d86c-4560-927f-a124d8230f8a",
+ "seconds": 2331,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "a813487d-0594-4885-bd36-f594f75201ab",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_1df2a186-b60",
+   "slowest_turn_s": 40.6,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'refused'), expected ('promise', None)",
+    "promises [], expected [('p1', 510.0, '2026-10-15')]",
+    "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: The conversation failed on several counts: 1. The assistant made two attempts to collect on the car loan (early band, 7 days late) at [Message 10] and [Message 18], violating the requirement for exactly one attempt. 2. The assistant recorded three 'refused' notes (calls to customer_said) for both the personal loan and the car loan (at messages 9, 11/13, and 17/19) instead of the required one. 3. A"
+   ],
+   "call_id": "f11f2bc4-5da8-4774-8e2a-6dd8f5526b73",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "close_call"
+   ],
+   "customer_id": "c_7ad8cc3c-b20",
+   "slowest_turn_s": 4.8,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-14')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "conversation: The assistant failed to record the loan on the required deadline of 23 October. Although the assistant correctly identified the deadline in [Message 10], it switched the date to 14 October during the read-back in [Message 12] and executed the API call with the 14 October date. Consequently, the second success criterion was not met. Additionally, while the read-back named two dates, it failed to na"
+   ],
+   "call_id": "7ac1b1aa-5e79-47f0-9ef6-ef005ad497f0",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_de49bcf1-4d7",
+   "slowest_turn_s": 17.1,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "a813487d-0594-4885-bd36-f594f75201ab",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_1df2a186-b60",
+    "slowest_turn_s": 40.6,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'refused'), expected ('promise', None)",
+     "promises [], expected [('p1', 510.0, '2026-10-15')]",
+     "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: The conversation failed on several counts: 1. The assistant made two attempts to collect on the car loan (early band, 7 days late) at [Message 10] and [Message 18], violating the requirement for exactly one attempt. 2. The assistant recorded three 'refused' notes (calls to customer_said) for both the personal loan and the car loan (at messages 9, 11/13, and 17/19) instead of the required one. 3. A"
+    ],
+    "call_id": "f11f2bc4-5da8-4774-8e2a-6dd8f5526b73",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "close_call"
+    ],
+    "customer_id": "c_7ad8cc3c-b20",
+    "slowest_turn_s": 4.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-14')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "conversation: The assistant failed to record the loan on the required deadline of 23 October. Although the assistant correctly identified the deadline in [Message 10], it switched the date to 14 October during the read-back in [Message 12] and executed the API call with the 14 October date. Consequently, the second success criterion was not met. Additionally, while the read-back named two dates, it failed to na"
+    ],
+    "call_id": "7ac1b1aa-5e79-47f0-9ef6-ef005ad497f0",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_de49bcf1-4d7",
+    "slowest_turn_s": 17.1,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}
