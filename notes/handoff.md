@@ -28,7 +28,7 @@ Read this first in a new session. Then read `notes/hidden-runbook.md` (what to d
 | 14:43 | 63fdc9a | Brief A | plain, PUB-03 only | 3/3 | none: the privacy fix holds |
 | 14:43 | 63fdc9a | Brief A | talkative | 9/10 | PUB-04: the same test mismatch. Best talkative score so far (rounds 1–5: 6–8/10) |
 | 15:00 | ead33c1 | Brief A | plain | 8/10 | PUB-04: test mismatch. PUB-06: a 74 s agent turn, the customer hung up after "Yes, I confirm" (platform) |
-| 15:00 | ead33c1 | Brief B (held-out) | plain | 0/3 | PUB-11: judge result did not arrive (platform). PUB-12: the scorer's customer gave the right phone digits first, so no "ask again" (simulator). PUB-13: our brief B memo says one date for all products; the scorer expects the old rule (test mismatch); one bank write failed, and the agent wrote a `service_error` note and said so (correct) |
+| 15:00 | ead33c1 | Brief B (held-out) | plain | 0/3 | PUB-11: judge result did not arrive (platform). PUB-12: the bank said `verified: true` to the wrong digits 4401 (bank state left over from an earlier call); the agent behaved correctly (platform). PUB-13: our brief B memo says one date for all products; the scorer expects the old rule (test mismatch); one bank write failed, and the agent wrote a `service_error` note and said so (correct) |
 
 Builds: 468–656 s, all exit 0, no keys in the traces, no builder file changed.
 
@@ -60,7 +60,8 @@ Builds: 468–656 s, all exit 0, no keys in the traces, no builder file changed.
 2. **Before identity passes, the model knows nothing.** An unverified model with a collections prompt invents plausible account facts.
 3. **Read the transcript before any fix.** In this session 9 of 11 failures were not agent defects: test mismatches with our memo briefs, platform slowness, simulator artifacts.
 4. **Our practice briefs are harder than the official ones.** Their memos change rules (A: 5th business day; B: one date for all products). An official scorer failure on such a rule means the agent obeyed the memo.
-5. **Platform slowness is the main remaining risk.** Agent turns of 70–80 s make the customer hang up. In the afternoon the median slowest turn was 6–20 s.
+5. **Platform slowness is the main remaining risk.** Silence = platform step time × our step count (16:00 study of 623 calls in `notes/eval-log.md`). The guard against renamed API fields is in d6e5e61.
+5a. **Earlier text:** Agent turns of 70–80 s make the customer hang up. In the afternoon the median slowest turn was 6–20 s.
 
 ## Next steps
 
