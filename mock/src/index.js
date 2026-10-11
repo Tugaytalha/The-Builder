@@ -5,6 +5,7 @@ import { DurableObject } from "cloudflare:workers";
 import { OPENAPI } from "./openapi.js";
 import { ROUTES } from "./routes.js";
 import { seed } from "./data.js";
+import { match } from "./match.js";
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8" } });
@@ -18,11 +19,11 @@ export class Bank extends DurableObject {
       await this.ctx.storage.put({ state: seed(), log: [] });
       return { status: 200, data: { ok: true } };
     }
-    const route = ROUTES[`${method} ${path}`];
+    const found = match(ROUTES, method, path);
     let status = 404, data = { ok: false, error: "unknown route" };
-    if (route) {
+    if (found) {
       try {
-        ({ status = 200, data } = route(state, body ?? {}));
+        ({ status = 200, data } = found.route(state, { ...(body ?? {}), ...found.params }));
       } catch (err) {
         status = 500;
         data = { ok: false, error: String(err) };
