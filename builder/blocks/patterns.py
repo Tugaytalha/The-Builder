@@ -288,8 +288,9 @@ def negotiation_tool(kinds, policy, list_var):
                     "of an earlier one adds no new answer: send the kind for anything else, with no day and no amount, "
                     "and answer any question in reply."},
         "reply": {"type": "string", "description": "If the customer asked a question in this message, your answer in one "
-                  "sentence from ACCOUNT, with no amount and no day; else empty. Also when the kind is unfinished: 'Which loan is "
-                  "this? I' needs the answer. The call says it before the next line."}},
+                  "sentence, from your instructions or ACCOUNT, with no amount and no day; else empty. A side question needs it "
+                  "too: who you are, whether you are a robot, why you call, whether this is a scam. Give it with every kind, also "
+                  "unfinished: 'Which loan is this? I' needs the answer. The call says it before the next line."}},
         policy + "\n" + engine)
 
 

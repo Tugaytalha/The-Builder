@@ -359,3 +359,11 @@ def test_negotiation_leaves_the_policy_keys_of_an_item_alone():
         v = run_tool(code, v, {"answers": [{"item": "a", "kind": "no", "date": "", "amount": ""}], "reply": ""})
         assert "customer_said_code_error" not in v
     assert __import__("json").loads(v["neg_state"])["items"][0]["said"] == ["no", "no"]
+
+
+def test_negotiation_reply_answers_a_side_question_from_the_instructions_too():
+    # round 5 PUB-04 (A and V2, 5 calls): "Am I talking to a robot?" came with a proposal; the reply was limited to
+    # ACCOUNT, the robot rule is in the system prompt, so the reply was empty and the question got no answer
+    from builder.blocks.patterns import negotiation_tool
+    reply = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["reply"]["description"]
+    assert "robot" in reply and "instructions" in reply and "every kind" in reply
