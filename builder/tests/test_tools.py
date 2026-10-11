@@ -41,6 +41,12 @@ def test_unknown_tool_is_a_key_error():
         make_tool(load_api(FIX), "nope")
 
 
+def test_baked_field_not_in_the_api_is_a_clear_error():
+    # A hidden tool API can rename a field; a baked value for the old name must not vanish from the request.
+    with pytest.raises(ValueError, match="member_ref.*member_id"):
+        make_tool(load_api(FIX), "check_member", baked={"member_ref": "{{member_id}}"})
+
+
 def test_post_hook_is_guarded():
     code = make_tool(load_api(FIX), "check_member", post_code="d['what_to_do_next'] = 'Ask again.'")["post_process_code"]
     assert "try:" in code and "result.pop('header', None)" in code

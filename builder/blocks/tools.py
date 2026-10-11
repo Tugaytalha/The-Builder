@@ -89,6 +89,9 @@ def _post_hook(post_code):
 def make_tool(api, name, *, baked=None, post_code="", description=""):
     op = api[name]
     baked = baked or {}
+    unknown = sorted(set(baked) - set(op["fields"]))
+    if unknown:
+        raise ValueError(f"{name}: baked field(s) {unknown} not in the tool API; its fields are {sorted(op['fields'])}")
     body = {f: _leaf(s, baked.get(f, "{{" + name + "__" + f + "}}")) for f, s in op["fields"].items()}
     return {
         "type": "function", "config": {"timeoutMs": 10000, "maxRetries": 0},
