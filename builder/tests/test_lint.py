@@ -110,3 +110,13 @@ def test_flags_intent_route_out_of_a_state_tool_node():
     greet = conversation("greet", "Say hello.", tools=[said], on_enter=tts("Hello."),
                          transitions=[intent("bye", "The customer says goodbye"), always("log")])
     problems_about(build(greet=greet), "intent route")
+
+
+def test_flags_a_fixed_line_with_a_variable_that_can_be_empty():
+    # round 5 A+B corrects PUB-12: vars['close_extra'] = '' and the goodbye said "{{close_extra}}" aloud
+    w = build(start=code_node("start", "vars['extra'] = 'Note. ' if vars.get('x') else ''", "greet"),
+              bye=end_node("bye", "walk_in", "Done. {{extra}}Goodbye."))
+    problems_about(w, "extra")
+    w = build(start=code_node("start", "vars['extra'] = 'Note.'", "greet", fallbacks={"extra": ""}),
+              greet=conversation("greet", "Say hello.", on_enter=tts("Hello. {{extra}}"), transitions=[always("log")]))
+    problems_about(w, "extra")

@@ -117,6 +117,17 @@ def lint(workflow, api, rules):
                 if (t.get("condition") or {}).get("operator") == "matches_intent" and not t.get("is_tool_call"):
                     problems.append(f"{name}: intent route to {t.get('target_node')} in a node with a state tool; "
                                     "let the state tool's kinds decide")
+    # 13. a fixed line must not use a variable that a code node can set to '': the platform speaks "{{x}}" for an
+    # empty value (round 5 A+B: the goodbye said "{{close_extra}}"). Build the whole line in code instead.
+    codes = [c for n in nodes + globals_ for t in _functions(n) for c in _codes(t)]
+    for n in nodes + globals_:
+        props = ((n.get("terminal") or {}).get("function") or {}).get("parameters", {}).get("properties", {})
+        line = str((n.get("on_enter") or {}).get("text", "")) + str(props.get("spoken_message", {}).get("default", ""))
+        for var in re.findall(r"\{\{\s*([\w.]+)\s*\}\}", line):
+            empty = r"vars\[['\"]" + re.escape(var) + r"['\"]\]\s*=.*(''|\"\")\s*$"
+            if any(re.search(empty, c, re.MULTILINE) for c in codes):
+                problems.append(f"{n.get('name')}: the fixed line uses {{{{{var}}}}}, which a code node can set to ''; "
+                                "the platform then speaks the braces. Build the whole line in one variable.")
     for tool in workflow.get("tools", []):
         for code in _codes(tool):
             if "{{" in code or "}}" in code:
