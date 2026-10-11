@@ -53,7 +53,7 @@ Do every step on the machine that runs the final build, in a plain terminal (not
    .venv/bin/python builder/build.py briefs/<case folder> https://the-builder-mock.the-builder-freya.workers.dev 2>&1 | tee traces/final.log
    ```
 
-5. Check the end of the log: `created workflow_id=... agent_id=... nodes=... tools=...`, `end seconds=...` under 1800, exit code 0, and `submission/<case folder>.workflow.json` exists. Check that every tool URL in the export starts with the mock URL: `grep -o '"url": *"[^"]*"' submission/<case folder>.workflow.json | sort -u`.
+5. Check the end of the log: `created workflow_id=... agent_id=... nodes=... tools=...`, `end seconds=...` under 1800, exit code 0, and `submission/<case folder>.workflow.json` exists. Check that no URL in the export points anywhere but the mock (this must print nothing; the export keeps tool URLs as `"default": "https://..."`, so the old `"url"` pattern found nothing): `grep -o 'https\?://[^" ,\\]*' submission/<case folder>.workflow.json | grep -v '^https://the-builder-mock.the-builder-freya.workers.dev' | sort -u`. PowerShell and the other checks: `HOW_TO_RUN.md`, "The final case".
 6. Key check: `grep -c fak_ traces/*` must print 0 for every file. `grep -c "$FREYA_BANK_TEAM_KEY" traces/*` must print 0. `grep -c sk-ant- traces/*` must print 0.
    Builder check: `git status --porcelain builder/ | grep -v '^?? builder/runs/'` must print nothing. Then `.venv/bin/python eval/contamination.py`.
 7. Talk to the phone agent in chat as two test customers (one who pays, one who disputes), in Turkish. Read `GET <mock>/__log`. Then `POST <mock>/__reset`.
