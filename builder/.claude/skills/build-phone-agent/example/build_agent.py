@@ -8,8 +8,8 @@ import json
 from builder.blocks.coderun import with_dates
 from builder.blocks.nodes import (all_of, always, any_of, cond, conversation, field, go, intent, is_true, tts,
                                   workflow, api_node, code_node)
-from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, record_with_retry,
-                                     start, state_tool)
+from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, start, state_tool,
+                                     write_loop)
 from builder.blocks.tools import load_api, make_tool
 
 SPEC = json.load(open("spec.json"))
@@ -92,7 +92,8 @@ for p in load_list():
     for amount_kind, date_kind in band[2]:
         offers.append([full if amount_kind == 'full' else floor, deadline if date_kind == 'deadline' else vars.get(date_kind)])
     word = WORDS.get(str(p.get(%(kind)r)), str(p.get(%(kind)r)))
-    items.append(dict(id=str(p.get(%(id)r)), word=word, full=full, floor=floor, deadline=deadline, offers=offers, used=0))
+    items.append(dict(id=str(p.get(%(id)r)), word=word, full=full, floor=floor, deadline=deadline, offers=offers, used=0,
+                      status='open'))
     facts.append('Item ' + str(p.get(%(id)r)) + ': ' + word + ', overdue ' + money(full) + ', ' + str(days_late)
                  + ' days. Smallest payment ' + money(floor) + '. Deadline ' + say(iso_day(deadline)) + ' (' + deadline + ').')
     said.append('your ' + word + ' has ' + money(full) + ' overdue, ' + str(days_late) + ' days late')
@@ -109,9 +110,17 @@ vars['guide'] = 'Wait for the answer to your question. Then call customer_said.'
 
 P = SPEC["promise"]
 # The state tool: the model reports what the customer said, the code decides the next step (spikes S2, S9).
+# The state tool: the model reports what the customer said about one item, the code decides the next step
+# (spikes S2, S9). The state is kept per item. A customer can answer for several items in one message: the model
+# then calls the tool once per item.
 NEGOTIATE = HELPERS + r'''
 st = json.loads(vars.get('neg_state'))
-it = st['items'][st['cur']]
+items = st['items']
+want = str(params.get('item') or '')
+picked = [i for i, x in enumerate(items) if x['id'] == want and x['status'] == 'open']
+if picked:
+    st['cur'] = picked[0]
+it = items[st['cur']]
 kind = str(params.get('kind') or '')
 def read_back(amount, day):
     it['agreed'] = [round(float(amount), 2), day]
@@ -124,16 +133,32 @@ def ok_day(day):
     except Exception:
         return False
     return is_business_day(d, HOLIDAYS) and vars.get('today_iso') <= day <= it['deadline']
+def next_item():
+    # Called when the current item is finished. Moves to the next open item, or ends the talk.
+    rest = [i for i, x in enumerate(items) if x['status'] == 'open']
+    if rest:
+        st['cur'] = rest[0]
+        nx = items[rest[0]]
+        return ('Now the ' + nx['word'] + ': ask "Could you settle ' + money(nx['full']) + ' by '
+                + say(iso_day(nx['deadline'])) + '?". Then call customer_said with item ' + nx['id'] + '.')
+    writes = [dict(fields=dict(%(idf)s=x['id'], %(amf)s=x['agreed'][0], %(daf)s=x['agreed'][1]), status='pending')
+              for x in items if x['status'] == 'agreed']
+    if writes:
+        vars['promise_writes_list'] = json.dumps(writes)
+        vars['record_now'] = 'yes'
+        return 'Say: one moment, please.'
+    vars['close_key'] = 'close_said_no'
+    return 'Stop. Make no other offer.'
 if kind == 'refuses':
     it['used'] = it['used'] + 1
     if it['used'] <= len(it['offers']):
         amount, day = it['offers'][it['used'] - 1]
         it['pending'] = [amount, day]
-        guide = ('Propose exactly this, once: ' + money(amount) + ' on ' + say(iso_day(day))
+        guide = ('Propose exactly this, once: ' + money(amount) + ' for your ' + it['word'] + ' on ' + say(iso_day(day))
                  + '. Then wait for the answer and call customer_said.')
     else:
-        vars['close_key'] = 'close_said_no'
-        guide = 'Stop. Make no other offer.'
+        it['status'] = 'stopped'
+        guide = next_item()
 elif kind == 'accepts':
     amount, day = it.get('pending') or [it['full'], it['deadline']]
     guide = read_back(amount, day)
@@ -143,7 +168,7 @@ elif kind == 'proposes':
     day = str(params.get('date') or pending[1])[:10]
     if not ok_day(day):
         it['pending'] = [amount, it['deadline']]
-        guide = ('Say that the latest day you can record is ' + say(iso_day(it['deadline']))
+        guide = ('Say that the latest day you can record for the ' + it['word'] + ' is ' + say(iso_day(it['deadline']))
                  + ' and that it must be a business day. Offer ' + money(amount) + ' on that day. Then call customer_said.')
     elif amount < it['floor'] - 0.001 or amount > it['full'] + 0.001:
         it['pending'] = [it['floor'], day]
@@ -155,11 +180,8 @@ elif kind == 'confirms' and not it.get('agreed'):
     amount, day = it.get('pending') or [it['full'], it['deadline']]
     guide = read_back(amount, day)
 elif kind == 'confirms':
-    vars['agreed_item'] = it['id']
-    vars['agreed_sum'] = it['agreed'][0]
-    vars['agreed_date'] = it['agreed'][1]
-    vars['record_now'] = 'yes'
-    guide = 'Say: one moment, please.'
+    it['status'] = 'agreed'
+    guide = next_item()
 elif kind == 'wants_person':
     guide = 'Call transfer_to_agent now.'
 else:
@@ -167,6 +189,13 @@ else:
              'Do not say the amount or the day again: an offer counts every time it is said.')
 vars['neg_state'] = json.dumps(st)
 vars['guide'] = guide
+''' % {"idf": P["id_field"], "amf": P["amount_field"], "daf": P["date_field"]}
+
+# After the promise writes: a code node picks the close from the statuses.
+AFTER_WRITES = '''
+import json
+ws = json.loads(vars.get('promise_writes_list') or '[]')
+vars['close_key'] = 'close_agreed' if any(w['status'] == 'ok' for w in ws) else 'close_system_down'
 '''
 
 # ---------------------------------------------------------------- tool result lines (post-hooks)
@@ -220,12 +249,13 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
 
 NEGOTIATE_TASK = ("NEXT STEP (obey it): {{guide}}\n\n"
                   "Identity is verified. You stated the bill and asked a question. Every time the customer answers about "
-                  "paying, call customer_said with kind: accepts (yes to your last proposal), confirms (a clear yes to the "
+                  "paying, call customer_said with the item and kind: accepts (yes to your last proposal), confirms (a clear yes to the "
                   "read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence; "
                   "anything else is proposes or other), "
                   "refuses (no, with no day and "
                   "no amount), proposes (names a day or an amount; pass date as YYYY-MM-DD and amount as a number), "
-                  "wants_person, or other. Then follow NEXT STEP. Propose only what NEXT STEP says. Never say that "
+                  "wants_person, or other. If one message answers for several items, call customer_said once per item. "
+                  "Then follow NEXT STEP. Propose only what NEXT STEP says. Never say that "
                   "something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 
@@ -242,14 +272,12 @@ callback["pre_process_code"] = guard_hook(
     "not (str(body.get('day')) in str(vars.get('callback_days')).split(',') and %r <= str(body.get('at'))[:5] <= %r)"
     % (SPEC["callback"]["from"], SPEC["callback"]["to"]))
 said = state_tool("customer_said", "CALL it every time the customer answers about paying.", {
+    "item": {"type": "string", "description": "The item id this answer is about (see ACCOUNT), or empty for the one you asked about."},
     "kind": {"type": "string", "enum": ["accepts", "confirms", "refuses", "proposes", "wants_person", "other"],
              "description": "What the customer said. One of: accepts, confirms, refuses, proposes, wants_person, other."},
     "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
     "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}},
     with_dates(NEGOTIATE))
-# The engine writes the promise with the values the code agreed (spike S10). The model never calls it.
-promise = make_tool(API, P["tool"], baked={**BAKED_ID, P["id_field"]: "{{agreed_item}}", P["amount_field"]: "{{agreed_sum}}",
-                                           P["date_field"]: "{{agreed_date}}"})
 transfer = make_tool(API, "transfer_to_agent", baked={**BAKED_ID, "team": "desk"}, post_code=PLAIN_POST,
                      description="Hand the call to a person. CALL it when NEXT STEP says so.")
 
@@ -296,13 +324,16 @@ nodes = [
               transitions=[go("close_system_down", any_of(cond("item_count", "equals", "0")), "no account data")]),
     conversation("negotiate", NEGOTIATE_TASK, tools=[said, transfer], on_enter=tts("{{debt_statement}}"),
                  first_entry_only=True, max_turns=30, max_turn_target="end_router", transitions=[
-                     go("record", any_of(cond("record_now", "equals", "yes")), "the customer confirmed the read-back"),
+                     go("promise_writes", any_of(cond("record_now", "equals", "yes")), "every item is agreed or stopped"),
                      go("close_handed_over", is_true("transfer_to_agent_response.data.ok"), "transferred"),
                      go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up"),
                      # the model's own goodbye does not end a call: only an end_call node does
                      intent("end_router", "The customer says goodbye or wants to end the call")]),
-    # 1 retry: the example brief says to close on a failure; a brief that allows a retry gets attempts=2
-    *record_with_retry("record", promise, 1, "close_agreed", "close_system_down"),
+    # The engine writes each agreed promise (spike S10). 1 attempt: the example brief closes on a failure; a brief that
+    # allows a retry gets attempts=2.
+    *write_loop("promise_writes", API, P["tool"], [P["id_field"], P["amount_field"], P["date_field"]], BAKED_ID, 1,
+                "after_writes"),
+    code_node("after_writes", AFTER_WRITES, "end_router", fallbacks={"close_key": "close_system_down"}),
     code_node("end_router", "pass", "close_said_no",
               transitions=[go(k, any_of(cond("close_key", "equals", k)), k) for k in SPEC["closes"] if k != "close_said_no"]),
 ] + closes

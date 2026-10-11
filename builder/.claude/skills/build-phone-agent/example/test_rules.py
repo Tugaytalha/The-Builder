@@ -21,11 +21,11 @@ def test_deadlines_skip_the_monday_holiday():
 
 def test_long_band_offers_full_then_floor_then_stops():
     v = setup_vars()
-    say = lambda v, kind, **p: run_tool(tool_code(WORKFLOW, "customer_said"), v, {"kind": kind, "date": "", "amount": "", **p})
+    say = lambda v, kind, **p: run_tool(tool_code(WORKFLOW, "customer_said"), v, {"kind": kind, "date": "", "amount": "", "item": "", **p})
     v = say(v, "refuses")
-    assert "80.50 on Thursday 6 March 2031" in v["guide"]
+    assert "80.50 for your gas bill on Thursday 6 March 2031" in v["guide"]
     v = say(v, "refuses")
-    assert "20.00 on Tuesday 11 March 2031" in v["guide"]
+    assert "20.00 for your gas bill on Tuesday 11 March 2031" in v["guide"]
     v = say(v, "refuses")
     assert v["close_key"] == "close_said_no"
 
@@ -35,12 +35,44 @@ def test_day_after_deadline_is_refused_and_deadline_offered():
     assert "Tuesday 11 March 2031" in v["guide"] and "agreed_date" not in v
 
 
-def test_valid_proposal_is_read_back_then_recorded_on_confirm():
+def test_valid_proposal_is_read_back_then_written_on_confirm():
     code = tool_code(WORKFLOW, "customer_said")
-    v = run_tool(code, setup_vars(), {"kind": "proposes", "date": "2031-03-07", "amount": "50"})
+    v = run_tool(code, setup_vars(), {"kind": "proposes", "date": "2031-03-07", "amount": "50", "item": "i1"})
     assert "50.00" in v["guide"] and "record_now" not in v
-    v = run_tool(code, v, {"kind": "confirms", "date": "", "amount": ""})
-    assert (v["agreed_item"], v["agreed_sum"], v["agreed_date"], v["record_now"]) == ("i1", 50.0, "2031-03-07", "yes")
+    v = run_tool(code, v, {"kind": "confirms", "date": "", "amount": "", "item": "i1"})
+    assert v["record_now"] == "yes"
+    assert json.loads(v["promise_writes_list"]) == [{"fields": {"item_id": "i1", "sum": 50.0, "pay_on": "2031-03-07"}, "status": "pending"}]
+
+
+def test_two_items_answered_differently():
+    items = json.dumps([{"item_id": "i1", "kind": "gas", "overdue": 80.5, "days_overdue": 25, "smallest_payment": 20},
+                        {"item_id": "i2", "kind": "electricity", "overdue": 40, "days_overdue": 3, "smallest_payment": 10}])
+    v = run_snippet(node_code(WORKFLOW, "setup"), {**SPEC["sample_vars"], "items": items})
+    v = run_snippet(node_code(WORKFLOW, "prepare"), v)
+    code = tool_code(WORKFLOW, "customer_said")
+    say = lambda v, **p: run_tool(code, v, {"kind": "", "date": "", "amount": "", "item": "", **p})
+    v = say(v, kind="proposes", item="i1", date="2031-03-06")      # "gas tomorrow, the electricity not"
+    v = say(v, kind="refuses", item="i2")
+    assert "10.00 for your electricity bill on Thursday 13 March 2031" in v["guide"]   # short band: floor on the 5th bd
+    v = say(v, kind="refuses", item="i2")                          # attempts used up: back to the open gas item
+    assert "record_now" not in v and "close_key" not in v
+    v = say(v, kind="confirms", item="i1")
+    assert [w["fields"]["item_id"] for w in json.loads(v["promise_writes_list"])] == ["i1"]
+
+
+def test_every_item_refused_closes_said_no():
+    code = tool_code(WORKFLOW, "customer_said")
+    v = setup_vars()
+    for _ in range(3):
+        v = run_tool(code, v, {"kind": "refuses", "date": "", "amount": "", "item": ""})
+    assert v["close_key"] == "close_said_no"
+
+
+def test_after_writes_picks_the_close():
+    ok = json.dumps([{"fields": {}, "status": "failed"}, {"fields": {}, "status": "ok"}])
+    assert run_snippet(node_code(WORKFLOW, "after_writes"), {"promise_writes_list": ok})["close_key"] == "close_agreed"
+    bad = json.dumps([{"fields": {}, "status": "failed"}])
+    assert run_snippet(node_code(WORKFLOW, "after_writes"), {"promise_writes_list": bad})["close_key"] == "close_system_down"
 
 
 def test_confirm_without_read_back_gives_the_read_back_first():

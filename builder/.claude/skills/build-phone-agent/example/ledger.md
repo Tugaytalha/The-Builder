@@ -10,10 +10,10 @@
 | R8 | After identity call get_account and state each item | §6 | code | fetch_account, prepare debt_statement |
 | R9 | Business days and holidays | §7 | code | setup: datelib with spec holidays |
 | R10 | Deadline 5th / 3rd business day by days overdue | §8 | code | setup deadline_<band>; prepare band |
-| R11 | Attempts per band, offers fixed, then declined / said_no | §10 | code | customer_said state tool, close_key |
+| R11 | Attempts per band and per item, offers fixed; when every item is stopped: declined / said_no | §10 | code | customer_said state tool (item param), next_item, close_key |
 | R12 | Customer day and amount limits | §11 | code | customer_said proposes branch |
-| R13 | Read back, record only after yes, only the agreed values | §12 | code | read_back guide; confirms sets agreed_*; record api node bakes them |
-| R14 | Tool failure: declined / system_down | §12 | route | record_with_retry, 1 attempt, then close_system_down |
+| R13 | Read back, record only after yes, only the agreed values | §12 | code | read_back guide; confirms marks the item agreed; promise_writes write_loop bakes the values |
+| R14 | Tool failure: declined / system_down | §12 | code | write_loop 1 attempt; after_writes: no ok write → close_system_down |
 | R15 | Recorded promise: agreed | §13 | route | negotiate: create_promise ok |
 | R16 | Request for a person: transfer team desk, handed_over | §14 | tool | transfer_to_agent baked team; route on ok |
 | R17 | One close_call with result and code | Closing | code | close_tool end_of_call, close_sequence values |

@@ -163,8 +163,8 @@ def write_loop(name, api, tool_name, fields, baked, attempts, done_target):
             "    for f, v in ws[todo[0]].get('fields', dict()).items():\n        vars[%r + f] = v\n"
             % (name + "_list", name + "_more", name + "_index", name + "_"))
     def mark(status):
-        return ("import json\nws = json.loads(vars.get(%r) or '[]')\nws[int(vars.get(%r))]['status'] = %r\nvars[%r] = json.dumps(ws)\n"
-                % (name + "_list", name + "_index", status, name + "_list"))
+        return ("import json\nws = json.loads(vars.get(%r) or '[]')\ni = vars.get(%r)\nif i is not None and int(i) < len(ws):\n"
+                "    ws[int(i)]['status'] = %r\n    vars[%r] = json.dumps(ws)\n" % (name + "_list", name + "_index", status, name + "_list"))
     return [code_node(name, pick, name + "_rec", transitions=[go(done_target, any_of(cond(name + "_more", "equals", "no")), "all written")],
                       fallbacks={name + "_more": "no"}),
             *record_with_retry(name + "_rec", tool, attempts, name + "_ok", name + "_failed"),
