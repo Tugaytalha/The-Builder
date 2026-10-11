@@ -13,3 +13,11 @@ def test_run_snippet_writes_vars():
 def test_run_tool_gives_params():
     from builder.blocks.coderun import run_tool
     assert run_tool("vars['x'] = params['p']", {}, {"p": 3}) == {"x": 3}
+
+
+def test_run_post_hook_reads_an_enveloped_body():
+    from builder.blocks.coderun import run_post_hook
+    from builder.blocks.tools import _post_hook
+    tool = {"post_process_code": _post_hook("result['ok'] = 'true' if d['data']['state'] == 'DONE' else 'false'")}
+    assert run_post_hook(tool, {"data": {"state": "DONE"}})["ok"] == "true"
+    assert run_post_hook(tool, {"data": {"state": "FAILED"}})["ok"] == "false"

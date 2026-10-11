@@ -16,6 +16,14 @@ def run_snippet(code, vars):
     return scope["vars"]
 
 
+def run_post_hook(tool, body):
+    """Run a tool's post-hook as the platform does after a successful call: `result['data']` is the API's whole
+    JSON body. Returns `result`, e.g. to assert the `ok` flag a route reads."""
+    scope = {"result": {"data": body}}
+    exec(tool["post_process_code"], scope)
+    return scope["result"]
+
+
 def node_code(workflow, name):
     """The code of a code node, to run with run_snippet in a test."""
     return workflow["nodes"][name]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"]

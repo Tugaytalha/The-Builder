@@ -11,7 +11,7 @@ Import it in `build_agent.py`. `PYTHONPATH` already points at the repository.
 | Module | Use |
 |---|---|
 | `tools.load_api(path)` | Reads the tool API file. Returns operation name (the route without its first `/`; any other `/` or `.` becomes `_`) → `url`, `method`, `fields` (name → schema), `parents`, `required`, `response`. OpenAPI 3 or Swagger 2. A body wrapped in an envelope object (`{"data": {...}}`) is opened: `fields` are the leaf names, and `make_tool` puts them back in their objects. Bake and read leaf names only. |
-| `tools.make_tool(api, name, baked=..., post_code=..., description=...)` | An `api_call` tool. `baked` maps a body field to a fixed value or a `"{{variable}}"` the workflow sets. Every other field is filled by the model (its type, description and enum come from the API file). `post_code` runs in the post-hook with `d` = the API's JSON body; set `d['what_to_do_next']`. |
+| `tools.make_tool(api, name, baked=..., post_code=..., description=...)` | An `api_call` tool. `baked` maps a body field to a fixed value or a `"{{variable}}"` the workflow sets. Every other field is filled by the model (its type, description and enum come from the API file). `post_code` runs in the post-hook with `d` = the whole JSON body the API returned, envelope included: when the response schema in `tool_api.json` wraps the fields (`{"data": {...}, "result": {...}}`), read them by that path (`d['data']['status']`), never at the top level. `result` is the platform's wrapper, not the API body. Set `d['what_to_do_next']`. |
 | `tools.field_values(api, name, field)` | The enum of a field, or `[]`. |
 | `nodes.conversation / code_node / api_node / end_node / workflow` | Valid nodes. `code_node` wraps the code in `try`, writes the `fallbacks` and `<node>_code_error` on an exception, and refuses `{{` or `}}`. `workflow` refuses an unknown target or a duplicate name. |
 | `nodes.cond / any_of / all_of / is_true / go / always / intent / field / tts` | Conditions, transitions, extraction fields, fixed lines. `is_true` tests `"true"` and `"True"`. |
@@ -28,6 +28,7 @@ Import it in `build_agent.py`. `PYTHONPATH` already points at the repository.
 | `patterns.guard_hook(condition)` | A `pre_process_code` that makes the call fail when the condition is true, so the backend records nothing. The condition can read `vars` and `body` (the request body). |
 | `coderun.with_dates(body)` | Puts the date helpers in front of a snippet: `is_business_day(d, holidays)`, `nth_business_day_after(d, n, holidays)` (counts from the day after `d`), `next_business_day_on_or_after`, `last_business_day_of_week` (Monday–Sunday week of `d`), `this_weekday(d, wd)`, `next_weekday(d, wd)` (0 = Monday). Also `date` and `timedelta`. |
 | `coderun.node_code / tool_code / run_snippet / run_tool` | For `test_rules.py`: get a node's or a tool's code from the workflow and run it locally with `vars` (and `params`). |
+| `coderun.run_post_hook(tool, body)` | For `test_rules.py`: run a tool's post-hook on a response body (envelope included) and get the `result` it wrote. |
 
 Commands (run them from the run folder):
 

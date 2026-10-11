@@ -154,7 +154,7 @@ def _dry_run(workflow):
 
 def run_checks(run_dir, dry_run=True):
     run = Path(run_dir)
-    out = {k: [] for k in ("ledger", "lint", "snippets", "rules_tests", "dry_run")}
+    out = {k: [] for k in ("ledger", "lint", "snippets", "coverage", "rules_tests", "dry_run")}
     if not (run / "ledger.md").exists():
         out["ledger"] = ["ledger.md is missing"]
     else:
@@ -170,9 +170,9 @@ def run_checks(run_dir, dry_run=True):
     out["snippets"] = snippet_problems(workflow, spec.get("sample_vars", {}))
     tests = run / "test_rules.py"
     if (run / "ledger.md").exists():
-        out["rules_tests"] = coverage_problems((run / "ledger.md").read_text(encoding="utf-8"),
-                                               tests.read_text(encoding="utf-8") if tests.exists() else "")
-    out["rules_tests"] += _rules_tests(run)
+        out["coverage"] = coverage_problems((run / "ledger.md").read_text(encoding="utf-8"),
+                                            tests.read_text(encoding="utf-8") if tests.exists() else "")
+    out["rules_tests"] = _rules_tests(run)
     if dry_run:
         out["dry_run"] = _dry_run(workflow)
     return out

@@ -17,4 +17,4 @@ def test_example_builds_and_passes_checks(tmp_path):
             shutil.copy(f, tmp_path / f.name)
     subprocess.run([sys.executable, "build_agent.py"], cwd=tmp_path, check=True,
                    env={**os.environ, "PYTHONPATH": str(REPO)})
-    assert run_checks(str(tmp_path), dry_run=False) == {k: [] for k in ("ledger", "lint", "snippets", "rules_tests", "dry_run")}
+    assert run_checks(str(tmp_path), dry_run=False) == {k: [] for k in ("ledger", "lint", "snippets", "coverage", "rules_tests", "dry_run")}

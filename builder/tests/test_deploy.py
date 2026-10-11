@@ -51,3 +51,11 @@ def test_lock_makes_a_second_holder_wait(tmp_path):
     first.join()
     second.join()
     assert order == [("in", "a"), ("out", "a"), ("in", "b"), ("out", "b")]
+
+
+def test_deploy_is_not_blocked_by_missing_rule_tests(tmp_path, monkeypatch):
+    # a build that runs short of time must still deploy its agent; check.py keeps showing the gap to the builder
+    (tmp_path / "workflow.json").write_text(json.dumps({"initial_node": "a"}))
+    monkeypatch.setattr(deploy.check, "run_checks", lambda run_dir: {"lint": [], "coverage": ["ledger R2: no test"]})
+    monkeypatch.setattr(deploy.freya, "save_workflow", lambda slot, w, state_file: {"workflow_id": "w1", "agent_id": "a1"})
+    assert deploy.deploy(str(tmp_path), "slot")["workflow_id"] == "w1"

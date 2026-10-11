@@ -52,7 +52,7 @@ def test_run_checks_without_dry_run(tmp_path):
                                         conversation("talk", "Talk.", transitions=[always("bye")]), end_node("bye", "done")])
     (tmp_path / "workflow.json").write_text(json.dumps(w))
     (tmp_path / "test_rules.py").write_text("def test_ok():\n    assert True\n")
-    assert run_checks(str(tmp_path), dry_run=False) == {k: [] for k in ("ledger", "lint", "snippets", "rules_tests", "dry_run")}
+    assert run_checks(str(tmp_path), dry_run=False) == {k: [] for k in ("ledger", "lint", "snippets", "coverage", "rules_tests", "dry_run")}
 
 
 def test_failing_rules_test_is_reported(tmp_path):
@@ -116,5 +116,6 @@ def test_run_checks_reports_a_code_rule_without_a_test(tmp_path):
                                         conversation("talk", "Talk.", transitions=[always("bye")]), end_node("bye", "done")])
     (tmp_path / "workflow.json").write_text(json.dumps(w))
     (tmp_path / "test_rules.py").write_text("def test_ok():\n    assert True\n")
-    assert run_checks(str(tmp_path), dry_run=False)["rules_tests"] == [
-        "ledger R2: mechanism code, but no test in test_rules.py names R2"]
+    result = run_checks(str(tmp_path), dry_run=False)
+    assert result["coverage"] == ["ledger R2: mechanism code, but no test in test_rules.py names R2"]
+    assert result["rules_tests"] == []
