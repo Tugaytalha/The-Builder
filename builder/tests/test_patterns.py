@@ -320,3 +320,27 @@ def test_negotiation_never_asks_an_offer_with_a_number_again():
                                                 "last_question": "Could you pay 20.00 on Friday 23 October?"})}
     v = _neg(v, 1, item="a", kind="other")
     assert v["say_now"] == "I understand. What is your answer?"
+
+
+ECHO_POLICY = POLICY.replace("def decide(it, kind, amount, day):\n", """def decide(it, kind, amount, day):
+    if day:                                 # a day is checked before confirms, as in the V2 build of round 5
+        it['read'] = day
+        return 'On ' + day + ', right?'
+    if kind == 'confirms' and it.get('read'):
+        it['status'] = 'agreed'
+        return ''
+""", 1)
+
+
+def test_negotiation_retries_an_answer_without_its_values_when_it_would_repeat_the_last_line():
+    # round 5 V2 PUB-06: "Yes, I confirm." came with the read-back's amount and day; the policy read back again, 60 times
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    code = negotiation_tool({"proposes": "a day", "confirms": "yes"}, ECHO_POLICY, "writes_list")["function"]["parameters"][
+        "properties"]["code"]["default"]
+    v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}]})}
+    say = lambda v, kind, day: run_tool(code, v, {"answers": [{"item": "a", "kind": kind, "date": day, "amount": ""}], "reply": ""})
+    v = say(v, "proposes", "2026-11-02")
+    assert v["say_now"] == "On 2026-11-02, right?"
+    v = say(v, "confirms", "2026-11-02")
+    assert v["record_now"] == "yes"

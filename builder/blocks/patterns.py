@@ -204,7 +204,10 @@ for a, kind in zip(answers, kinds):
     done.append(it['id'])
     amount = a.get('amount')
     amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
-    line = decide(it, kind, amount, str(a.get('date') or '')[:10])
+    day = str(a.get('date') or '')[:10]
+    line = decide(it, kind, amount, day)
+    if line and line == it.get('said') and (amount is not None or day):
+        line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)
     it['line'] = line or ''
     if vars.get('close_key') or vars.get('negotiation_action'):
         break
@@ -217,7 +220,7 @@ else:
     todo = [x for x in open_items if x.get('line')]
     if todo:
         speak_line(todo[0]['line'])
-        todo[0]['line'] = ''                # said now
+        todo[0]['said'], todo[0]['line'] = todo[0]['line'], ''      # said now
     elif open_items:
         nx = open_items[0]
         if not nx.get('asked'):
