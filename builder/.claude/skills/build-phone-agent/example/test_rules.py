@@ -114,6 +114,11 @@ def test_identity_passes_when_the_last_answer_is_correct_and_the_bank_leaves_out
                                                           "id_check_check_response.data.correct": "true",
                                                           "id_correct": json.dumps(["postcode"])})
     assert v.get("id_passed") != "yes"              # a question that is not in the list confirms nothing
+    v = run_snippet(node_code(WORKFLOW, "id_check_after"), {"id_question": "birth_year", "id_check_check_response.status": "success",
+                                                          "id_check_check_response.data.correct": "true",
+                                                          "id_check_check_response.data.passed": "false",
+                                                          "id_correct": json.dumps(["postcode"])})
+    assert v.get("id_passed") != "yes"              # review: the bank says not passed; that wins
     routes = {t["target_node"]: t for t in WORKFLOW["nodes"]["id_check_after"]["transitions"]}
     assert routes["fetch_account"]["condition"]["conditions"][0]["variable"] == "id_passed"
 

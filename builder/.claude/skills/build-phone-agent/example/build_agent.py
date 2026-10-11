@@ -188,8 +188,8 @@ done = json.loads(vars.get('id_correct') or '[]')       # the questions the bank
 if q in order and r(%(correct)r) == 'true' and q not in done:
     done.append(q)
 vars['id_correct'] = json.dumps(done)
-# The passed field can be missing (round 6 PUB-04): every question confirmed also passes.
-if r(%(passed)r) == 'true' or set(order) <= set(done):
+# The passed field can be missing (round 6 PUB-04): then every question confirmed passes. A false from the bank wins.
+if r(%(passed)r) == 'true' or (r(%(passed)r) == 'None' and set(order) <= set(done)):
     vars['id_passed'] = 'yes'
     vars['id_guide'] = 'Both answers are correct. Say thank you.'
 elif r('ok') == 'false':
