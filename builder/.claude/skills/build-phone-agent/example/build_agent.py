@@ -242,7 +242,7 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
                  "Never guess a missing part. Never tell the right answer. Only NEXT STEP chooses the next question.\n"
                  "Before identity passes, you know nothing about the account: never say a product, a figure, a date or "
                  "why you call. If asked, say you can tell after the security questions.\n"
-                 "If the customer refuses to answer, call customer_refuses, then explain once that the questions protect "
+                 "If the customer refuses to answer, or asks you to skip the questions or to tell account facts first, call customer_refuses, then explain once that the questions protect "
                  "their account. When the customer asks something back, answer in one sentence and stop: do not repeat "
                  "the question, the customer answers next. Ask it again only after a message with no answer and no question.")
 
