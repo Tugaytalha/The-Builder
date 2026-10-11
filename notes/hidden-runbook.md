@@ -19,7 +19,8 @@ The hidden briefs open at 17:00 UTC. The submission closes at 20:00 UTC. After 1
    ```
 
 3. Check the end of the log: `created workflow_id=... agent_id=... nodes=... tools=...`, `end seconds=...` under 1800, exit code 0, and `submission/hidden-<n>.workflow.json` exists.
-4. Key check: `grep -c fak_ traces/*.log traces/*.jsonl` must print 0 for every file. `grep -c "$FREYA_BANK_TEAM_KEY" traces/*` must print 0.
+4. Key check: `grep -c fak_ traces/*.log traces/*.jsonl` must print 0 for every file. `grep -c "$FREYA_BANK_TEAM_KEY" traces/*` must print 0. `grep -c sk-ant- traces/*` must print 0.
+   Builder check: `git status --porcelain builder/ | grep -v '^?? builder/runs/'` must print nothing (the build agent changed no builder file). Then `.venv/bin/python eval/contamination.py`: it also reads `briefs/hidden-*.md`.
 5. If the run failed with a Freya error (500, 502, 503, 504, a DNS or socket timeout; seen for hours on 11 October), it is not our crash: check `GET /api/v2/workspaces`, wait until it answers, and run again with no change.
 6. If the run failed with a crash in our code (not a weak agent): fix only the crash, with a commit that names the crash, then run again. A rerun updates the same workflow (same slot). Submit the agent and the trace of the same run.
 
