@@ -232,6 +232,14 @@ def test_negotiation_uses_one_answer_per_product_in_one_call():
     assert "negotiation_action" not in v and v["guide"] == 'SAY: "Could you pay half for a?"'
 
 
+def test_negotiation_answer_entry_requires_every_field():
+    # round 3 PUB-11: with only item and kind required, the model left out the day for "this Friday"
+    from builder.blocks.patterns import negotiation_tool
+    tool = negotiation_tool("talk", {"yes": "agrees"}, POLICY, "writes_list")
+    entry = tool["function"]["parameters"]["properties"]["answers"]["items"]
+    assert sorted(entry["required"]) == sorted(entry["properties"])
+
+
 def test_negotiation_takes_answers_as_a_json_string():
     v = _neg_call({}, 1, '[{"item": "a", "kind": "no"}]')
     assert v["guide"] == 'SAY: "Could you pay half for a?"'

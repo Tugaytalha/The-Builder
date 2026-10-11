@@ -94,8 +94,8 @@ for p in load_list():
     word = WORDS.get(str(p.get(%(kind)r)), str(p.get(%(kind)r)))
     items.append(dict(id=str(p.get(%(id)r)), word=word, full=full, floor=floor, deadline=deadline, offers=offers, used=0,
                       status='open'))
-    facts.append('Item ' + str(p.get(%(id)r)) + ': ' + word + ', overdue ' + money(full) + ', ' + str(days_late)
-                 + ' days. Smallest payment ' + money(floor) + '. Deadline ' + say(iso_day(deadline)) + ' (' + deadline + ').')
+    # no floor and no deadline here: given them, the model made its own offers (round 3); only the policy offers
+    facts.append('Item ' + str(p.get(%(id)r)) + ': ' + word + ', overdue ' + money(full) + ', ' + str(days_late) + ' days.')
     said.append('your ' + word + ' has ' + money(full) + ' overdue, ' + str(days_late) + ' days late')
 items[0]['asked'] = 'yes'   # the debt statement asks about the first item
 vars['neg_state'] = json.dumps(dict(items=items))
@@ -230,7 +230,8 @@ NEGOTIATE_TASK = ("NEXT STEP: {{guide}}\n\n"
                   "customer_said with the item and the kind. A message that stops in the middle of a sentence is kind "
                   "unfinished. If one message answers for several items, call customer_said "
                   "once, with one entry per item in answers. Then say the words in NEXT STEP after SAY, word for word, and nothing else about amounts "
-                  "or days. Never say that something is recorded: the call says it at the end.\n\n"
+                  "or days. Never name an amount or a day that is not in NEXT STEP, also when NEXT STEP moves to "
+                  "another item: the code chose it. Never say that something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 
 # ---------------------------------------------------------------- tools

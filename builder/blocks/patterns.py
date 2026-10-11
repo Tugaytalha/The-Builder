@@ -260,7 +260,7 @@ def negotiation_tool(node, kinds, policy, list_var):
     spoken (spike S12), so no line is said twice. The guide holds only words in quotes. The engine adds the kind
     "unfinished" (a message cut off mid-sentence): it changes nothing and asks the customer to go on."""
     engine = NEGOTIATION_ENGINE % {"turns": node + ".total_turns", "list_var": list_var}
-    answer = {"type": "object", "required": ["item", "kind"], "properties": {
+    answer = {"type": "object", "required": ["item", "kind", "date", "amount"], "properties": {
         "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
         "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
