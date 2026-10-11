@@ -2,7 +2,7 @@
 
 For the builder owner. What 50 simulated callers found in the final-case agent our builder made, why, and what to change in the builder. The rule still holds: fix the builder in a general way, never hand-edit the workflow, never hard-code this case.
 
-Raw data: `runs/20261011-final-persona-test/`.
+Every call, one by one (caller, expectation, the conversation as said, verdict with fixes): `notes/final-case-persona-test-calls.md`. Raw data: `runs/20261011-final-persona-test/`.
 
 | File | What |
 |---|---|
