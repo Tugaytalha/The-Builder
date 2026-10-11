@@ -159,3 +159,24 @@ def test_purpose_redacts_before_it_cuts():
         content = [ToolUseBlock(id="1", name="Bash", input={"command": "x" * 100 + " sekret_team_key_1234567890"})]
     redact = lambda s: s.replace("sekret_team_key_1234567890", "[REDACTED]")
     assert "sekret" not in build._purpose(M, redact)
+
+
+def test_build_takes_a_case_folder_and_a_mock_url(repo, monkeypatch):
+    # the final case is a folder of documents plus our own mock; the mock serves its tool API at /openapi.json
+    tmp_path, exported = repo
+    case = tmp_path / "in" / "Bank-Case"
+    case.mkdir()
+    (case / "BRIEF.md").write_text("Kural: kimlik önce.")
+    fetched = []
+    monkeypatch.setattr(build, "fetch_api", lambda url: fetched.append(url) or {"openapi": "3.0.0", "paths": {}})
+    seen = {}
+
+    async def agent(run_dir, trace, deadline):
+        seen["brief"] = (run_dir / "brief.md").read_text()
+        seen["api"] = json.loads((run_dir / "tool_api.json").read_text())
+        seen["slot"] = run_dir.name
+        return None
+    assert build.run(case, "https://mock.example.workers.dev/", agent=agent) == 1
+    assert fetched == ["https://mock.example.workers.dev/openapi.json"]
+    assert seen["api"]["servers"] == [{"url": "https://mock.example.workers.dev"}]
+    assert "Kural: kimlik önce." in seen["brief"] and seen["slot"].startswith("Bank-Case-")

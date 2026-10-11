@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from builder.blocks.lint import lint
@@ -398,3 +399,48 @@ def test_negotiation_day_of_another_event_is_not_a_payment_day():
     date = negotiation_tool({"no": "refuses"}, POLICY, "writes_list")["function"]["parameters"]["properties"]["answers"][
         "items"]["properties"]["date"]["description"]
     assert "wedding" in date and "to pay" in date
+
+
+def test_answer_tool_reads_turkish_month_names():
+    # the final case is in Turkish: "14 Mart 1988" must give March, also without Turkish letters
+    for month, number in (("Mart", "03"), ("Şubat", "02"), ("subat", "02"), ("Ağustos", "08"), ("Aralık", "12"), ("ekim", "10")):
+        v = _answer({}, question="birth", day="14", month=month, year="1988")
+        assert v["id_answer"] == "1988-" + number + "-14", month
+
+
+def test_answer_tool_reads_turkish_spoken_digits():
+    v = _answer({}, question="postcode", chars="S W bir A iki A")
+    assert v["id_answer"] == "SW1A2A"
+
+
+def test_answer_tool_guides_with_the_given_language():
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import answer_tool
+    code = answer_tool({"pin": ["digits", 4]}, lines={"one_moment": "Bir dakika, lütfen."}
+                       )["function"]["parameters"]["properties"]["code"]["default"]
+    v = run_tool(code, {}, {"question": "pin", "day": "", "month": "", "year": "", "digits": "4471", "chars": "", "text": ""})
+    assert v["id_guide"] == "Say only: Bir dakika, lütfen."
+
+
+def test_identity_check_speaks_the_given_language():
+    from builder.blocks.patterns import identity_check
+    tool = make_tool(API, "check_member", baked={"member_id": "{{member_id}}", "code": "{{id_answer}}", "kind": "{{id_question}}"})
+    chain = identity_check("idc", tool, "ask", [], "vars['id_say'] = 'Teşekkürler.'",
+                           lines={"check_failed": "Kontrol edemedim. Lütfen tekrar söyler misiniz?"})
+    scope = {"vars": {"idc_check_response.status": "error"}}
+    exec(chain[2]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"], scope)
+    assert scope["vars"]["id_say"] == "Kontrol edemedim. Lütfen tekrar söyler misiniz?"
+    assert "Kontrol edemedim" in json.dumps(chain[2], ensure_ascii=False) and "Sorry" not in json.dumps(chain[2])
+
+
+def test_negotiation_speaks_the_given_language():
+    import json as _json
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    tool = negotiation_tool({"yes": "agrees", "no": "refuses"}, POLICY, "writes_list",
+                            lines={"sorry_go_on": "Pardon, devam edin.", "what_answer": "Cevabınız nedir?"})
+    code = tool["function"]["parameters"]["properties"]["code"]["default"]
+    v = {"neg_state": _json.dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}]})}
+    v = run_tool(code, v, {"answers": [{"item": "a", "kind": "unfinished", "date": "", "amount": ""}]})
+    assert v["say_now"] == "Pardon, devam edin."
+    assert "What is your answer" not in code and "Cevabınız nedir?" in code
