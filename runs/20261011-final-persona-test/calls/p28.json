@@ -1,0 +1,75 @@
+{
+ "vars": {
+  "customerNumber": "97116902",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Pratik kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Pratik kartım.",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Pratik kartımın borcu ne kadar?",
+   "agent": "Sonu bir altı sıfır bir ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz yedi bin üç yüz Türk Lirası kırk beş kuruş, ödenmesi gereken minimum tutar iki bin dokuz yüz yirmi Türk Lirası on sekiz kuruş. Dolar borcunuz iki yüz on beş dolar, kalan toplam borcunuz iki yüz on beş dolar, ödenmesi gereken minimum tutar seksen altı dolar. Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Fly kartımın borcu ne kadar?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Fly kartımın borcu ne kadar?",
+   "agent": "Sonu bir altı sıfır iki ile biten Yıldız Fly kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz beş bin altı yüz Türk Lirası, kalan toplam borcunuz üç bin üç yüz altmış Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Euro borcunuz doksan altı Euro kırk sent, kalan toplam borcunuz doksan altı Euro kırk sent, ödenmesi gereken minimum tutar otuz sekiz Euro elli altı sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "256c403a-9cc2-4f22-afaf-eef92aba1160",
+ "events": [
+  "USER: Merhaba, Pratik kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97116902\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1601\", \"cardNumberLast4\": \"1601\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1602\", \"cardNumberLast4\": \"1602\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 2, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0599\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0599\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz.",
+  "USER: Pratik kartım.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Pratik kartım\"}",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz.",
+  "USER: Yıldız Pratik kartımın borcu ne kadar?",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Yıldız Pratik\"}",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******1601\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********1601\", \"cardNumberLast4\": \"1601\", \"productName\": \"Yıldız Pratik\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 7300.45, \"minPayment\": 2920.18, \"remainingDebt\": 7300.45, \"remainingMinPayment\": 2920.18, \"currentPeriodExpense\": 0, \"totalDebt\": 7300.45, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 215, \"minPayment\": 86, \"remainingDebt\": 215, \"remainingMinPayment\": 86, \"currentPeriodExpense\": 0, \"totalDebt\": 215, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"97116902\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"efe.oktay@freyabank.example\", \"ttsEmail\": \"efe.oktay@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0616\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0616\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu bir altı sıfır bir ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz yedi bin üç yüz Türk Lirası kırk beş kuruş, ödenmesi gereken minimum tutar iki bin dokuz yüz yirmi Türk Lirası on sekiz kuruş. Dolar borcunuz iki yüz on beş dolar, kalan toplam borcunuz iki yüz on beş dolar, ödenmesi gereken minimum tutar seksen altı dolar. Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Fly kartımın borcu ne kadar?",
+  "  [tool] menu_choice {\"kind\": \"another_card\"}",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz.",
+  "USER: Yıldız Fly kartımın borcu ne kadar?",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Yıldız Fly\"}",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******1602\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********1602\", \"cardNumberLast4\": \"1602\", \"productName\": \"Yıldız Fly\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 5600, \"minPayment\": 2240, \"remainingDebt\": 3360, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 3360, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 180, \"minPayment\": 72, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 96.4, \"minPayment\": 38.56, \"remainingDebt\": 96.4, \"remainingMinPayment\": 38.56, \"currentPeriodExpense\": 0, \"totalDebt\": 96.4, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"97116902\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"efe.oktay@freyabank.example\", \"ttsEmail\": \"efe.oktay@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0616\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0616\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu bir altı sıfır iki ile biten Yıldız Fly kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz beş bin altı yüz Türk Lirası, kalan toplam borcunuz üç bin üç yüz altmış Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Euro borcunuz doksan altı Euro kırk sent, kalan toplam borcunuz doksan altı Euro kırk sent, ödenmesi gereken minimum tutar otuz sekiz Euro elli altı sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+ ]
+}

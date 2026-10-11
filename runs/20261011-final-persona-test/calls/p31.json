@@ -1,0 +1,65 @@
+{
+ "vars": {
+  "customerNumber": "97917292",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumun ne kadar olduğunu öğrenmek istiyorum.",
+   "agent": "Sonu dokuz sıfır sıfır dokuz ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz dokuz bin altı yüz Türk Lirası, ödenmesi gereken minimum tutar üç bin sekiz yüz kırk Türk Lirası, kalan toplam borcunuz yedi bin yüz Türk Lirası, kalan minimum ödeme tutarınız bin üç yüz kırk Türk Lirası. Euro borcunuz üç yüz on beş Euro altmış sent, kalan toplam borcunuz üç yüz on beş Euro altmış sent, ödenmesi gereken minimum tutar yüz yirmi altı Euro yirmi dört sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Ne? Dokuz bin altı yüz lira mı? Bu ne saçmalık, faiz falan mı bindiriyorsunuz? Bu resmen soygun!",
+   "agent": "Sizi anlıyorum, lütfen sakin olun. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Sakin olmamı mı bekliyorsun? Bu banka dolandırıcılık yapıyor, bu robot da saçma sapan bir robot!",
+   "agent": "Sizi anlıyorum, lütfen sakin olun. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Hiçbir şey anlamıyorsun! Bu borç bu kadar olamaz, bu kadar faiz kesilmez. Dolandırıcılar!",
+   "agent": "Sizi anlıyorum, lütfen sakin olun. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Ya bu ne rezalet, bu banka beni soydu! Kafam patlayacak, bu saçma sapan robot beni dinlemiyor!",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "7eaa612b-02e8-4466-8325-b2fa8a9f68a9",
+ "events": [
+  "USER: Merhaba, borcumun ne kadar olduğunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97917292\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******9009\", \"cardNumberLast4\": \"9009\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0142\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0142\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******9009\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********9009\", \"cardNumberLast4\": \"9009\", \"productName\": \"Yıldız Platinum\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 9600, \"minPayment\": 3840, \"remainingDebt\": 7100, \"remainingMinPayment\": 1340, \"currentPeriodExpense\": 0, \"totalDebt\": 7100, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 315.6, \"minPayment\": 126.24, \"remainingDebt\": 315.6, \"remainingMinPayment\": 126.24, \"currentPeriodExpense\": 0, \"totalDebt\": 315.6, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"gui",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"97917292\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"batu.sonmez@freyabank.example\", \"ttsEmail\": \"batu.sonmez@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0151\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0151\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu dokuz sıfır sıfır dokuz ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz dokuz bin altı yüz Türk Lirası, ödenmesi gereken minimum tutar üç bin sekiz yüz kırk Türk Lirası, kalan toplam borcunuz yedi bin yüz Türk Lirası, kalan minimum ödeme tutarınız bin üç yüz kırk Türk Lirası. Euro borcunuz üç yüz on beş Euro altmış sent, kalan toplam borcunuz üç yüz on beş Euro altmış sent, ödenmesi gereken minimum tutar yüz yirmi altı Euro yirmi dört sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Ne? Dokuz bin altı yüz lira mı? Bu ne saçmalık, faiz falan mı bindiriyorsunuz? Bu resmen soygun!",
+  "  [tool] customer_request {\"kind\": \"complaint\"}",
+  "ASSISTANT: Sizi anlıyorum, lütfen sakin olun. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Sakin olmamı mı bekliyorsun? Bu banka dolandırıcılık yapıyor, bu robot da saçma sapan bir robot!",
+  "  [tool] customer_request {\"kind\": \"complaint\"}",
+  "ASSISTANT: Sizi anlıyorum, lütfen sakin olun. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Hiçbir şey anlamıyorsun! Bu borç bu kadar olamaz, bu kadar faiz kesilmez. Dolandırıcılar!",
+  "  [tool] customer_request {\"kind\": \"complaint\"}",
+  "ASSISTANT: Sizi anlıyorum, lütfen sakin olun. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Ya bu ne rezalet, bu banka beni soydu! Kafam patlayacak, bu saçma sapan robot beni dinlemiyor!",
+  "  [tool] customer_request {\"kind\": \"complaint\"}",
+  "  [node] end_router",
+  "  [node] close_angry",
+  "  [node] close_angry_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi müşteri temsilcimize aktarıyorum."
+ ]
+}

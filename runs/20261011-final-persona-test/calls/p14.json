@@ -1,0 +1,57 @@
+{
+ "vars": {
+  "customerNumber": "93635512",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, ben Duru. Platinum kartımın borcunu öğrenmek istiyorum, acelem var.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz."
+  },
+  {
+   "customer": "Platinum kartım için, Platinum kartımın borcu ne kadar?",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz."
+  },
+  {
+   "customer": "Hayır, Platinum kart. Bankanızın Platinum kartı var, bakar mısınız?",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz."
+  },
+  {
+   "customer": "Tamam, o zaman Yıldız Miles Gold kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Yıldız Miles Gold kartınızın güncel borcu 4500 Türk Lirasıdır. Başka bir işlem yapmak ister misiniz?"
+  },
+  {
+   "customer": "Evet, ekstremi e-posta ile gönderir misiniz?",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "8ee5cf81-0cd7-4ff4-b20b-7d3d8abeb177",
+ "events": [
+  "USER: Merhaba, ben Duru. Platinum kartımın borcunu öğrenmek istiyorum, acelem var.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"93635512\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******7201\", \"cardNumberLast4\": \"7201\", \"productName\": \"Yıldız Miles\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******7202\", \"cardNumberLast4\": \"7202\", \"productName\": \"Yıldız Miles Gold\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******7203\", \"cardNumberLast4\": \"7203\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0440\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0440\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz.",
+  "USER: Platinum kartım için, Platinum kartımın borcu ne kadar?",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Platinum kart\"}",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz.",
+  "USER: Hayır, Platinum kart. Bankanızın Platinum kartı var, bakar mısınız?",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Platinum kart\"}",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz.",
+  "USER: Tamam, o zaman Yıldız Miles Gold kartımın borcunu öğrenmek istiyorum.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Yıldız Miles Gold\"}",
+  "ASSISTANT: Yıldız Miles Gold kartınızın güncel borcu 4500 Türk Lirasıdır. Başka bir işlem yapmak ister misiniz?",
+  "USER: Evet, ekstremi e-posta ile gönderir misiniz?",
+  "  [tool] customer_request {\"kind\": \"other_task\"}",
+  "  [node] end_router",
+  "  [node] close_other_task",
+  "  [node] close_other_task_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye yönlendiriyorum."
+ ]
+}

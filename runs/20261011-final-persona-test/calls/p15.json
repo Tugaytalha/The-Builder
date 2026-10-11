@@ -1,0 +1,14 @@
+{
+ "vars": {
+  "customerNumber": "93821776",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, kredi kartı borcumu öğrenmek istiyorum ama tam emin değilim nasıl yapacağımı.",
+   "agent": "[ERROR POST /api/v2/chat/message -> 504: error code: 504\n]"
+  }
+ ],
+ "ended": true,
+ "events_error": "'callId'"
+}

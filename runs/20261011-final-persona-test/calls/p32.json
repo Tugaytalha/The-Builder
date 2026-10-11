@@ -1,0 +1,53 @@
+{
+ "vars": {
+  "customerNumber": "97974112",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, kredi kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Gold veya Yıldız Premium diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Gold kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Sonu iki sekiz sıfır bir ile biten Yıldız Gold kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz elli bin Türk Lirası yirmi beş kuruş, ödenmesi gereken minimum tutar on bin Türk Lirası yirmi beş kuruş. Dolar borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, kalan toplam borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, ödenmesi gereken minimum tutar bin sekiz yüz yirmi yedi dolar iki sent. Euro borcunuz altı bin beş yüz altmış yedi Euro elli beş sent, kalan toplam borcunuz altı bin beş yüz altmış yedi Euro elli beş sent, ödenmesi gereken minimum tutar iki bin altı yüz yirmi yedi Euro iki sent. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, teşekkürler. Şimdi bu Gold kartımın ekstre kesim tarihini değiştirmek istiyorum.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "29e74643-7cd4-462e-95a1-7b6d06b3ad99",
+ "events": [
+  "USER: Merhaba, kredi kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97974112\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******2801\", \"cardNumberLast4\": \"2801\", \"productName\": \"Yıldız Gold\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2802\", \"cardNumberLast4\": \"2802\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"541000******2803\", \"cardNumberLast4\": \"2803\", \"productName\": \"Yıldız Prestij\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2804\", \"cardNumberLast4\": \"2804\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2805\", \"cardNumberLast4\": \"2805\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 5, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0513\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0513\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Gold veya Yıldız Premium diyebilirsiniz.",
+  "USER: Yıldız Gold kartımın borcunu öğrenmek istiyorum.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Yıldız Gold\"}",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******2801\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********2801\", \"cardNumberLast4\": \"2801\", \"productName\": \"Yıldız Gold\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 50000.25, \"minPayment\": 10000.25, \"remainingDebt\": 50000.25, \"remainingMinPayment\": 10000.25, \"currentPeriodExpense\": 0, \"totalDebt\": 50000.25, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 4567.55, \"minPayment\": 1827.02, \"remainingDebt\": 4567.55, \"remainingMinPayment\": 1827.02, \"currentPeriodExpense\": 0, \"totalDebt\": 4567.55, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 6567.55, \"minPayment\": 2627.02, \"remainingDebt\": 6567.55, \"remainingMinPayment\": 2627.02, \"currentPeriodExpense\": 0, \"totalDebt\": 6567.55, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"97974112\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"tamer.altun@freyabank.example\", \"ttsEmail\": \"tamer.altun@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0554\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0554\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu iki sekiz sıfır bir ile biten Yıldız Gold kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz elli bin Türk Lirası yirmi beş kuruş, ödenmesi gereken minimum tutar on bin Türk Lirası yirmi beş kuruş. Dolar borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, kalan toplam borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, ödenmesi gereken minimum tutar bin sekiz yüz yirmi yedi dolar iki sent. Euro borcunuz altı bin beş yüz altmış yedi Euro elli beş sent, kalan toplam borcunuz altı bin beş yüz altmış yedi Euro elli beş sent, ödenmesi gereken minimum tutar iki bin altı yüz yirmi yedi Euro iki sent. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, teşekkürler. Şimdi bu Gold kartımın ekstre kesim tarihini değiştirmek istiyorum.",
+  "  [tool] customer_request {\"kind\": \"other_task\"}",
+  "  [node] end_router",
+  "  [node] close_other_task",
+  "  [node] close_other_task_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye yönlendiriyorum."
+ ]
+}

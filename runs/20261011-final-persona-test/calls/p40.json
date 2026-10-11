@@ -1,0 +1,36 @@
+{
+ "vars": {
+  "customerNumber": "97526380",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Hello, I want to know my credit card debt, do you speak English?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Sorry, I only speak English. I don't know the card name. Please tell me my credit card debt.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "19dc9a16-393a-4723-83af-bc40cd06b989",
+ "events": [
+  "USER: Hello, I want to know my credit card debt, do you speak English?",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97526380\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1101\", \"cardNumberLast4\": \"1101\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1102\", \"cardNumberLast4\": \"1102\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1103\", \"cardNumberLast4\": \"1103\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz.",
+  "USER: Sorry, I only speak English. I don't know the card name. Please tell me my credit card debt.",
+  "  [tool] customer_request {\"kind\": \"not_turkish\"}",
+  "  [node] end_router",
+  "  [node] close_language",
+  "  [node] close_language_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye aktarıyorum."
+ ]
+}

@@ -1,0 +1,42 @@
+{
+ "status": "completed",
+ "ids": {
+  "864ddd4f-a57f-425c-a560-c23bceee5325": "92311921",
+  "ac0c6d10-057d-435a-8f4f-6a934992d05d": "92335586",
+  "d3491006-de84-43b0-9925-d874aff5a982": "93821776",
+  "243ad008-c255-43ff-9661-0696e4284c25": "96026000",
+  "f0097254-3992-4968-a7e2-200094a440db": "97073972"
+ },
+ "runs": {
+  "f0097254-3992-4968-a7e2-200094a440db": {
+   "status": null,
+   "messages": [
+    "assistant: Şu anda işleminizi gerçekleştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+   ]
+  },
+  "243ad008-c255-43ff-9661-0696e4284c25": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu bir iki beş sıfır ile biten Yıldız Premium kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz bin iki yüz elli Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Sizi ana menüye yönlendiriyorum."
+   ]
+  },
+  "d3491006-de84-43b0-9925-d874aff5a982": {
+   "status": null,
+   "messages": [
+    "assistant: Ekstre borcunu sorgulayabileceğiniz uygun bir kredi kartınız bulunmuyor. Sizi ana menüye aktarıyorum."
+   ]
+  },
+  "ac0c6d10-057d-435a-8f4f-6a934992d05d": {
+   "status": null,
+   "messages": [
+    "assistant: Şu anda işleminizi gerçekleştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+   ]
+  },
+  "864ddd4f-a57f-425c-a560-c23bceee5325": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu bir sekiz dokuz altı ile biten Yıldız Premium kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz sıfır Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Sizi ana menüye yönlendiriyorum."
+   ]
+  }
+ }
+}

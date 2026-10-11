@@ -1,0 +1,71 @@
+{
+ "vars": {
+  "customerNumber": "94907600",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu yedi iki bir bir ile biten Yıldız Premium kartınıza ait 9 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz yedi bin iki yüz Türk Lirası, ödenmesi gereken minimum tutar iki bin sekiz yüz seksen Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 19 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim."
+  },
+  {
+   "customer": "Teşekkürler. Hesap kesim tarihimi değiştirmek istiyorum, ilk haftayı seçebilir miyim?",
+   "agent": "Yıldız Premium kartınızın hesap kesim tarihi her ayın ikinci haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 9 Kasım 2026, son ödeme tarihiniz 19 Kasım 2026. Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Hesap kesim tarihinizi ayın birinci, üçüncü ya da dördüncü haftasına alabilirim. Hangisini tercih edersiniz?"
+  },
+  {
+   "customer": "İlk haftayı tercih ediyorum.",
+   "agent": "Yeni hesap kesim haftanız her ayın birinci haftası olacak. Yeni hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026 olacak. Onaylıyor musunuz?"
+  },
+  {
+   "customer": "Evet.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "c1f76fea-e6fd-45e0-9f37-5eae5288528c",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"94907600\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******7211\", \"cardNumberLast4\": \"7211\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0023\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0023\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******7211\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********7211\", \"cardNumberLast4\": \"7211\", \"productName\": \"Yıldız Premium\", \"statementDate\": \"09.10.2026\", \"lastPayDate\": \"19.10.2026\", \"nextStatementDate\": \"09.11.2026\", \"nextLastPayDate\": \"19.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 7200, \"minPayment\": 2880, \"remainingDebt\": 7200, \"remainingMinPayment\": 2880, \"currentPeriodExpense\": 0, \"totalDebt\": 7200, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a596877869",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"94907600\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Phone\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"\", \"ttsEmail\": \"\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0032\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0032\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu yedi iki bir bir ile biten Yıldız Premium kartınıza ait 9 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz yedi bin iki yüz Türk Lirası, ödenmesi gereken minimum tutar iki bin sekiz yüz seksen Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 19 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim.",
+  "USER: Teşekkürler. Hesap kesim tarihimi değiştirmek istiyorum, ilk haftayı seçebilir miyim?",
+  "  [tool] menu_choice {\"kind\": \"week\"}",
+  "  [node] week_fetch",
+  "  [api] statement.week.get {\"data\": {\"cardNumber\": \"540000******7211\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"540000******7211\", \"cardNumberLast4\": \"7211\", \"productName\": \"Yıldız Premium\", \"statementWeek\": 2, \"statementDay\": 9, \"statementDate\": \"09.10.2026\", \"lastPayDate\": \"19.10.2026\", \"nextStatementDate\": \"09.11.2026\", \"nextLastPayDate\": \"19.11.2026\", \"relationType\": \"\", \"relatedCardNumber\": \"\", \"relatedCardProductName\": \"\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0025\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0025\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] week_prep",
+  "  [node] week_pick",
+  "ASSISTANT: Yıldız Premium kartınızın hesap kesim tarihi her ayın ikinci haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 9 Kasım 2026, son ödeme tarihiniz 19 Kasım 2026. Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Hesap kesim tarihinizi ayın birinci, üçüncü ya da dördüncü haftasına alabilirim. Hangisini tercih edersiniz?",
+  "USER: İlk haftayı tercih ediyorum.",
+  "  [tool] week_chosen {\"kind\": \"week\", \"week\": 1}",
+  "  [node] week_decide",
+  "  [api] statement.week.decide {\"data\": {\"cardNumber\": \"540000******7211\", \"statementDay\": 9, \"newStatementWeek\": 1}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"statementDate\": \"05.11.2026\", \"statementDueDate\": \"15.11.2026\", \"statementDay\": 5, \"responseCode\": 0, \"responseMessage\": \"Success\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0026\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0026\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] week_preview",
+  "  [node] week_confirm",
+  "ASSISTANT: Yeni hesap kesim haftanız her ayın birinci haftası olacak. Yeni hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026 olacak. Onaylıyor musunuz?",
+  "USER: Evet.",
+  "  [tool] week_answer {\"kind\": \"yes\"}",
+  "  [node] week_change",
+  "  [node] week_change_1",
+  "  [api] statement.week.change {\"data\": {\"cardNumber\": \"540000******7211\", \"statementDay\": 9, \"newStatementWeek\": 1}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"responseCode\": 0, \"responseMessage\": \"00\", \"statementWeek\": \"1\", \"statementDay\": \"5\", \"exitState\": \"OK\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0029\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0029\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200, \"ok\": \"false\"}",
+  "  [node] close_week_error",
+  "  [node] close_week_error_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Şu anda hesap kesim tarihinizi değiştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+ ]
+}

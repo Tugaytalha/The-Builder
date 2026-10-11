@@ -1,0 +1,49 @@
+{
+ "vars": {
+  "customerNumber": "98814070",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles Platinum diyebilirsiniz."
+  },
+  {
+   "customer": "Kredi kartımın borcunu öğrenmek istiyorum, Miles Platinum.",
+   "agent": "Yıldız Miles Platinum isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Son dört hanesi yirmi dört sıfır iki.",
+   "agent": "Sonu iki dört sıfır iki ile biten Yıldız Miles Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz dört bin üç yüz Türk Lirası, ödenmesi gereken minimum tutar bin yedi yüz yirmi Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "89cf1c2e-7167-4374-9052-e898d3d245c3",
+ "events": [
+  "USER: Merhaba, Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"98814070\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******2401\", \"cardNumberLast4\": \"2401\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2402\", \"cardNumberLast4\": \"2402\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2403\", \"cardNumberLast4\": \"2403\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0486\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0486\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles Platinum diyebilirsiniz.",
+  "USER: Kredi kartımın borcunu öğrenmek istiyorum, Miles Platinum.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Miles Platinum\"}",
+  "ASSISTANT: Yıldız Miles Platinum isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?",
+  "USER: Son dört hanesi yirmi dört sıfır iki.",
+  "  [tool] card_said {\"digits\": \"2402\", \"kind\": \"card\", \"name\": \"\"}",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******2402\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********2402\", \"cardNumberLast4\": \"2402\", \"productName\": \"Yıldız Miles Platinum\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 4300, \"minPayment\": 1720, \"remainingDebt\": 4300, \"remainingMinPayment\": 1720, \"currentPeriodExpense\": 0, \"totalDebt\": 4300, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a59",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"98814070\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"ayla.celik@freyabank.example\", \"ttsEmail\": \"ayla.celik@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0511\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0511\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu iki dört sıfır iki ile biten Yıldız Miles Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz dört bin üç yüz Türk Lirası, ödenmesi gereken minimum tutar bin yedi yüz yirmi Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+ ]
+}

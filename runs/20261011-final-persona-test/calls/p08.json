@@ -1,0 +1,63 @@
+{
+ "vars": {
+  "customerNumber": "94030575",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, ben Pınar. Platinum kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Platinum kartım. Borcu öğrenmek istiyorum.",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Platinum kartım. Son dört hanesi kırk iki elli üç.",
+   "agent": "Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Tamam. Kart numaram beş dört yedi sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+   "agent": "Sonu dört iki beş üç ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz altı bin dokuz yüz Türk Lirası, ödenmesi gereken minimum tutar iki bin yedi yüz altmış Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, başka kartım yok. Teşekkür ederim.",
+   "agent": "Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  }
+ ],
+ "ended": true,
+ "callId": "d8d49ae5-d15b-4413-b7d9-970efbb66aad",
+ "events": [
+  "USER: Merhaba, ben Pınar. Platinum kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"94030575\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"548000******4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"547000******4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******5501\", \"cardNumberLast4\": \"5501\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0386\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0386\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] pick_prep",
+  "  [node] pick_card",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz.",
+  "USER: Platinum kartım. Borcu öğrenmek istiyorum.",
+  "  [tool] card_said {\"digits\": \"\", \"kind\": \"card\", \"name\": \"Platinum kartım\"}",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz.",
+  "USER: Yıldız Platinum kartım. Son dört hanesi kırk iki elli üç.",
+  "  [tool] card_said {\"digits\": \"4253\", \"kind\": \"card\", \"name\": \"Yıldız Platinum\"}",
+  "ASSISTANT: Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?",
+  "USER: Tamam. Kart numaram beş dört yedi sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+  "  [tool] card_said {\"digits\": \"547000000000004253\", \"kind\": \"card\", \"name\": \"\"}",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"547000******4253\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5470********4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Platinum\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 6900, \"minPayment\": 2760, \"remainingDebt\": 6900, \"remainingMinPayment\": 2760, \"currentPeriodExpense\": 0, \"totalDebt\": 6900, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a59687786",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"94030575\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"pinar.turan@freyabank.example\", \"ttsEmail\": \"pinar.turan@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0411\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0411\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu dört iki beş üç ile biten Yıldız Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz altı bin dokuz yüz Türk Lirası, ödenmesi gereken minimum tutar iki bin yedi yüz altmış Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, başka kartım yok. Teşekkür ederim.",
+  "  [tool] menu_choice {\"kind\": \"no_other_card\"}",
+  "ASSISTANT: Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+ ]
+}

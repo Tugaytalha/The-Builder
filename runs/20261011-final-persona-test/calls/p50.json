@@ -1,0 +1,73 @@
+{
+ "vars": {
+  "customerNumber": "92122831",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu sıfır dört bir bir ile biten Yıldız Miles kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre dolar borcunuz yüz yirmi dolar, kalan toplam borcunuz yüz yirmi dolar, ödenmesi gereken minimum tutar kırk sekiz dolar. Euro borcunuz iki yüz kırk Euro elli sent, kalan toplam borcunuz iki yüz kırk Euro elli sent, ödenmesi gereken minimum tutar doksan altı Euro yirmi sent. Türk Lirası ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Ekstremi e-posta ile gönderir misiniz?",
+   "agent": "Ekstrenizi tulay.erdem@freyabank.example adresine göndermemi ister misiniz?"
+  },
+  {
+   "customer": "O adres artık benim değil, yeni adresime gönderin: tulay@yenimail.com",
+   "agent": "Ekstrenizi tulay.erdem@freyabank.example adresine göndermemi ister misiniz?"
+  },
+  {
+   "customer": "Hayır, eski adrese değil. Yeni adresim tulay@yenimail.com, oraya gönderin lütfen.",
+   "agent": "Ekstrenizi tulay.erdem@freyabank.example adresine göndermemi ister misiniz?"
+  },
+  {
+   "customer": "Adres değiştirmek istiyorum. tulay@yenimail.com",
+   "agent": "Size bu konuda yardımcı olamıyorum. Sizi ana menüye aktarmamı ister misiniz?"
+  },
+  {
+   "customer": "Evet, ana menüye aktarın lütfen.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "97437213-1f1f-41dd-b505-6b71dbca8eea",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_fetch",
+  "  [api] cards.list {\"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"92122831\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******0411\", \"cardNumberLast4\": \"0411\", \"productName\": \"Yıldız Miles\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0131\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0131\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] cards_prep",
+  "  [node] select",
+  "  [node] balance_fetch",
+  "  [api] cards.balance {\"data\": {\"cardNumber\": \"540000******0411\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********0411\", \"cardNumberLast4\": \"0411\", \"productName\": \"Yıldız Miles\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 3250, \"minPayment\": 1300, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 120, \"minPayment\": 48, \"remainingDebt\": 120, \"remainingMinPayment\": 48, \"currentPeriodExpense\": 0, \"totalDebt\": 120, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 240.5, \"minPayment\": 96.2, \"remainingDebt\": 240.5, \"remainingMinPayment\": 96.2, \"currentPeriodExpense\": 0, \"totalDebt\": 240.5, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e",
+  "  [node] reading",
+  "  [node] email_fetch",
+  "  [api] contact.email.get {\"data\": {\"customerNo\": \"92122831\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"tulay.erdem@freyabank.example\", \"ttsEmail\": \"tulay.erdem@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0140\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0140\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] offer",
+  "  [node] menu",
+  "ASSISTANT: Sonu sıfır dört bir bir ile biten Yıldız Miles kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre dolar borcunuz yüz yirmi dolar, kalan toplam borcunuz yüz yirmi dolar, ödenmesi gereken minimum tutar kırk sekiz dolar. Euro borcunuz iki yüz kırk Euro elli sent, kalan toplam borcunuz iki yüz kırk Euro elli sent, ödenmesi gereken minimum tutar doksan altı Euro yirmi sent. Türk Lirası ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Ekstremi e-posta ile gönderir misiniz?",
+  "  [tool] menu_choice {\"kind\": \"email\"}",
+  "  [node] email_confirm",
+  "ASSISTANT: Ekstrenizi tulay nokta erdem et freyabank nokta example adresine göndermemi ister misiniz?",
+  "USER: O adres artık benim değil, yeni adresime gönderin: tulay@yenimail.com",
+  "  [tool] email_answer {\"kind\": \"unclear\"}",
+  "ASSISTANT: Ekstrenizi tulay nokta erdem et freyabank nokta example adresine göndermemi ister misiniz?",
+  "USER: Hayır, eski adrese değil. Yeni adresim tulay@yenimail.com, oraya gönderin lütfen.",
+  "  [tool] email_answer {\"kind\": \"unclear\"}",
+  "ASSISTANT: Ekstrenizi tulay nokta erdem et freyabank nokta example adresine göndermemi ister misiniz?",
+  "USER: Adres değiştirmek istiyorum. tulay@yenimail.com",
+  "  [tool] customer_request {\"kind\": \"out_of_scope\"}",
+  "ASSISTANT: Size bu konuda yardımcı olamıyorum. Sizi ana menüye aktarmamı ister misiniz?",
+  "USER: Evet, ana menüye aktarın lütfen.",
+  "  [tool] customer_request {\"kind\": \"main_menu_yes\"}",
+  "  [node] end_router",
+  "  [node] close_out_of_scope",
+  "  [node] close_out_of_scope_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye yönlendiriyorum."
+ ]
+}
