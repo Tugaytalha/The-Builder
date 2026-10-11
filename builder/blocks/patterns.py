@@ -183,18 +183,25 @@ for x in items:
         x['line'], x['shown'] = '', ''      # shown in an earlier turn: it was said
     elif x.get('shown') == turn:
         x['shown'] = ''                     # chosen earlier in this turn: plan again
-want = str(params.get('item') or '')
-open_items = [x for x in items if x.get('status') == 'open']
-picked = [x for x in open_items if str(x.get('id')) == want]
-it = picked[0] if picked else (open_items or items)[0]
-amount = params.get('amount')
-amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
-day = str(params.get('date') or '')[:10]
-unfinished = str(params.get('kind') or '') == 'unfinished'
-if not unfinished:
-    line = decide(it, str(params.get('kind') or ''), amount, day)
+answers = params.get('answers') or []
+answers = json.loads(answers) if isinstance(answers, str) else answers
+answers = [answers] if isinstance(answers, dict) else answers
+kinds = [str(a.get('kind') or '') for a in answers]
+unfinished = bool(kinds) and all(k == 'unfinished' for k in kinds)
+for a, kind in zip(answers, kinds):
+    if kind == 'unfinished':
+        continue
+    want = str(a.get('item') or '')
+    open_items = [x for x in items if x.get('status') == 'open']
+    picked = [x for x in open_items if str(x.get('id')) == want]
+    it = picked[0] if picked else (open_items or items)[0]
+    amount = a.get('amount')
+    amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
+    line = decide(it, kind, amount, str(a.get('date') or '')[:10])
     it['line'] = line or ''
     it['shown'] = ''
+    if vars.get('close_key') or vars.get('negotiation_action'):
+        break
 if unfinished:
     vars['guide'] = 'SAY: "Sorry, please go on."'     # a message cut off mid-sentence changes nothing
 elif vars.get('close_key') or vars.get('negotiation_action'):
@@ -213,7 +220,7 @@ else:
         else:
             vars['guide'] = 'SAY: "Could you answer with a yes or a no?"'
     else:
-        confirmed = str(params.get('kind') or '') == 'confirms' and bool(st.get('final_shown'))
+        confirmed = 'confirms' in kinds and bool(st.get('final_shown'))
         end = finish(items, confirmed)
         if isinstance(end, dict) and end.get('say'):
             st['final_shown'] = turn
@@ -244,15 +251,19 @@ def negotiation_tool(node, kinds, policy, list_var):
           product, which can set its status back to 'open'.
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
     one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
-    the tool once per product, and the last call's guide is said. A line shown in an earlier turn of `node` counts as
+    the tool once with one entry per product in `answers`. Two calls in one message run at the same time and only the
+    last write is kept (round 2, PUB-13), so the tool must never need two calls. A line shown in an earlier turn of `node` counts as
     spoken (spike S12), so no line is said twice. The guide holds only words in quotes. The engine adds the kind
     "unfinished" (a message cut off mid-sentence): it changes nothing and asks the customer to go on."""
     engine = NEGOTIATION_ENGINE % {"turns": node + ".total_turns", "list_var": list_var}
-    return state_tool("customer_said", "CALL it every time the customer answers about paying, once per product.", {
+    answer = {"type": "object", "required": ["item", "kind"], "properties": {
         "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
         "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
                  + " unfinished: the message stops in the middle of a sentence; nothing is decided yet."},
         "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
-        "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}},
+        "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}}}
+    return state_tool("customer_said", "CALL it ONCE every time the customer answers about paying. Put one entry in "
+                      "answers for each product the customer talked about in this message.", {
+        "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about."}},
         policy + "\n" + engine)

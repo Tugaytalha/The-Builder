@@ -19,10 +19,15 @@ def test_deadlines_skip_the_monday_holiday():
     assert v["callback_days"] == "2031-03-06,2031-03-07"
 
 
-def said(v, turn, **p):
-    """One call of the state tool in the given turn of the negotiate node."""
+def said_many(v, turn, answers):
+    """One call of the state tool in the given turn of the negotiate node, with one answer per product."""
     return run_tool(tool_code(WORKFLOW, "customer_said"), {**v, "negotiate.total_turns": turn},
-                    {"kind": "", "date": "", "amount": "", "item": "", **p})
+                    {"answers": [{"kind": "", "date": "", "amount": "", "item": "", **a} for a in answers]})
+
+
+def said(v, turn, **p):
+    """One call with one answer."""
+    return said_many(v, turn, [p])
 
 
 def test_long_band_offers_full_then_floor_then_stops():
@@ -66,9 +71,8 @@ def two_items():
 
 
 def test_two_items_answered_in_one_message_are_handled_one_line_at_a_time():
-    # "Gas tomorrow, the electricity not": two calls in the same turn.
-    v = said(two_items(), 1, kind="proposes", item="i1", date="2031-03-06")
-    v = said(v, 1, kind="refuses", item="i2")
+    # "Gas tomorrow, the electricity not": one call with two answers.
+    v = said_many(two_items(), 1, [dict(kind="proposes", item="i1", date="2031-03-06"), dict(kind="refuses", item="i2")])
     assert v["guide"] == 'SAY: "80.50 for your gas bill on Thursday 6 March 2031. Is that right?"'
     v = said(v, 2, kind="confirms", item="i1")       # next turn: the electricity offer, said once
     assert v["guide"] == 'SAY: "Could you pay 10.00 for your electricity bill on Thursday 13 March 2031?"'

@@ -229,7 +229,7 @@ NEGOTIATE_TASK = ("NEXT STEP: {{guide}}\n\n"
                   "Identity is verified. You stated the bill. Every time the customer answers about paying, call "
                   "customer_said with the item and the kind. A message that stops in the middle of a sentence is kind "
                   "unfinished. If one message answers for several items, call customer_said "
-                  "once per item. Then say the words in NEXT STEP after SAY, word for word, and nothing else about amounts "
+                  "once, with one entry per item in answers. Then say the words in NEXT STEP after SAY, word for word, and nothing else about amounts "
                   "or days. Never say that something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 

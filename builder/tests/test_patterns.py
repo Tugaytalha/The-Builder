@@ -155,7 +155,7 @@ def finish(items, confirmed):
 """
 
 
-def _neg(v, turn, **p):
+def _neg_call(v, turn, answers):
     import json as _json
     from builder.blocks.coderun import run_tool
     from builder.blocks.patterns import negotiation_tool
@@ -163,12 +163,16 @@ def _neg(v, turn, **p):
     code = tool["function"]["parameters"]["properties"]["code"]["default"]
     if "neg_state" not in v:
         v = {"neg_state": _json.dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"}]})}
-    return run_tool(code, {**v, "talk.total_turns": turn}, {"item": "", "kind": "", "date": "", "amount": "", **p})
+    return run_tool(code, {**v, "talk.total_turns": turn}, {"answers": answers})
 
 
-def test_negotiation_two_answers_in_one_turn_say_the_first_product_first():
-    v = _neg({}, 1, item="b", kind="no")
-    v = _neg(v, 1, item="a", kind="no")
+def _neg(v, turn, **p):
+    return _neg_call(v, turn, [{"item": "", "kind": "", "date": "", "amount": "", **p}])
+
+
+def test_negotiation_two_answers_in_one_call_say_the_first_product_first():
+    # the platform runs two calls of one message at the same time and keeps only the last write: one call holds both
+    v = _neg_call({}, 1, [{"item": "b", "kind": "no"}, {"item": "a", "kind": "no"}])
     assert v["guide"] == 'SAY: "Could you pay half for a?"'
     v = _neg(v, 2, item="a", kind="yes")               # next turn: b's line from turn 1 was never said, so say it now
     assert v["guide"] == 'SAY: "Could you pay half for b?"'
@@ -202,8 +206,7 @@ def test_negotiation_final_read_back_waits_for_one_confirmation():
     import json as _json
     v = {"neg_state": _json.dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"},
                                              {"id": "c", "status": "open"}]})}
-    for turn, item in ((1, "a"), (1, "b"), (1, "c")):
-        v = _neg(v, turn, item=item, kind="yes")
+    v = _neg_call(v, 1, [{"item": i, "kind": "yes"} for i in "abc"])
     assert v["guide"] == 'SAY: "All of it, right?"' and "record_now" not in v
     v = _neg(v, 2, kind="confirms")
     assert v["record_now"] == "yes" and len(_json.loads(v["writes_list"])) == 3
@@ -215,3 +218,14 @@ def test_negotiation_unfinished_message_changes_nothing():
     assert v["guide"] == 'SAY: "Sorry, please go on."' 
     v = _neg(v, 3, item="a", kind="no")                 # the second refusal still counts as the second, not the third
     assert v["guide"] == 'SAY: "Could you pay b?"'
+
+
+def test_negotiation_agreement_on_one_product_and_answer_on_the_next_in_one_call():
+    # PUB-13 in round 2: "both on 30 October" for a, which was asked, and b, which was not
+    v = _neg_call({}, 1, [{"item": "a", "kind": "yes"}, {"item": "b", "kind": "yes"}])
+    assert v["record_now"] == "yes" and len(__import__("json").loads(v["writes_list"])) == 2
+
+
+def test_negotiation_takes_answers_as_a_json_string():
+    v = _neg_call({}, 1, '[{"item": "a", "kind": "no"}]')
+    assert v["guide"] == 'SAY: "Could you pay half for a?"'
