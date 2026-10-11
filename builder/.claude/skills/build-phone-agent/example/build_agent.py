@@ -189,7 +189,7 @@ if q in order and r(%(correct)r) == 'true' and q not in done:
     done.append(q)
 vars['id_correct'] = json.dumps(done)
 # The passed field can be missing (round 6 PUB-04): then every question confirmed passes. A false from the bank wins.
-if r(%(passed)r) == 'true' or (r(%(passed)r) == 'None' and set(order) <= set(done)):
+if r(%(passed)r) == 'true' or (r(%(passed)r) in ('None', '') and set(order) <= set(done)):
     vars['id_passed'] = 'yes'
     vars['id_guide'] = 'Both answers are correct. Say thank you.'
 elif r('ok') == 'false':
