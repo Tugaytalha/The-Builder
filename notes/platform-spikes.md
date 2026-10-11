@@ -86,6 +86,14 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 - Test: the A+B build with `customer_said(answers=[...])` on the chat route. PUB-13: one call with two entries, bank p1 300 on 30 Oct and p2 900 on 23 Oct (expected). PUB-12: one call with three entries, bank one promise and two `refused` notes (expected).
 - Verdict: **parallel calls lose updates; a list parameter works**. A state tool takes every answer of one message in one call.
 
+
+## S14 (extra): the code speaks each negotiation line
+
+- Workflow: the A+B spike with `patterns.negotiation_nodes`: after a `customer_said` call that chose a line, a route on `say_turn` goes to a code node and then to `negotiate_next`, whose `on_enter` is `tts("{{say_now}}")`.
+- Customer lines: PUB-12 of round 4 (one promise, two products refused), PUB-06 (a day inside a question), PUB-01 (a broken message, a question back).
+- Result: every offer and the read-back were spoken word for word. The model's text after the tool call was not spoken. The bank got 510.00 on 15 Oct and two `refused` notes (PUB-12), 637.50 on 16 Oct (PUB-06), 420.00 (PUB-01). Once, the model spoke its own guess before the tool call; the task now says to call the tool first, and in the next three runs it did.
+- Verdict: **works**. A route right after a tool call replaces the model's own words with the fixed line.
+
 ## Summary for the blueprint
 
 | Spike | Verdict | Use |
@@ -101,3 +109,4 @@ All spikes used one throwaway workflow in slot `ra-spike` (workflow `a684babc-b0
 | S11 engine-run identity check | works | `answer_tool` + `identity_check`; the model never calls the identity tool |
 | S12 turn counter in tool code | works | the state tool plans one line per turn from the whole state |
 | S13 two calls in one message | lose an update | one state-tool call per message, with a list parameter (`answers`) |
+| S14 code speaks each line | works | `negotiation_nodes`: the model cannot change an offer |
