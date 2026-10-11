@@ -103,3 +103,23 @@ def test_identity_check_chain_lints_clean():
     nodes = [start("ask"), conversation("ask", "{{id_guide}}", transitions=[go("idc", is_true("id_send"), "send"), always("bye")])]
     w = workflow("start", "Be brief.", nodes + chain + close_sequence("bye", {"x": "y"}, "Bye."))
     assert lint(w, API, {}) == [] and [n["name"] for n in chain] == ["idc", "idc_check", "idc_after"]
+
+
+def test_write_loop_writes_each_pending_item_then_finishes():
+    import json
+    from builder.blocks.patterns import write_loop
+    nodes = {n["name"]: n for n in write_loop("pw", API, "log_visit", ["member_id"], {}, 2, "after")}
+    code = lambda n: nodes[n]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"]
+    v = {"pw_list": json.dumps([{"fields": {"member_id": "m1"}, "status": "pending"}, {"fields": {"member_id": "m2"}, "status": "pending"}])}
+    scope = {"vars": v}
+    exec(code("pw"), scope)
+    assert (v["pw_more"], v["pw_index"], v["pw_member_id"]) == ("yes", 0, "m1")
+    exec(code("pw_ok"), scope)
+    exec(code("pw"), scope)
+    assert v["pw_member_id"] == "m2"
+    exec(code("pw_failed"), scope)
+    exec(code("pw"), scope)
+    assert v["pw_more"] == "no" and [w["status"] for w in json.loads(v["pw_list"])] == ["ok", "failed"]
+    body = nodes["pw_rec_1"]["pre_actions"][0]["function"]["parameters"]["properties"]["body"]["properties"]
+    assert body["member_id"]["default"] == "{{pw_member_id}}"
+    assert nodes["pw"]["transitions"][0]["target_node"] == "after" and nodes["pw_rec_2"]["transitions"][-1]["target_node"] == "pw_failed"

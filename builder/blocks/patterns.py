@@ -1,5 +1,5 @@
 """Sub-graphs and tool shapes that the platform spikes proved (notes/platform-spikes.md)."""
-from builder.blocks.nodes import api_node, code_node, end_node, go, is_true
+from builder.blocks.nodes import any_of, api_node, code_node, cond, end_node, go, is_true
 from builder.blocks.tools import make_tool
 
 BLOCKED_URL = "https://blocked.invalid/refused-by-guard"
@@ -150,3 +150,22 @@ def identity_check(name, verify_tool, back_node, routes, guide_code):
             api_node(name + "_check", verify_tool, name + "_after"),
             code_node(name + "_after", after, back_node, transitions=routes,
                       fallbacks={"id_guide": "Ask the same question again."})]
+
+
+def write_loop(name, api, tool_name, fields, baked, attempts, done_target):
+    """Engine-run writes for a list of items, one call per item (for example one promise or one note per product).
+    The code fills vars['<name>_list'] with a JSON list of {"fields": {field: value}, "status": "pending"} and routes
+    to `name`. Each pending item is written with `attempts` tries; its status becomes "ok" or "failed". When no item is
+    pending, the call goes to `done_target`, whose code reads the statuses."""
+    tool = make_tool(api, tool_name, baked={**baked, **{f: "{{" + name + "_" + f + "}}" for f in fields}})
+    pick = ("import json\nws = json.loads(vars.get(%r) or '[]')\ntodo = [i for i, w in enumerate(ws) if w.get('status') == 'pending']\n"
+            "vars[%r] = 'yes' if todo else 'no'\nif todo:\n    vars[%r] = todo[0]\n"
+            "    for f, v in ws[todo[0]].get('fields', dict()).items():\n        vars[%r + f] = v\n"
+            % (name + "_list", name + "_more", name + "_index", name + "_"))
+    def mark(status):
+        return ("import json\nws = json.loads(vars.get(%r) or '[]')\nws[int(vars.get(%r))]['status'] = %r\nvars[%r] = json.dumps(ws)\n"
+                % (name + "_list", name + "_index", status, name + "_list"))
+    return [code_node(name, pick, name + "_rec", transitions=[go(done_target, any_of(cond(name + "_more", "equals", "no")), "all written")],
+                      fallbacks={name + "_more": "no"}),
+            *record_with_retry(name + "_rec", tool, attempts, name + "_ok", name + "_failed"),
+            code_node(name + "_ok", mark("ok"), name), code_node(name + "_failed", mark("failed"), name)]
