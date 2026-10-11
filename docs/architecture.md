@@ -76,16 +76,9 @@ sequenceDiagram
     B-->>U: created workflow_id=... end seconds=... (exit 0)
 ```
 
-## 3. Set up from scratch
+## 3. Set up and run
 
-1. Python 3.10 or newer (tested on 3.12). On Debian and Ubuntu: `sudo apt install python3-venv`.
-2. `python3 -m venv .venv`, activate it, `pip install -r requirements.txt`.
-3. Copy `kit/env.example` to `env.sh`, fill in `FREYA_API_KEY` and `FREYA_BANK_TEAM_KEY`. On macOS and Linux: `source env.sh`. PowerShell does not read `env.sh`; set the three variables with `$env:NAME = "value"`.
-4. A Claude login (`claude auth login`, the binary is in the SDK package) or `ANTHROPIC_API_KEY`.
-5. Run: `python3 builder/build.py {case_folder} {mock_url}`.
-6. Node and `npx wrangler deploy` are needed only to redeploy `mock/`.
-
-The final-case steps are in `notes/hidden-runbook.md` (written for macOS).
+The step-by-step guide, for macOS, Linux and Windows, is in the [README](../README.md#setup-from-scratch). The final-case checklist is `notes/hidden-runbook.md` (written for macOS).
 
 ## 4. Which OS runs it
 
