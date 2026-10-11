@@ -51,10 +51,25 @@ def unstick(api, now=time.time):
     return wrapped
 
 
+def retry_reads(api, wait=time.sleep, tries=6):
+    """Wrap freya.api. A GET that fails with a server error (502, 503, 504: seen in rounds 5b and 5c) is tried again;
+    a write is never repeated."""
+    def wrapped(method, path, body=None, **params):
+        for i in range(tries):
+            try:
+                return api(method, path, body, **params)
+            except RuntimeError as e:
+                if method != "GET" or i == tries - 1 or not re.search(r"-> 50[234]", str(e)):
+                    raise
+                print(f"{method} {path} failed ({str(e)[-30:]}), trying again", flush=True)
+                wait(10 * (i + 1))
+    return wrapped
+
+
 def main(argv):
     import freya
     import run_cases
-    freya.api = unstick(freya.api)
+    freya.api = unstick(retry_reads(freya.api))
     cases = argv[argv.index("--cases") + 1] if "--cases" in argv else str(KIT / "public-test-set.json")
     nows = {c["id"]: c["variables"]["now"] for c in json.load(open(cases)) if c.get("variables", {}).get("now")}
     run_cases.http = wrap(run_cases.http, nows)

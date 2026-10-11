@@ -54,3 +54,26 @@ def test_unstick_completes_a_simulation_whose_runs_ended():
 def test_a_row_that_uses_another_slot_scores_that_slot():
     assert slot_of({"name": "brief-a"}) == "brief-a"
     assert slot_of({"name": "edge-a", "uses": "brief-a"}) == "brief-a"
+
+
+def test_a_read_that_fails_with_a_server_error_is_tried_again():
+    # rounds 5b and 5c: one 504 or 503 on a GET lost the whole score file
+    from run_cases_at import retry_reads
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) < 3:
+            raise RuntimeError(f"{method} {path} -> 503: error code: 503")
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True} and len(calls) == 3
+
+
+def test_a_write_is_never_tried_again():
+    from run_cases_at import retry_reads
+    import pytest
+
+    def api(method, path, body=None, **params):
+        raise RuntimeError(f"{method} {path} -> 503: error code: 503")
+    with pytest.raises(RuntimeError):
+        retry_reads(api, wait=lambda s: None)("POST", "/x")
