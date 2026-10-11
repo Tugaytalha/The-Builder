@@ -207,8 +207,12 @@ else:
         else:
             vars['guide'] = 'SAY: "Could you answer with a yes or a no?"'
     else:
-        end = finish(items)
-        if isinstance(end, list) and end:
+        confirmed = str(params.get('kind') or '') == 'confirms' and bool(st.get('final_shown'))
+        end = finish(items, confirmed)
+        if isinstance(end, dict) and end.get('say'):
+            st['final_shown'] = turn
+            vars['guide'] = 'SAY: "' + end['say'] + '"'
+        elif isinstance(end, list) and end:
             vars[%(list_var)r] = json.dumps([dict(fields=f, status='pending') for f in end])
             vars['record_now'] = 'yes'
             vars['guide'] = 'SAY: "One moment, please."'
@@ -227,8 +231,11 @@ def negotiation_tool(node, kinds, policy, list_var):
           set it['status'] to something other than 'open' when the product is finished. To end the talk or act at once,
           set vars['close_key'] or vars['negotiation_action'] (and vars['guide']).
       first_ask(it) -> the words of the first question about a product nobody asked about yet.
-      finish(items) -> when no product is open: a list of write-field dicts (one per promise, written by the write loop
-          `list_var`), or the close key to route to.
+      finish(items, confirmed) -> when no product is open: dict(say=<one read-back of all promises, ending in the
+          brief's question>) to ask for one final confirmation; or a list of write-field dicts (one per promise, written
+          by the write loop `list_var`); or the close key to route to. `confirmed` is True when the customer said
+          `confirms` after the final read-back was shown. A change at the final read-back reaches `decide` for that
+          product, which can set its status back to 'open'.
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
     one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
     the tool once per product, and the last call's guide is said. A line shown in an earlier turn of `node` counts as

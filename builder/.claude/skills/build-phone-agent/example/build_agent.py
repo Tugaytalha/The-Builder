@@ -159,7 +159,7 @@ def decide(it, kind, amount, day):
     return ''
 def first_ask(it):
     return 'Could you settle ' + money(it['full']) + ' for your ' + it['word'] + ' by ' + say(iso_day(it['deadline'])) + '?'
-def finish(items):
+def finish(items, confirmed):   # each item had its own read-back, so no final one
     agreed = [x for x in items if x['status'] == 'agreed']
     if agreed:
         return [dict(%(idf)s=x['id'], %(amf)s=x['agreed'][0], %(daf)s=x['agreed'][1]) for x in agreed]

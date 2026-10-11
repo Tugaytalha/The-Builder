@@ -141,8 +141,11 @@ def decide(it, kind, amount, day):
     return ''
 def first_ask(it):
     return 'Could you pay ' + it['id'] + '?'
-def finish(items):
-    return [dict(pid=x['id']) for x in items if x['status'] == 'agreed'] or 'close_no'
+def finish(items, confirmed):
+    agreed = [x for x in items if x['status'] == 'agreed']
+    if agreed and len(items) > 2 and not confirmed:
+        return dict(say='All of it, right?')
+    return [dict(pid=x['id']) for x in agreed] or 'close_no'
 """
 
 
@@ -187,3 +190,14 @@ def test_negotiation_without_promise_routes_to_the_policy_close():
 def test_negotiation_action_stops_the_plan():
     v = _neg({}, 1, item="a", kind="human")
     assert v["negotiation_action"] == "transfer" and "guide" not in v
+
+
+def test_negotiation_final_read_back_waits_for_one_confirmation():
+    import json as _json
+    v = {"neg_state": _json.dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"},
+                                             {"id": "c", "status": "open"}]})}
+    for turn, item in ((1, "a"), (1, "b"), (1, "c")):
+        v = _neg(v, turn, item=item, kind="yes")
+    assert v["guide"] == 'SAY: "All of it, right?"' and "record_now" not in v
+    v = _neg(v, 2, kind="confirms")
+    assert v["record_now"] == "yes" and len(_json.loads(v["writes_list"])) == 3
