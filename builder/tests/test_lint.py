@@ -131,3 +131,11 @@ def test_flags_a_turn_cap_that_cut_off_messages_use_up():
     problems_about(w, "greet")
     w["nodes"]["greet"]["max_node_turns"] = 20
     assert not [p for p in lint(w, API, RULES) if p.startswith("greet")]
+
+
+def test_reads_the_fields_of_a_nested_body():
+    w = build()
+    meta = w["nodes"]["log"]["pre_actions"][0]["function"]["parameters"]["properties"]["body"]["properties"]["meta"]
+    assert lint(w, API, RULES) == []
+    meta["properties"]["extra"] = {"type": "string", "default": "1"}
+    problems_about(w, "extra")

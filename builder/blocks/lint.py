@@ -5,6 +5,8 @@
 import json
 import re
 
+from builder.blocks.tools import body_leaves
+
 
 def _all_nodes(workflow):
     return list(workflow.get("nodes", {}).values()), list(workflow.get("global_nodes", {}).values())
@@ -59,7 +61,7 @@ def _check_tool(where, tool, api, problems):
     if op is None:
         problems.append(f"{where}: tool {fn.get('name')} calls a URL that is not in the tool API")
         return
-    body = fn.get("parameters", {}).get("properties", {}).get("body", {}).get("properties", {})
+    body = body_leaves(fn.get("parameters", {}).get("properties", {}).get("body", {}).get("properties", {}))
     for field, leaf in body.items():
         if field not in op["fields"]:
             problems.append(f"{where}: tool {fn.get('name')} sends field {field}, which {name} does not define")

@@ -3,6 +3,7 @@
 The tool names, fields, enums and the server URL all come from the file. Nothing here knows a brief.
 """
 import json
+import re
 
 
 def _resolve(spec, node):
@@ -43,8 +44,23 @@ def _request_body(spec, op):
     return _json_schema(spec, op.get("requestBody") or (_resolve(spec, body_params[0]) if body_params else {}))
 
 
+def _flatten(spec, schema, parents, required, out):
+    """Collect the leaf fields of a request body. An object field with `properties` (an envelope such as
+    {"data": {...}}) is opened: its leaves are fields too, and `out[leaf]` keeps the path of objects above it."""
+    for name, sub in (schema.get("properties") or {}).items():
+        sub = _resolve(spec, sub)
+        is_required = required and name in (schema.get("required") or [])
+        if sub.get("type", "object") == "object" and sub.get("properties"):
+            _flatten(spec, sub, parents + (name,), is_required, out)
+            continue
+        if name in out:
+            raise ValueError(f"tool API: field {name} appears twice in one request body")
+        out[name] = (sub, parents, is_required)
+
+
 def load_api(path):
-    """Operation name -> {"url", "method", "fields", "required", "response"}. A "/" inside a route becomes "_"."""
+    """Operation name -> {"url", "method", "fields", "parents", "required", "response"}. Every character of a route
+    that cannot be in a tool name ("/", ".") becomes "_". Fields are the body's leaves; `parents` keeps the nesting."""
     spec = json.load(open(path, encoding="utf-8"))
     base = _base_url(spec)
     api = {}
@@ -52,12 +68,14 @@ def load_api(path):
         for method, op in methods.items():
             if method.lower() not in ("post", "get", "put", "patch", "delete"):
                 continue
-            body = _request_body(spec, op)
+            leaves = {}
+            _flatten(spec, _request_body(spec, op), (), True, leaves)
             ok = (op.get("responses") or {}).get("200") or {}
-            api[route.strip("/").replace("/", "_")] = {
+            api[re.sub(r"[^A-Za-z0-9_]", "_", route.strip("/"))] = {
                 "url": base + "/" + route.lstrip("/"), "method": method.upper(),
-                "fields": {k: _resolve(spec, v) for k, v in (body.get("properties") or {}).items()},
-                "required": list(body.get("required") or []),
+                "fields": {k: v[0] for k, v in leaves.items()},
+                "parents": {k: v[1] for k, v in leaves.items()},
+                "required": [k for k, v in leaves.items() if v[2]],
                 "response": _json_schema(spec, ok)}
     return api
 
@@ -92,9 +110,21 @@ def make_tool(api, name, *, baked=None, post_code="", description=""):
     unknown = sorted(set(baked) - set(op["fields"]))
     if unknown:
         raise ValueError(f"{name}: baked field(s) {unknown} not in the tool API; its fields are {sorted(op['fields'])}")
-    body = {f: _leaf(s, baked.get(f, "{{" + name + "__" + f + "}}")) for f, s in op["fields"].items()}
+    body = {"type": "object", "properties": {}, "required": []}
+    for f, s in op["fields"].items():
+        holder = body
+        for parent in op["parents"][f]:
+            # an envelope object is required when a required field sits in it, also when that field is baked
+            if parent not in holder["properties"]:
+                holder["properties"][parent] = {"type": "object", "properties": {}, "required": []}
+            if f in op["required"] and parent not in holder["required"]:
+                holder["required"].append(parent)
+            holder = holder["properties"][parent]
+        holder["properties"][f] = _leaf(s, baked.get(f, "{{" + name + "__" + f + "}}"))
+        if f in op["required"] and f not in baked:
+            holder["required"].append(f)
     return {
-        "type": "function", "config": {"timeoutMs": 10000, "maxRetries": 0},
+        "type": "function", "config": {"timeoutMs": 30000, "maxRetries": 0},
         "function": {
             "name": name, "handler": "__function__:api_call", "description": description,
             "parameters": {"type": "object", "properties": {
@@ -102,9 +132,19 @@ def make_tool(api, name, *, baked=None, post_code="", description=""):
                 "method": {"type": "string", "default": op["method"]},
                 "headers": {"type": "object", "properties": {
                     "Content-Type": {"type": "string", "default": "application/json"}}},
-                "body": {"type": "object", "properties": body,
-                         "required": [f for f in op["required"] if f not in baked]}}}},
+                "body": body}}},
         "post_process_code": _post_hook(post_code)}
+
+
+def body_leaves(properties):
+    """The leaf fields of a built tool's body (name -> leaf), also inside envelope objects."""
+    out = {}
+    for name, leaf in properties.items():
+        if leaf.get("type") == "object" and "properties" in leaf and "default" not in leaf:
+            out.update(body_leaves(leaf["properties"]))
+        else:
+            out[name] = leaf
+    return out
 
 
 def field_values(api, name, field):

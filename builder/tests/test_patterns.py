@@ -54,7 +54,7 @@ def test_patterns_lint_clean():
 
 def test_record_with_retry_chains_attempts_and_resets_results():
     from builder.blocks.patterns import record_with_retry
-    tool = make_tool(API, "log_visit", baked={"member_id": "{{member_id}}", "meta": "{{meta}}"})
+    tool = make_tool(API, "log_visit", baked={"member_id": "{{member_id}}", "room": "{{room}}"})
     nodes = record_with_retry("rec", tool, 2, "done", "failed")
     assert [n["name"] for n in nodes] == ["rec", "rec_1", "rec_2"]
     assert nodes[1]["transitions"][0]["target_node"] == "done" and nodes[1]["transitions"][-1]["target_node"] == "rec_2"
@@ -444,3 +444,17 @@ def test_negotiation_speaks_the_given_language():
     v = run_tool(code, v, {"answers": [{"item": "a", "kind": "unfinished", "date": "", "amount": ""}]})
     assert v["say_now"] == "Pardon, devam edin."
     assert "What is your answer" not in code and "Cevabınız nedir?" in code
+
+
+def test_close_tool_drops_empty_fields_inside_a_nested_body():
+    tool = close_tool(API, "log_visit", {"member_id": "{{member_id}}", "room": "{{close_room}}"})
+    config = {"body": {"member_id": "m1", "meta": {"room": ""}}}
+    exec(tool["pre_process_code"], {"config": config})
+    assert config["body"] == {"member_id": "m1", "meta": {}}
+
+
+def test_guard_hook_reads_a_field_inside_a_nested_body():
+    hook = guard_hook("body.get('code') > vars.get('limit')")
+    blocked = {"url": "u", "body": {"data": {"code": "9"}}}
+    exec(hook, {"config": blocked, "vars": {"limit": "5"}})
+    assert blocked["url"] == BLOCKED_URL

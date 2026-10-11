@@ -27,8 +27,9 @@ def close_tool(api, name, baked):
     tool = make_tool(api, name, baked=baked)
     tool["config"]["alwaysRunsAt"] = ["end_of_call"]
     tool["pre_process_code"] = (
-        "try:\n    b = config.get('body')\n    if isinstance(b, dict):\n        for k in list(b.keys()):\n"
-        "            v = b.get(k)\n            if v is None or str(v).strip() in ('', 'none', 'None') or '{' in str(v):\n"
+        "try:\n    todo = [config.get('body')]\n    while todo:\n        b = todo.pop()\n        if not isinstance(b, dict):\n"
+        "            continue\n        for k in list(b.keys()):\n            v = b.get(k)\n            if isinstance(v, dict):\n"
+        "                todo.append(v)\n            elif v is None or str(v).strip() in ('', 'none', 'None') or '{' in str(v):\n"
         "                b.pop(k, None)\nexcept Exception:\n    pass\n")
     return tool
 
@@ -56,7 +57,10 @@ def state_tool(name, description, params, body):
 def guard_hook(condition_code):
     """A pre_process_code that sends the call to an unreachable URL when `condition_code` is true, so the bank records
     nothing (spike S1). The condition can read `vars` and `config['body']`. The model sees a failed call."""
-    return ("try:\n    body = config.get('body') if isinstance(config.get('body'), dict) else dict()\n"
+    return ("try:\n    body = dict()\n    todo = [config.get('body')]\n    while todo:\n        b = todo.pop()\n"
+            "        if isinstance(b, dict):\n            for k, v in b.items():\n"
+            "                if isinstance(v, dict):\n                    todo.append(v)\n                else:\n"
+            "                    body[k] = v\n"
             "    if " + condition_code + ":\n        config['url'] = %r\nexcept Exception:\n    pass\n" % BLOCKED_URL)
 
 
