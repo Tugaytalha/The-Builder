@@ -1,0 +1,9 @@
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 300.0, '2026-10-23'), ('p2', 900.0, '2026-10-23')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]
+       - conversation: The assistant failed to meet the specific date requirements for the credit card payment. Although the user requested 30 October in [Message 7], the assistant forced both payments to 23 October in [Message 8], stating it was the latest date that w
+
+slowest agent turn per call: median 5 s, worst 5 s. Failed calls where the customer hung up: 0.
+
+2 / 3 passed (bank records and conversation checks). Last simulation bd28ad5d-1f23-4a7a-8f58-9bcdd6c92eb9, status completed, 43 s.

@@ -1,0 +1,16 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+       - promises [('p1', 1250.0, '2026-10-21')], expected [('p1', 1250.0, '2026-10-23')]
+       - conversation: The agent correctly identified as a digital assistant and did not treat the user's date suggestion as a refusal. However, the success criteria required the promise date to be the late-band deadline of 23 October, but the agent proposed and record
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 6 s. Failed calls where the customer hung up: 0.
+
+9 / 10 passed (bank records and conversation checks). Last simulation 4678c19b-0dcd-4679-982a-fbeadf554d98, status completed, 74 s.

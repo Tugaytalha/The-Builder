@@ -1,0 +1,164 @@
+{
+ "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
+ "simulation_id": "bd28ad5d-1f23-4a7a-8f58-9bcdd6c92eb9",
+ "iteration_id": "5e0e44ad-feff-46be-ac2a-0b9571b71a44",
+ "seconds": 43,
+ "passed": 2,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "8779acd8-4563-4b8b-9c26-68f0d03808c0",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_dfcb0524-adb",
+   "slowest_turn_s": 5.2,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "39a7a7eb-0e9e-44bb-a3ba-ce21e6534dd9",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_943c71ee-4d7",
+   "slowest_turn_s": 5.1,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-10-23'), ('p2', 900.0, '2026-10-23')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "conversation: The assistant failed to meet the specific date requirements for the credit card payment. Although the user requested 30 October in [Message 7], the assistant forced both payments to 23 October in [Message 8], stating it was the latest date that works for all. Consequently, the credit card was recorded for 23 October instead of the required 30 October, and the read-back in [Message 8] only mentione"
+   ],
+   "call_id": "b333df8b-33b1-44ec-afb4-9723c7d31b63",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_30b78add-119",
+   "slowest_turn_s": 3.1,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "8779acd8-4563-4b8b-9c26-68f0d03808c0",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_dfcb0524-adb",
+    "slowest_turn_s": 5.2,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "39a7a7eb-0e9e-44bb-a3ba-ce21e6534dd9",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_943c71ee-4d7",
+    "slowest_turn_s": 5.1,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-10-23'), ('p2', 900.0, '2026-10-23')], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "conversation: The assistant failed to meet the specific date requirements for the credit card payment. Although the user requested 30 October in [Message 7], the assistant forced both payments to 23 October in [Message 8], stating it was the latest date that works for all. Consequently, the credit card was recorded for 23 October instead of the required 30 October, and the read-back in [Message 8] only mentione"
+    ],
+    "call_id": "b333df8b-33b1-44ec-afb4-9723c7d31b63",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_30b78add-119",
+    "slowest_turn_s": 3.1,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

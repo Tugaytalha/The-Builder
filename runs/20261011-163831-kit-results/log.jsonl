@@ -1,0 +1,2 @@
+{"at": "2026-10-11 19:37:29", "agent_id": "2936f16e-c36d-4049-a6d9-10874b2baa3e", "brief": "A", "runs": 1, "passed": 9, "total": 10, "seconds": 74, "failed": ["PUB-04"]}
+{"at": "2026-10-11 19:38:16", "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03", "brief": "B", "runs": 1, "passed": 2, "total": 3, "seconds": 43, "failed": ["PUB-13"]}
