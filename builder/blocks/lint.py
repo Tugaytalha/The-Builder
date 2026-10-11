@@ -110,6 +110,13 @@ def lint(workflow, api, rules):
         # 11. cap without target
         if "max_node_turns" in n and not n.get("max_turn_transition"):
             problems.append(f"{name}: max_node_turns without max_turn_transition")
+        # 12. a node whose state tool reads the customer's words must not leave on an intent (round 4: a broken
+        # message matched "the customer says goodbye" and ended a negotiation)
+        if any(t.get("function", {}).get("handler") == "__function__:code_exec" for t in n.get("tools", [])):
+            for t in n.get("transitions", []):
+                if (t.get("condition") or {}).get("operator") == "matches_intent" and not t.get("is_tool_call"):
+                    problems.append(f"{name}: intent route to {t.get('target_node')} in a node with a state tool; "
+                                    "let the state tool's kinds decide")
     for tool in workflow.get("tools", []):
         for code in _codes(tool):
             if "{{" in code or "}}" in code:

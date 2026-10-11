@@ -101,3 +101,12 @@ def test_flags_cap_without_target():
     w = build()
     w["nodes"]["greet"]["max_node_turns"] = 4
     problems_about(w, "greet")
+
+
+def test_flags_intent_route_out_of_a_state_tool_node():
+    from builder.blocks.nodes import intent
+    from builder.blocks.patterns import state_tool
+    said = state_tool("customer_said", "Call it.", {"kind": {"type": "string"}}, "vars['k'] = params.get('kind')")
+    greet = conversation("greet", "Say hello.", tools=[said], on_enter=tts("Hello."),
+                         transitions=[intent("bye", "The customer says goodbye"), always("log")])
+    problems_about(build(greet=greet), "intent route")

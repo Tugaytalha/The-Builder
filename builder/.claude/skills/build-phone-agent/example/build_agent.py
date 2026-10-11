@@ -251,7 +251,7 @@ callback["pre_process_code"] = guard_hook(
 said = negotiation_tool("negotiate", {
     "accepts": "yes to your last proposal.",
     "confirms": "a clear yes to the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence.",
-    "refuses": "no, with no day and no amount.",
+    "refuses": "no, with no day and no amount; also a goodbye or a wish to end the call.",
     "proposes": "names a day or an amount, also inside a question ('What is the minimum for Friday?').",
     "wants_person": "asks for a person.",
     "other": "anything else, with no day and no amount."}, with_dates(POLICY), "promise_writes_list")
@@ -303,9 +303,8 @@ nodes = [
                  first_entry_only=True, max_turns=30, max_turn_target="end_router", transitions=[
                      go("promise_writes", any_of(cond("record_now", "equals", "yes")), "every item is agreed or stopped"),
                      go("close_handed_over", is_true("transfer_to_agent_response.data.ok"), "transferred"),
-                     go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up"),
-                     # the model's own goodbye does not end a call: only an end_call node does
-                     intent("end_router", "The customer says goodbye or wants to end the call")]),
+                     go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up")]),
+    # No intent route here (lint rule 12): a goodbye is the kind refuses, and the policy closes the call.
     # The engine writes each agreed promise (spike S10). 1 attempt: the example brief closes on a failure; a brief that
     # allows a retry gets attempts=2.
     *write_loop("promise_writes", API, P["tool"], [P["id_field"], P["amount_field"], P["date_field"]], BAKED_ID, 1,
