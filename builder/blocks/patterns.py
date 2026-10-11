@@ -166,18 +166,21 @@ def answer_tool(questions):
 def identity_check(name, verify_tool, back_node, routes, guide_code):
     """The engine-run identity check. Route to `name` when id_send is "yes". `verify_tool` comes from make_tool with the
     question field baked as "{{id_question}}" and the answer field as "{{id_answer}}". After the call, `guide_code` runs
-    with `r(field)` = the result field as a string and must set vars['id_guide'] (the next step for the model).
+    with `r(field)` = the result field as a string and must set vars['id_say'] (the fixed line `back_node` speaks on
+    entry: tts "{{id_say}}") and vars['id_guide'] (the next step for the model in later turns).
     `routes` are transitions on `<name>_check_response.data.<field>` (passed, failed); otherwise the call goes back to
     `back_node`, whose task shows {{id_guide}}."""
     prefix = name + "_check_response."
     after = ("def r(f):\n    return str(vars.get(%r + f))\n" % (prefix + "data.")
              + "if str(vars.get(%r)) != 'success':\n" % (prefix + "status")
-             + "    vars['id_guide'] = 'The check is not available. Ask the same question again.'\n"
+             + "    vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n"
+             + "    vars['id_guide'] = 'The check is not available. Wait for the answer again.'\n"
              + "else:\n" + "\n".join("    " + line for line in guide_code.splitlines()) + "\n")
     return [code_node(name, "vars['id_send'] = 'no'", name + "_check"),
             api_node(name + "_check", verify_tool, name + "_after"),
             code_node(name + "_after", after, back_node, transitions=routes,
-                      fallbacks={"id_guide": "Ask the same question again."})]
+                      fallbacks={"id_guide": "Wait for the answer again.",
+                                 "id_say": "Sorry, I could not check that. Please say it again."})]
 
 
 def write_loop(name, api, tool_name, fields, baked, attempts, done_target):

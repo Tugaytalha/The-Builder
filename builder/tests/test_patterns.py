@@ -125,6 +125,15 @@ def test_identity_check_chain_lints_clean():
     assert lint(w, API, {}) == [] and [n["name"] for n in chain] == ["idc", "idc_check", "idc_after"]
 
 
+def test_identity_check_speaks_a_fixed_line_when_the_check_is_not_available():
+    from builder.blocks.patterns import identity_check
+    tool = make_tool(API, "check_member", baked={"member_id": "{{member_id}}", "code": "{{id_answer}}", "kind": "{{id_question}}"})
+    chain = identity_check("idc", tool, "ask", [], "vars['id_say'] = 'Thank you.'")
+    scope = {"vars": {"idc_check_response.status": "error"}}
+    exec(chain[2]["pre_actions"][0]["function"]["parameters"]["properties"]["code"]["default"], scope)
+    assert scope["vars"]["id_say"] == "Sorry, I could not check that. Please say it again."
+
+
 def test_write_loop_writes_each_pending_item_then_finishes():
     import json
     from builder.blocks.patterns import write_loop

@@ -177,27 +177,33 @@ vars['close_key'] = 'close_agreed' if any(w['status'] == 'ok' for w in ws) else 
 
 I = SPEC["identity"]
 QUESTIONS = I["questions"]
-# Runs after the engine-run check; r(field) is the bank's result field (spike S10). Sets the model's next step.
+# Runs after the engine-run check; r(field) is the bank's result field (spike S10). The code chooses the next question
+# and the exact line (id_say, spoken with fixed text), so the model cannot skip a question or speak of the account.
 ID_GUIDE = r'''
 import json
 ASKS = %(asks)r
 order = [q for q, ask in ASKS]
 q = str(vars.get('id_question') or '')
-nxt = order[order.index(q) + 1] if q in order and order.index(q) + 1 < len(order) else ''
 done = json.loads(vars.get('id_correct') or '[]')       # the questions the bank confirmed in this call
 if q in order and r(%(correct)r) == 'true' and q not in done:
     done.append(q)
 vars['id_correct'] = json.dumps(done)
+todo = [x for x in order if x not in done]
 # The passed field can be missing (round 6 PUB-04): then every question confirmed passes. A false from the bank wins.
-if r(%(passed)r) == 'true' or (r(%(passed)r) in ('None', '') and set(order) <= set(done)):
+if r(%(passed)r) == 'true' or (r(%(passed)r) in ('None', '') and not todo):
     vars['id_passed'] = 'yes'
     vars['id_guide'] = 'Both answers are correct. Say thank you.'
-elif r('ok') == 'false':
-    vars['id_guide'] = 'The answer could not be read. It is not a wrong answer. Ask the same question again.'
-elif r(%(correct)r) == 'true' and nxt:
-    vars['id_guide'] = 'Correct. Now ask: ' + dict(ASKS)[nxt]
 else:
-    vars['id_guide'] = 'Say that the answer does not match. Ask the same question again. Give no hint.'
+    ask = dict(ASKS).get(q, ASKS[0][1])
+    if r('ok') == 'false':
+        line = 'Sorry, I could not read that. ' + ask
+    elif r(%(correct)r) == 'true':
+        ask = dict(ASKS)[todo[0]] if todo else ASKS[0][1]    # the first question the bank has not confirmed
+        line = 'Thank you. ' + ask
+    else:
+        line = 'That does not match. ' + ask
+    vars['id_say'] = line
+    vars['id_guide'] = 'You asked: "' + ask + '" Wait for the answer. Give no hint.'
 ''' % {"asks": [[q["value"], q["ask"]] for q in QUESTIONS], "passed": I["passed_field"], "correct": I["correct_field"]}
 
 PLAIN_POST = "d['what_to_do_next'] = 'Done. Tell the customer in one sentence.' if str(d.get('ok')).lower() == 'true' else 'It did not work. Say so in one sentence.'"
@@ -233,7 +239,9 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
                  "time, in this order: " + " ".join(f"({i + 1}) {q['value']}: \"{q['ask']}\"" for i, q in enumerate(QUESTIONS))
                  + ". Every time the customer says anything that is part of an answer, call answer_given with the parts said "
                  "in this message, also when it looks wrong, and also when the same message holds a complaint or a question. "
-                 "Never guess a missing part. Never tell the right answer.\n"
+                 "Never guess a missing part. Never tell the right answer. Only NEXT STEP chooses the next question.\n"
+                 "Before identity passes, you know nothing about the account: never say a product, a figure, a date or "
+                 "why you call. If asked, say you can tell after the security questions.\n"
                  "If the customer refuses to answer, call customer_refuses, then explain once that the questions protect "
                  "their account. When the customer asks something back, answer in one sentence and stop: do not repeat "
                  "the question, the customer answers next. Ask it again only after a message with no answer and no question.")
@@ -311,10 +319,10 @@ nodes = [
         go("close_no_time", any_of(cond("cb_close", "equals", "yes")), "outside the window after the one more ask"),
         {**intent("close_no_time", "no callback time inside the window"), "is_tool_call": True}]),
     *record_with_retry("book_callback", book, 1, "close_call_later", "close_no_time"),
-    # The first entry speaks a fixed line; every return from the check speaks the next step (on_enter llm).
+    # The first entry speaks a fixed line; every return from the check speaks the line the code chose (id_say).
     *[conversation(node, IDENTITY_TASK, tools=[answer, refuses], first_entry_only=(node == "identity"),
                    on_enter=tts("Thank you. First I need to ask two security questions. " + QUESTIONS[0]["ask"])
-                   if node == "identity" else {"type": "llm"},
+                   if node == "identity" else tts("{{id_say}}"),
                    max_turns=30, max_turn_target="close_refused_check", transitions=[
                        go("id_check", any_of(cond("id_send", "equals", "yes")), "a complete answer"),
                        go("close_refused_check", any_of(cond("id_refusals", "greater_than", I["refusals_allowed"])), "refused")])
