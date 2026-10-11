@@ -1,0 +1,11 @@
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 8 s. Failed calls where the customer hung up: 0.
+
+3 / 3 passed (bank records and conversation checks). Last simulation 4c971998-3a5f-448c-8df8-a6695fdc3ef9, status completed, 206 s.

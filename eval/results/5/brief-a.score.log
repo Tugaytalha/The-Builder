@@ -1,0 +1,55 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+       - conversation: The assistant failed to satisfy the criterion requiring it to identify as a digital assistant when asked. In Message 9, the user asks, 'Am I talking to a robot?', but the assistant responds in Message 10 with 'Sorry, please go on' rather than con
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 5 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 9 / 10 passed, 118 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 4 s, worst 6 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 10 / 10 passed, 118 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 4 s, worst 5 s. Failed calls where the customer hung up: 0.
+-- run 3 of 3: 10 / 10 passed, 96 s
+
+PASS PUB-01 3/3
+PASS PUB-02 3/3
+PASS PUB-03 3/3
+FAIL PUB-04 2/3
+PASS PUB-05 3/3
+PASS PUB-06 3/3
+PASS PUB-07 3/3
+PASS PUB-08 3/3
+PASS PUB-09 3/3
+PASS PUB-10 3/3
+
+9 / 10 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation bb390623-c444-45d3-917d-a5ed414bde73, status completed, 332 s.

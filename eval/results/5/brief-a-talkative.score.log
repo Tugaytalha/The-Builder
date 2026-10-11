@@ -1,0 +1,22 @@
+FAIL PUB-01 easy   Happy path     | verify > verify > get_account > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 420.0, '2026-10-14')]
+       - conversation: 1. Both security questions (Date of Birth and Phone Digits) were passed and verified via system events before the 'get_account' tool was called. 2. The word 'collections' was first mentioned in Message 6, which occurred after identity verificatio
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('not_verified', 'failed')
+       - conversation: The conversation failed two success criteria. First, the check did not end after a third wrong answer; instead, it ended after the second wrong answer (Messages 3 and 5) because the node's turn limit was reached due to the user's rambling. Second
+FAIL PUB-04 medium Dates          | verify > verify > get_account > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 1250.0, '2026-10-23')]
+       - conversation: The agent met all success criteria by identifying as a digital assistant, accepting the customer's proposed date without treating it as a refusal (it successfully redirected to a counter-offer), and specifically using the late-band deadline of 23
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 4 s, worst 61 s. Failed calls where the customer hung up: 2.
+
+7 / 10 passed (bank records and conversation checks). Last simulation ee23dbc4-7e1f-4617-9854-cdbe54c84012, status completed, 171 s.

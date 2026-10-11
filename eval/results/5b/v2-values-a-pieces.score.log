@@ -1,0 +1,19 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-11-02')]
+       - conversation: While the agent successfully followed the negotiation success criteria—offering the minimum payment once with the overdue note (Message 14) and correctly redirecting the user from a bank holiday to November 2nd (Message 16)—the call failed becaus
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-08 medium Already paid   | close_call
+       - outcome ('not_reached', 'unclear'), expected ('paid', None)
+       - conversation: The agent failed to mention that payments can take one business day to appear. The conversation was terminated during the identity verification phase before the agent could provide any information regarding payment processing times.
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 3 s, worst 19 s. Failed calls where the customer hung up: 1.
+
+8 / 10 passed (bank records and conversation checks). Last simulation 66447737-6aec-42cf-937e-ce3fa9a8038b, status completed, 453 s.

@@ -1,0 +1,40 @@
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 7 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 3 / 3 passed, 205 s
+
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 7 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 3 / 3 passed, 185 s
+
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+another simulation is running in this workspace, waiting 30 s
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 11 s, worst 12 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 3 of 3: 3 / 3 passed, 186 s
+
+PASS PUB-11 3/3
+PASS PUB-12 3/3
+PASS PUB-13 3/3
+
+3 / 3 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation 8e417d11-5d24-4e70-83cd-f43b26acd116, status completed, 575 s.
