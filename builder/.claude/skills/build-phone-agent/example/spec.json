@@ -26,7 +26,7 @@
   "close_system_down": ["declined", "system_down", "I am sorry, I could not record the promise. Thank you, goodbye."],
   "close_handed_over": ["handed_over", "", "A colleague will take over now. Thank you, goodbye."],
   "close_wrong": ["unverified", "wrong", "I am sorry, I cannot continue without the check. Goodbye."],
-  "close_refused_check": ["unverified", "refused_check", "I understand. I cannot continue without the check. Goodbye."],
+  "close_refused_check": ["unverified", "refused_check", "I cannot continue without the check. Goodbye."],
   "close_call_later": ["absent", "call_later", "Thank you, we will call back then. Goodbye."],
   "close_no_time": ["absent", "no_time", "Thank you for your time. Goodbye."],
   "close_unsure": ["absent", "unsure", "Thank you for your time. Goodbye."]

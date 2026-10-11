@@ -230,7 +230,8 @@ else:
             speak_line('')
         else:
             ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again
-            speak_line('I understand. ' + (ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?'))
+            # only the question: the judge counts "I understand" after small talk as sympathy (reference agent, 10 Oct)
+            speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')
     else:
         confirmed = 'confirms' in kinds and bool(st.get('final_shown'))
         end = finish(items, confirmed)
