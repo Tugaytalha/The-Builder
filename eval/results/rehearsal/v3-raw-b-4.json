@@ -1,0 +1,168 @@
+{
+ "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
+ "simulation_id": "00dea69e-2cd2-4e84-9a9e-1c61282cfcd6",
+ "iteration_id": "e25aec4c-3935-46f1-b29d-eb6b3a98b0f3",
+ "seconds": 188,
+ "passed": 1,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 1,
+   "pass": true
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('promise', None)",
+    "promises [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27')], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+    "conversation: The assistant identified all three products before the ask in [Message 6] and performed a read-back in [Message 8] which was confirmed in [Message 9]. However, the success criteria required one create_promise per product. System events demonstrate that the assistant only executed the tool for the credit card (p1) and the personal loan (p2), skipping the car loan (p3) before attempting to close the"
+   ],
+   "call_id": "5f431e80-9d25-4457-aab7-ce1f5ebd15cc",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_5164d534-0b7",
+   "slowest_turn_s": 78.1,
+   "ended": "customer-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "b37f4d8c-4af5-4ab7-b1a1-c29caa813000",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_fbf24c08-55c",
+   "slowest_turn_s": 25.0,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('promise', None)"
+   ],
+   "call_id": "bb217265-29e0-4572-8b91-13d0c8463454",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_22f1cea4-8c0",
+   "slowest_turn_s": 75.2,
+   "ended": "customer-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('promise', None)",
+     "promises [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27')], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+     "conversation: The assistant identified all three products before the ask in [Message 6] and performed a read-back in [Message 8] which was confirmed in [Message 9]. However, the success criteria required one create_promise per product. System events demonstrate that the assistant only executed the tool for the credit card (p1) and the personal loan (p2), skipping the car loan (p3) before attempting to close the"
+    ],
+    "call_id": "5f431e80-9d25-4457-aab7-ce1f5ebd15cc",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_5164d534-0b7",
+    "slowest_turn_s": 78.1,
+    "ended": "customer-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "b37f4d8c-4af5-4ab7-b1a1-c29caa813000",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_fbf24c08-55c",
+    "slowest_turn_s": 25.0,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('promise', None)"
+    ],
+    "call_id": "bb217265-29e0-4572-8b91-13d0c8463454",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_22f1cea4-8c0",
+    "slowest_turn_s": 75.2,
+    "ended": "customer-ended-call"
+   }
+  ]
+ ]
+}

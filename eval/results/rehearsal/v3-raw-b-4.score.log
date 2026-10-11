@@ -1,0 +1,14 @@
+GET /api/v2/simulations/00dea69e-2cd2-4e84-9a9e-1c61282cfcd6 failed (cfcd6 -> 502: error code: 502
+), trying again
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27')], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+       - conversation: The assistant identified all three products before the ask in [Message 6] and performed a read-back in [Message 8] which was confirmed in [Message 9]. However, the success criteria required one create_promise per product. System events demonstrat
+PASS PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - outcome (None, None), expected ('promise', None)
+
+slowest agent turn per call: median 75 s, worst 78 s. Failed calls where the customer hung up: 2.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+1 / 3 passed (bank records and conversation checks). Last simulation 00dea69e-2cd2-4e84-9a9e-1c61282cfcd6, status completed, 188 s.
