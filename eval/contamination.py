@@ -46,8 +46,8 @@ def allowed_tokens():
 
 
 def brief_files():
-    """The kit and eval briefs, and the hidden briefs once they are in briefs/ (runbook)."""
-    return [p for d, pattern in (("kit/briefs", "*.md"), ("eval/briefs", "*.md"), ("briefs", "hidden-*.md"))
+    """The kit and eval briefs, and every Markdown file in briefs/ (the final case folder, runbook)."""
+    return [p for d, pattern in (("kit/briefs", "*.md"), ("eval/briefs", "*.md"), ("briefs", "**/*.md"))
             for p in sorted((REPO / d).glob(pattern))]
 
 

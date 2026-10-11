@@ -1,6 +1,9 @@
-"""Build a Freya phone agent from one brief and one tool API file.
+"""Build a Freya phone agent from one brief and one tool API file, or from a case folder and our mock's URL.
 
     python3 builder/build.py <brief_path> <tool_api_path>
+    python3 builder/build.py <case_folder> <mock_url>
+
+A case folder becomes one brief.md (builder/blocks/docs.py); the mock serves its tool API at <mock_url>/openapi.json.
 
 A deterministic shell around one Claude Agent SDK run. The agent writes the run folder and deploys through the
 gate. This file then deploys the last workflow if it changed, exports the deployed version to
@@ -15,6 +18,7 @@ import os
 import shutil
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -22,6 +26,7 @@ sys.path.insert(0, str(REPO))
 
 from builder.blocks.check import freya  # noqa: E402
 from builder.blocks.deploy import GateError, deploy  # noqa: E402
+from builder.blocks.docs import case_text  # noqa: E402
 from builder.trace import Trace  # noqa: E402
 
 WATCHDOG_S = 25 * 60
@@ -91,17 +96,38 @@ def _counts(workflow):
     return len(nodes), len(tools)
 
 
+def fetch_api(url):
+    request = urllib.request.Request(url, headers={"User-Agent": "the-builder"})   # Cloudflare refuses Python-urllib with 403
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return json.loads(response.read())
+
+
+def _inputs(brief, api, run_dir):
+    """Write brief.md and tool_api.json into the run folder, from a brief file and an API file, or from a case folder
+    and a mock URL."""
+    if not brief.is_dir():
+        shutil.copy(brief, run_dir / "brief.md")
+        shutil.copy(api, run_dir / "tool_api.json")
+        return
+    shutil.copytree(brief, run_dir / "case")
+    (run_dir / "brief.md").write_text(case_text(brief))
+    mock = str(api).rstrip("/")
+    spec = fetch_api(mock + "/openapi.json")
+    if not spec.get("servers") and not spec.get("host"):
+        spec["servers"] = [{"url": mock}]
+    (run_dir / "tool_api.json").write_text(json.dumps(spec, indent=1, ensure_ascii=False))
+
+
 def run(brief, api, agent=run_agent):
     t0 = time.time()
-    slot = brief.stem
+    slot = brief.stem if not brief.is_dir() else brief.name
     stamp = time.strftime("%Y%m%d-%H%M%S", time.gmtime())
     run_dir = REPO / "builder" / "runs" / f"{slot}-{stamp}"
     run_dir.mkdir(parents=True)
-    shutil.copy(brief, run_dir / "brief.md")
-    shutil.copy(api, run_dir / "tool_api.json")
     trace = Trace(REPO / "traces" / f"{slot}-{stamp}.jsonl",
                   [os.environ.get("FREYA_API_KEY", ""), os.environ.get("FREYA_BANK_TEAM_KEY", "")])
     trace.log("start", brief=str(brief), tool_api=str(api), model=MODEL, run_dir=str(run_dir))
+    _inputs(brief, api, run_dir)
 
     try:
         asyncio.run(asyncio.wait_for(agent(run_dir, trace, t0 + WATCHDOG_S), timeout=WATCHDOG_S - (time.time() - t0)))
@@ -150,4 +176,5 @@ def run(brief, api, agent=run_agent):
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         sys.exit(__doc__)
-    sys.exit(run(Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()))
+    target = sys.argv[2] if sys.argv[2].startswith("http") else Path(sys.argv[2]).resolve()
+    sys.exit(run(Path(sys.argv[1]).resolve(), target))

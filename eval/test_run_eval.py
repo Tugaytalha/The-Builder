@@ -164,3 +164,11 @@ def test_contamination_reads_the_hidden_briefs(tmp_path, monkeypatch):
     (tmp_path / "briefs" / "hidden-1.md").write_text("x")
     monkeypatch.setattr(contamination, "REPO", tmp_path)
     assert tmp_path / "briefs" / "hidden-1.md" in contamination.brief_files()
+
+
+def test_contamination_reads_the_final_case_folder(tmp_path, monkeypatch):
+    import contamination
+    (tmp_path / "briefs" / "Bank-Case").mkdir(parents=True)
+    (tmp_path / "briefs" / "Bank-Case" / "BRIEF.md").write_text("x")
+    monkeypatch.setattr(contamination, "REPO", tmp_path)
+    assert tmp_path / "briefs" / "Bank-Case" / "BRIEF.md" in contamination.brief_files()

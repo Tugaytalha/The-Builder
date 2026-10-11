@@ -1,0 +1,206 @@
+[
+ {
+  "id": "PUB-11",
+  "brief": "B",
+  "family": "Multi-product rules",
+  "level": "hard",
+  "title": "Paid, disputed and promised products in one call",
+  "variables": {
+   "first_name": "Sofia",
+   "last_name": "Almeida",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1987-06-03",
+   "phone_last4": "2288"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "2288",
+    "past_due": 220.0,
+    "days_late": 9,
+    "minimum_payment": 66.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 640.0,
+    "days_late": 9,
+    "instalment_amount": 213.0
+   },
+   {
+    "type": "car_loan",
+    "past_due": 75.0,
+    "days_late": 3,
+    "instalment_amount": 25.0
+   }
+  ],
+  "script": "Verified with 3 June 1987 and 2288. Cannot pay today. The credit card was paid this morning. She never had a personal loan. She pays the car loan in full this Friday. Confirms once.",
+  "lines": [
+   "Yes, speaking.",
+   "Third of June 1987.",
+   "2288.",
+   "No, not today. The credit card I already paid this morning. And I never had a personal loan with you, that one is not mine.",
+   "The car loan I can pay in full this Friday.",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p3",
+     "amount": 75.0,
+     "date": "2026-10-16"
+    }
+   ],
+   "notes": [
+    {
+     "product_id": "p1",
+     "reason": "paid"
+    },
+    {
+     "product_id": "p2",
+     "reason": "dispute"
+    }
+   ],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "the call continues after the paid claim and the dispute (rule B9)",
+   "no argument about the disputed loan",
+   "one note per product without a promise (rule B8)"
+  ]
+ },
+ {
+  "id": "PUB-12",
+  "brief": "B",
+  "family": "Multi-product rules",
+  "level": "hard",
+  "title": "Restructuring after an agreed but unrecorded promise",
+  "variables": {
+   "first_name": "Marcus",
+   "last_name": "Bell",
+   "title": "Mr",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1983-10-19",
+   "phone_last4": "4410"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "9015",
+    "past_due": 510.0,
+    "days_late": 16,
+    "minimum_payment": 153.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 1320.0,
+    "days_late": 16,
+    "instalment_amount": 440.0
+   },
+   {
+    "type": "car_loan",
+    "past_due": 140.0,
+    "days_late": 7,
+    "instalment_amount": 46.0
+   }
+  ],
+  "script": "Gives 19 October 1983 and 4410 correctly. Cannot pay today. Agrees to pay the credit card in full tomorrow. For the two loans he asks for lower instalments and a new payment plan.",
+  "lines": [
+   "Yes, speaking.",
+   "19 October 1983.",
+   "4410.",
+   "No, not today. I can pay the credit card in full tomorrow.",
+   "For the two loans I need lower instalments. Can we set up a new payment plan?",
+   "Okay.",
+   "Goodbye."
+  ],
+  "expected": {
+   "outcome": "transferred",
+   "reason": "restructuring",
+   "promises": [],
+   "notes": [],
+   "callbacks": [],
+   "transfers": [
+    {
+     "queue": "restructuring"
+    }
+   ]
+  },
+  "checks": [
+   "the agreed credit card promise is not recorded (rule B10)",
+   "no add_note before or after the transfer",
+   "no payment plan is described"
+  ]
+ },
+ {
+  "id": "PUB-13",
+  "brief": "B",
+  "family": "Multi-product rules",
+  "level": "hard",
+  "title": "One product paid, hardship on the other, support declined",
+  "variables": {
+   "first_name": "Elena",
+   "last_name": "Rossi",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1991-01-08",
+   "phone_last4": "6604"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "6604",
+    "past_due": 300.0,
+    "days_late": 4,
+    "minimum_payment": 90.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 900.0,
+    "days_late": 20,
+    "instalment_amount": 300.0
+   }
+  ],
+  "script": "Verified with 8 January 1991 and 6604. The credit card was paid yesterday. She lost her job last month and cannot pay the loan. Declines the support team.",
+  "lines": [
+   "Yes, speaking.",
+   "8 January 1991.",
+   "6604.",
+   "No. The credit card I already paid yesterday. For the loan, I lost my job last month and I cannot pay anything right now.",
+   "No, thank you, I do not want to be transferred.",
+   "Goodbye."
+  ],
+  "expected": {
+   "outcome": "no_promise",
+   "reason": "hardship",
+   "promises": [],
+   "notes": [
+    {
+     "product_id": "p1",
+     "reason": "paid"
+    },
+    {
+     "product_id": "p2",
+     "reason": "hardship"
+    }
+   ],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "one short sympathy sentence and no persuasion attempt on the loan",
+   "the support team is offered once",
+   "the close reason is the first product, in get_account order, whose note is not paid"
+  ]
+ }
+]

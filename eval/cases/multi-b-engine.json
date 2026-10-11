@@ -1,0 +1,220 @@
+[
+ {
+  "id": "PUB-11",
+  "brief": "B",
+  "family": "Multi-product engine",
+  "level": "hard",
+  "title": "A change at the read-back for the last product only",
+  "variables": {
+   "first_name": "Sofia",
+   "last_name": "Almeida",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1987-06-03",
+   "phone_last4": "2288"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "2288",
+    "past_due": 220.0,
+    "days_late": 9,
+    "minimum_payment": 66.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 640.0,
+    "days_late": 9,
+    "instalment_amount": 213.0
+   },
+   {
+    "type": "car_loan",
+    "past_due": 75.0,
+    "days_late": 3,
+    "instalment_amount": 25.0
+   }
+  ],
+  "script": "Verified with 3 June 1987 and 2288. Cannot pay today; pays all three in full this Friday. At the read-back she moves only the car loan to Tuesday 20 October. Confirms the second read-back.",
+  "lines": [
+   "Yes, speaking.",
+   "Third of June 1987.",
+   "2288.",
+   "No, not today. I can pay all three in full this Friday.",
+   "Actually, please make the car loan Tuesday the twentieth instead.",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 220.0,
+     "date": "2026-10-16"
+    },
+    {
+     "product_id": "p2",
+     "amount": 640.0,
+     "date": "2026-10-16"
+    },
+    {
+     "product_id": "p3",
+     "amount": 75.0,
+     "date": "2026-10-20"
+    }
+   ],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "the change at the read-back moves only the car loan; the credit card stays on 16 October",
+   "a second read-back after the change",
+   "one create_promise per product"
+  ]
+ },
+ {
+  "id": "PUB-12",
+  "brief": "B",
+  "family": "Multi-product engine",
+  "level": "medium",
+  "title": "Yes to all three today, in one sentence",
+  "variables": {
+   "first_name": "Marcus",
+   "last_name": "Bell",
+   "title": "Mr",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1983-10-19",
+   "phone_last4": "4410"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "9015",
+    "past_due": 510.0,
+    "days_late": 16,
+    "minimum_payment": 153.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 1320.0,
+    "days_late": 16,
+    "instalment_amount": 440.0
+   },
+   {
+    "type": "car_loan",
+    "past_due": 140.0,
+    "days_late": 7,
+    "instalment_amount": 46.0
+   }
+  ],
+  "script": "Gives 19 October 1983 and 4410 correctly. Says he can pay all three today in full. Confirms once.",
+  "lines": [
+   "Yes, speaking.",
+   "19 October 1983.",
+   "4410.",
+   "Yes, I can pay all three today, in full.",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 510.0,
+     "date": "2026-10-14"
+    },
+    {
+     "product_id": "p2",
+     "amount": 1320.0,
+     "date": "2026-10-14"
+    },
+    {
+     "product_id": "p3",
+     "amount": 140.0,
+     "date": "2026-10-14"
+    }
+   ],
+   "notes": [],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "all three recorded for today",
+   "no persuasion attempt on any product",
+   "one read-back and one confirmation for all three"
+  ]
+ },
+ {
+  "id": "PUB-13",
+  "brief": "B",
+  "family": "Multi-product engine",
+  "level": "hard",
+  "title": "A product named by its type: the loan is paid",
+  "variables": {
+   "first_name": "Elena",
+   "last_name": "Rossi",
+   "title": "Ms",
+   "now": "2026-10-14T11:00"
+  },
+  "identity": {
+   "date_of_birth": "1991-01-08",
+   "phone_last4": "6604"
+  },
+  "products": [
+   {
+    "type": "credit_card",
+    "card_last4": "6604",
+    "past_due": 300.0,
+    "days_late": 4,
+    "minimum_payment": 90.0
+   },
+   {
+    "type": "personal_loan",
+    "past_due": 900.0,
+    "days_late": 20,
+    "instalment_amount": 300.0
+   }
+  ],
+  "script": "Verified with 8 January 1991 and 6604. Says the personal loan is already paid (yesterday) and the credit card can be paid in full this Friday. Confirms once.",
+  "lines": [
+   "Yes, speaking.",
+   "8 January 1991.",
+   "6604.",
+   "No, not today. The personal loan I already paid yesterday. The credit card I can pay in full this Friday.",
+   "Yes, I confirm.",
+   "Thank you, goodbye."
+  ],
+  "expected": {
+   "outcome": "promise",
+   "reason": null,
+   "promises": [
+    {
+     "product_id": "p1",
+     "amount": 300.0,
+     "date": "2026-10-16"
+    }
+   ],
+   "notes": [
+    {
+     "product_id": "p2",
+     "reason": "paid"
+    }
+   ],
+   "callbacks": [],
+   "transfers": []
+  },
+  "checks": [
+   "the paid note is on the personal loan, not on the credit card",
+   "the agent says payments can take one business day to appear",
+   "no promise on the personal loan"
+  ]
+ }
+]

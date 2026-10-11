@@ -24,10 +24,10 @@ def chat(workflow_id, variables, lines):
         try:
             r = freya.api("POST", "/api/v2/chat/message", body)
         except RuntimeError as exc:
-            if "-> 502" not in str(exc) or not call_id:
+            if not any(code in str(exc) for code in ("-> 502", "-> 504")) or not call_id:
                 raise
-            replies.append(ENDED)  # the chat route answers 502 on the turn that ends the call
-            break
+            replies.append(ENDED)  # the chat route answers 502 or 504 on the turn that ends the call
+            return replies         # no /chat/end: it runs the end-of-call tools again (close_call twice, rehearsal)
         call_id = r.get("callId") or call_id
         replies.append(r.get("response") or "")
     try:

@@ -1,5 +1,9 @@
 # Handoff (Sun 11 Oct 2026, 15:30 UTC)
 
+**Update 11 Oct, 16:00 UTC:** the final changed. It is one case in Turkish: a folder of documents plus our own mock on Cloudflare Workers, with one `submission.json`. `notes/hidden-runbook.md` has the new steps. The builder takes `{case_folder} {mock_url}` since commit 62e6be9. The "two hidden briefs" text below is out of date.
+
+**Update 11 Oct, 16:40 UTC:** `notes/multi-product-review.md` has a read-only multi-product review. It lists 10 engine and design defects with a local repro (`eval/repro_multi_product.py`), new B cases (`eval/cases/multi-b-*.json`), and fixes to the B labels in the table below.
+
 Read this first in a new session. Then read `notes/hidden-runbook.md` (what to do at 17:00 UTC) and `notes/eval-log.md` (one row per round, with every root cause).
 
 ## Names
@@ -23,7 +27,7 @@ Read this first in a new session. Then read `notes/hidden-runbook.md` (what to d
 | Time (UTC) | Builder | Phone agent | Customer style | Score | Failures and cause |
 |---|---|---|---|---|---|
 | 14:19 | 3efb00f | Brief A | plain | 9/10 | PUB-03: privacy defect (see lesson 4o). **Fixed in 63fdc9a.** |
-| 14:19 | 3efb00f | Brief B (held-out) | plain | 1/3 | PUB-11, PUB-13: agent turns of 75–78 s, the customer hung up (platform) |
+| 14:19 | 3efb00f | Brief B (held-out) | plain | 1/3 | PUB-11, PUB-13: agent turns of 75–78 s, the customer hung up (platform). **Corrected (multi-product review):** not platform. The 75 s is our silent write chain after "Yes, I confirm" (D2). In PUB-13 every promise was recorded; the only failed check was `close_call` with model-filled fields after the hang-up (D1). |
 | 14:39 | 63fdc9a | Brief A | plain | 9/10 | PUB-04: test mismatch (our brief A memo says the 5th business day; the scorer expects the 7th) |
 | 14:43 | 63fdc9a | Brief A | plain, PUB-03 only | 3/3 | none: the privacy fix holds |
 | 14:43 | 63fdc9a | Brief A | talkative | 9/10 | PUB-04: the same test mismatch. Best talkative score so far (rounds 1–5: 6–8/10) |

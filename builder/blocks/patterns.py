@@ -4,6 +4,17 @@ from builder.blocks.tools import make_tool
 
 BLOCKED_URL = "https://blocked.invalid/refused-by-guard"
 
+# The lines the library code speaks or tells the model to say. Pass `lines` in the brief's language to override them.
+LINES = {"check_failed": "Sorry, I could not check that. Please say it again.", "one_moment": "One moment, please.",
+         "go_on": "Please go on.", "sorry_go_on": "Sorry, please go on.", "what_answer": "What is your answer?"}
+
+
+def _lines(lines):
+    unknown = set(lines or {}) - set(LINES)
+    if unknown:
+        raise ValueError(f"unknown lines: {sorted(unknown)}; the keys are {sorted(LINES)}")
+    return {**LINES, **(lines or {})}
+
 
 def start(next_node):
     """An empty initial code node. Chat skips the initial node's code (spike S6), so real setup comes after it."""
@@ -69,6 +80,11 @@ def record_with_retry(name, tool, attempts, ok_target, fail_target):
 ANSWER_CODE = r'''
 import json
 MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+AYLAR = ['ocak', 'şubat', 'mart', 'nisan', 'mayıs', 'haziran', 'temmuz', 'ağustos', 'eylül', 'ekim', 'kasım', 'aralık']
+ASCII = str.maketrans('şğüıöçİ', 'sguioci')
+PREFIXES = [(name[:3], i + 1) for names in (MONTHS, AYLAR) for i, name in enumerate(names)]
+PREFIXES += [(name.translate(ASCII)[:3], i + 1) for i, name in enumerate(AYLAR)]
+ONE_MOMENT = %r
 KINDS = %r
 q = str(params.get('question') or '')
 kind = KINDS.get(q, ['text', 0])
@@ -81,14 +97,16 @@ def num(x):
 for key in ('day', 'month', 'year'):
     v = str(params.get(key) or '').strip()
     if v:
-        m = [i + 1 for i, name in enumerate(MONTHS) if v.lower().startswith(name[:3])] if key == 'month' else []
+        low = v.lower()
+        m = [n for p, n in PREFIXES if low.startswith(p) or low.translate(ASCII).startswith(p)] if key == 'month' else []
         mine[key] = m[0] if m else num(v)
 new_digits = ''.join(ch for ch in str(params.get('digits') or '') if ch.isdigit())
 if new_digits:
     have = mine.get('digits') or ''
     mine['digits'] = new_digits if (len(new_digits) >= kind[1] or not have) else have + new_digits
 WORDS = {'zero': '0', 'oh': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7',
-         'eight': '8', 'nine': '9'}
+         'eight': '8', 'nine': '9', 'sıfır': '0', 'bir': '1', 'iki': '2', 'üç': '3', 'dört': '4', 'beş': '5', 'altı': '6',
+         'yedi': '7', 'sekiz': '8', 'dokuz': '9'}
 def chars_of(x):
     """'S W one A double A' -> 'SW1AAA': upper case, no spaces, spoken digits and 'double' / 'triple' read."""
     out, times = '', 1
@@ -134,7 +152,7 @@ if answer:
     vars['id_question'] = q
     vars['id_answer'] = answer
     vars['id_send'] = 'yes'
-    vars['id_guide'] = 'Say only: one moment, please.'
+    vars['id_guide'] = 'Say only: ' + ONE_MOMENT
 else:
     parts[q] = mine
     vars['id_guide'] = ('The answer is not complete yet. Ask only for the missing part: ' + missing
@@ -144,7 +162,7 @@ vars['id_refusals'] = 0     # refusals count in a row: an answer ends the row
 '''
 
 
-def answer_tool(questions):
+def answer_tool(questions, lines=None):
     """The model reports the parts of an identity answer; the code joins them over several turns and says when an
     answer is complete. `questions` maps each question value (as the tool API names it) to ["date", 0],
     ["digits", <count>], ["alnum", <count>] (letters and digits, such as a postcode or a reference) or ["text", 0]. A part given after a partial answer is joined to it. On a complete answer it sets id_question, id_answer and id_send = "yes".
@@ -160,10 +178,10 @@ def answer_tool(questions):
         "chars": {"type": "string", "description": "Letters and digits the customer said in this message for a code such as "
                   "a postcode or a reference, as said ('S W one A'), or empty."},
         "text": {"type": "string", "description": "Any other kind of answer, as said, or empty."}},
-        ANSWER_CODE % (questions,))
+        ANSWER_CODE % (_lines(lines)["one_moment"], questions))
 
 
-def identity_check(name, verify_tool, back_node, routes, guide_code):
+def identity_check(name, verify_tool, back_node, routes, guide_code, lines=None):
     """The engine-run identity check. Route to `name` when id_send is "yes". `verify_tool` comes from make_tool with the
     question field baked as "{{id_question}}" and the answer field as "{{id_answer}}". After the call, `guide_code` runs
     with `r(field)` = the result field as a string and must set vars['id_say'] (the fixed line `back_node` speaks on
@@ -171,16 +189,17 @@ def identity_check(name, verify_tool, back_node, routes, guide_code):
     `routes` are transitions on `<name>_check_response.data.<field>` (passed, failed); otherwise the call goes back to
     `back_node`, whose task shows {{id_guide}}."""
     prefix = name + "_check_response."
+    failed = _lines(lines)["check_failed"]
     after = ("def r(f):\n    return str(vars.get(%r + f))\n" % (prefix + "data.")
              + "if str(vars.get(%r)) != 'success':\n" % (prefix + "status")
-             + "    vars['id_say'] = 'Sorry, I could not check that. Please say it again.'\n"
+             + "    vars['id_say'] = %r\n" % failed
              + "    vars['id_guide'] = 'The check is not available. Wait for the answer again.'\n"
              + "else:\n" + "\n".join("    " + line for line in guide_code.splitlines()) + "\n")
     return [code_node(name, "vars['id_send'] = 'no'", name + "_check"),
             api_node(name + "_check", verify_tool, name + "_after"),
             code_node(name + "_after", after, back_node, transitions=routes,
                       fallbacks={"id_guide": "Wait for the answer again.",
-                                 "id_say": "Sorry, I could not check that. Please say it again."})]
+                                 "id_say": failed})]
 
 
 def write_loop(name, api, tool_name, fields, baked, attempts, done_target):
@@ -241,7 +260,7 @@ for a, kind in zip(answers, kinds):
     if vars.get('close_key') or vars.get('negotiation_action'):
         break
 if unfinished:
-    speak_line('Please go on.' if reply else 'Sorry, please go on.')     # a cut-off message changes nothing
+    speak_line(%(go_on)r if reply else %(sorry_go_on)r)     # a cut-off message changes nothing
 elif vars.get('close_key') or vars.get('negotiation_action'):
     pass
 else:
@@ -260,7 +279,7 @@ else:
         else:
             ask = st.get('last_question', '')       # no answer in the message: ask again, but never an offer again
             # only the question: the judge counts "I understand" after small talk as sympathy (reference agent, 10 Oct)
-            speak_line(ask if ask and not any(c.isdigit() for c in ask) else 'What is your answer?')
+            speak_line(ask if ask and not any(c.isdigit() for c in ask) else %(what_answer)r)
     else:
         confirmed = 'confirms' in kinds and bool(st.get('final_shown'))
         end = finish(items, confirmed)
@@ -270,14 +289,14 @@ else:
         elif isinstance(end, list) and end:
             vars[%(list_var)r] = json.dumps([dict(fields=f, status='pending') for f in end])
             vars['record_now'] = 'yes'
-            vars['guide'] = 'SAY: "One moment, please."'
+            vars['guide'] = 'SAY: "' + %(one_moment)r + '"'
         else:
             vars['close_key'] = str(end or '')
 vars['neg_state'] = json.dumps(st)
 '''
 
 
-def negotiation_tool(kinds, policy, list_var):
+def negotiation_tool(kinds, policy, list_var, lines=None):
     """The state tool of the negotiation node. The model reports what the customer said about one product; the brief's
     policy decides for that product; the engine plans the next line from the whole state.
 
@@ -298,7 +317,7 @@ def negotiation_tool(kinds, policy, list_var):
     vars['say_turn'] = 'yes', and `negotiation_nodes` speaks it with fixed text, so it is said once and word for word (round 4:
     the model said its own offer instead of NEXT STEP). The guide holds only words in quotes. The engine adds the kind
     "unfinished" (a message cut off mid-sentence): it changes nothing and asks the customer to go on."""
-    engine = NEGOTIATION_ENGINE % {"list_var": list_var}
+    engine = NEGOTIATION_ENGINE % {"list_var": list_var, **_lines(lines)}
     answer = {"type": "object", "required": ["item", "kind", "date", "amount"], "properties": {
         "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
         "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
