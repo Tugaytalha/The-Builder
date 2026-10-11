@@ -206,7 +206,7 @@ for a, kind in zip(answers, kinds):
     amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
     day = str(a.get('date') or '')[:10]
     line = decide(it, kind, amount, day)
-    if line and line == it.get('said') and (amount is not None or day):
+    if line and line == it.get('_said_line') and (amount is not None or day):
         line = decide(it, kind, None, '')   # the day and amount only echo the line said last (round 5 V2: a read-back loop)
     it['line'] = line or ''
     if vars.get('close_key') or vars.get('negotiation_action'):
@@ -220,7 +220,7 @@ else:
     todo = [x for x in open_items if x.get('line')]
     if todo:
         speak_line(todo[0]['line'])
-        todo[0]['said'], todo[0]['line'] = todo[0]['line'], ''      # said now
+        todo[0]['_said_line'], todo[0]['line'] = todo[0]['line'], ''      # said now; '_' keeps the key away from the policy's keys
     elif open_items:
         nx = open_items[0]
         if not nx.get('asked'):
@@ -262,7 +262,7 @@ def negotiation_tool(kinds, policy, list_var):
           `confirms` after the final read-back was shown. A change at the final read-back reaches `decide` for that
           product, which can set its status back to 'open'.
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
-    one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
+    one asked about in the debt statement has "asked": "yes". Keys that start with "_" belong to the engine. One message can answer for several products: the model calls
     the tool once with one entry per product in `answers`; a second entry for the same product is ignored. Two calls in one message run at the same time and only the
     last write is kept (round 2, PUB-13), so the tool must never need two calls. A chosen line goes to vars['say_now'] with
     vars['say_turn'] = 'yes', and `negotiation_nodes` speaks it with fixed text, so it is said once and word for word (round 4:

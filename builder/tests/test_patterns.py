@@ -344,3 +344,18 @@ def test_negotiation_retries_an_answer_without_its_values_when_it_would_repeat_t
     assert v["say_now"] == "On 2026-11-02, right?"
     v = say(v, "confirms", "2026-11-02")
     assert v["record_now"] == "yes"
+
+
+def test_negotiation_leaves_the_policy_keys_of_an_item_alone():
+    # round 5 brief A build: the policy kept its own list it['said'] of offers; the engine wrote a string to the same
+    # key (e3f7897), so the next it['said'].append(...) failed and the agent said nothing
+    policy = POLICY.replace("def decide(it, kind, amount, day):\n",
+                            "def decide(it, kind, amount, day):\n    it.setdefault('said', []).append(kind)\n", 1)
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    code = negotiation_tool({"no": "refuses"}, policy, "writes_list")["function"]["parameters"]["properties"]["code"]["default"]
+    v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"}]})}
+    for turn in (1, 2):
+        v = run_tool(code, v, {"answers": [{"item": "a", "kind": "no", "date": "", "amount": ""}], "reply": ""})
+        assert "customer_said_code_error" not in v
+    assert __import__("json").loads(v["neg_state"])["items"][0]["said"] == ["no", "no"]
