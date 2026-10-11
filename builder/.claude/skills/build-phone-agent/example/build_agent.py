@@ -291,8 +291,9 @@ for key, (result, code, goodbye) in SPEC["closes"].items():
     closes += close_sequence(key, {"close_result": result, "close_code": code}, goodbye)
 
 party = field("party", "string", "Who answered, from the latest message. customer: clearly confirms with yes or their own "
-              "name. someone_else: another person, or the customer is not there. unclear: anything else, also hello or a "
-              "question.", enum=["customer", "someone_else", "unclear"])
+              "name. someone_else: another person who names themselves as not the customer, or the customer is not there. "
+              "unclear: anything else, also hello, a question, or a claim of authority (the bank, security, police) "
+              "with no name: ask again who you speak with.", enum=["customer", "someone_else", "unclear"])
 nodes = [
     start("setup"),
     code_node("setup", with_dates(SETUP) + "\nvars['id_guide'] = 'Wait for the answer to the first question.'\nvars['tp_guide'] = 'Ask when the customer can be reached.'", "opening",
