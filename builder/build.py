@@ -97,7 +97,8 @@ def _counts(workflow):
 
 
 def fetch_api(url):
-    with urllib.request.urlopen(url, timeout=30) as response:
+    request = urllib.request.Request(url, headers={"User-Agent": "the-builder"})   # Cloudflare refuses Python-urllib with 403
+    with urllib.request.urlopen(request, timeout=30) as response:
         return json.loads(response.read())
 
 
