@@ -1,0 +1,12 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-15')]
+       - notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: The conversation failed on several criteria: - The personal loan (16 days late, late band) required two attempts, but the assistant did not acknowledge the refusal or attempt to persuade the customer after the first refusal in [Message 9]. - The 
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 66 s. Failed calls where the customer hung up: 1.
+
+1 / 3 passed (bank records and conversation checks). Last simulation 3c64fe88-3625-4fe8-96fc-3cbc5773bc6d, status completed, 117 s.

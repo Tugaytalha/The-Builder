@@ -1,0 +1,14 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The agent failed to meet the specific attempt count for the car loan. The security verification was handled correctly: the date of birth was asked only once (Message 2) and the phone question was asked again exactly once (Message 6) after an inco
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > add_note > add_note > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]
+       - notes [('p1', 'refused'), ('p2', 'refused')], expected []
+       - conversation: The assistant failed all success criteria. It repeatedly proposed October 14th for both payments (Message 8 and many others) instead of recording the credit card for October 30th and the loan for October 23rd. Furthermore, the call failed the end
+
+slowest agent turn per call: median 17 s, worst 18 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+
+0 / 3 passed (bank records and conversation checks). Last simulation d0ec08e0-c17b-4bc2-a53d-ae2b5a07e3dc, status completed, 326 s.

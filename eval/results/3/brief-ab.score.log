@@ -1,0 +1,33 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]
+       - conversation: The evaluation failed because the agent made two attempts to collect on the car loan instead of the required one. While the personal loan (late band) correctly received two attempts at [Message 10] and [Message 12], the car loan (early band) also
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 6 s, worst 7 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 1 / 3 passed, 86 s
+
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: - Security questions: The assistant asked the phone question twice (Message 4, 6) and the date of birth once (Message 2), meeting the criteria. - Promises: Exactly one promise was created for the credit card (p1) via the API and confirmed in Mess
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 9 s, worst 16 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 1 / 3 passed, 96 s
+
+PASS PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - conversation: The assistant failed to meet the requirement for the number of collection attempts. While the personal loan (late band) correctly received two attempts ([Message 10] and [Message 12]), the car loan (early band, 7 days late) received two attempts 
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 11 s, worst 14 s. Failed calls where the customer hung up: 0.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
+-- run 3 of 3: 2 / 3 passed, 64 s
+
+FAIL PUB-11 1/3
+FAIL PUB-12 0/3
+PASS PUB-13 3/3
+
+1 / 3 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation 269d635f-3ba6-4c08-9bc3-c50511a4a434, status completed, 246 s.

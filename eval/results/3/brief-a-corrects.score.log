@@ -1,0 +1,18 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+FAIL PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+       - promises [('p1', 450.0, '2026-10-23')], expected [('p1', 1250.0, '2026-10-23')]
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome ('transferred', 'support'), expected ('no_promise', 'hardship')
+       - transfers [{'queue': 'support'}], expected []
+       - conversation: The conversation failed the success criteria because the assistant did not provide a sentence of sympathy after the customer shared that they lost their job in [Message 7]. While the assistant correctly offered the support team once [Message 8], 
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 7 s. Failed calls where the customer hung up: 0.
+
+8 / 10 passed (bank records and conversation checks). Last simulation 29d761f2-20e7-409d-9a34-8eb36be23faf, status completed, 96 s.

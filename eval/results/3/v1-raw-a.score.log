@@ -1,0 +1,63 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > close_call
+       - conversation: - The support team was not offered to the customer, which was a required criterion. - There was no clear sentence of sympathy; "I understand" acts more as an acknowledgement than a sentence of sympathy for the customer's job loss.
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 12 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 9 / 10 passed, 138 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('not_verified', 'failed')
+       - conversation: The conversation failed to meet two out of three success criteria: 1. The customer was never instructed to use the app or visit a branch, as the assistant simply ended the call after the customer's refusal. 2. The check did not end after a third 
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome ('transferred', 'restructuring'), expected ('no_promise', 'hardship')
+       - transfers [{'queue': 'restructuring'}], expected []
+       - conversation: The assistant failed to provide a sentence of sympathy in response to the user's disclosure of job loss. While the assistant correctly avoided persuasion, offered the support team once (via transfer), and did not offer any discounts or plans, the
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 6 s, worst 8 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 8 / 10 passed, 117 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome ('transferred', 'restructuring'), expected ('no_promise', 'hardship')
+       - transfers [{'queue': 'restructuring'}], expected []
+       - conversation: The assistant failed to express any sympathy after the user disclosed losing their job. While the assistant correctly avoided persuasion, transferred the call to a colleague (support team) once, and did not offer any discounts or plans, the lack 
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 6 s, worst 8 s. Failed calls where the customer hung up: 0.
+-- run 3 of 3: 9 / 10 passed, 127 s
+
+PASS PUB-01 3/3
+PASS PUB-02 3/3
+FAIL PUB-03 2/3
+PASS PUB-04 3/3
+FAIL PUB-05 0/3
+PASS PUB-06 3/3
+PASS PUB-07 3/3
+PASS PUB-08 3/3
+PASS PUB-09 3/3
+PASS PUB-10 3/3
+
+8 / 10 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation 69ca942e-3878-412d-b5ec-31e549bd4458, status completed, 382 s.

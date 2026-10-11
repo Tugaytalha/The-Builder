@@ -1,0 +1,63 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome ('transferred', 'support'), expected ('no_promise', 'hardship')
+       - transfers [{'queue': 'support'}], expected []
+       - conversation: The assistant failed to meet the requirement for providing one sentence of sympathy. When the customer stated in [Message 7] that they had lost their job and could not make a payment, the assistant responded in [Message 8] with 'Thank you' and im
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 8 s. Failed calls where the customer hung up: 0.
+-- run 1 of 3: 9 / 10 passed, 148 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+FAIL PUB-02 medium Third party    | close_call
+       - outcome ('not_reached', 'wrong_number'), expected ('not_reached', 'callback')
+       - callbacks [], expected [{'date': '2026-10-15', 'time': '11:00'}]
+       - conversation: The agent followed the privacy protocol by not disclosing the purpose of the call to the husband and avoided using restricted tools. However, it failed to schedule the callback for the next business day at 11:00 as requested by the user in Messag
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome ('transferred', 'support'), expected ('no_promise', 'hardship')
+       - transfers [{'queue': 'support'}], expected []
+       - conversation: The agent failed to meet the first success criterion: providing one sentence of sympathy. After the user disclosed losing their job in [Message 7], the agent responded in [Message 8] by immediately transferring the call without expressing any sym
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 5 s, worst 9 s. Failed calls where the customer hung up: 0.
+-- run 2 of 3: 8 / 10 passed, 96 s
+
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-05 medium Hardship       | verify > verify > get_account > close_call
+PASS PUB-06 hard   Amounts        | verify > verify > get_account > promise > close_call
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 9 s, worst 15 s. Failed calls where the customer hung up: 0.
+-- run 3 of 3: 10 / 10 passed, 139 s
+
+PASS PUB-01 3/3
+FAIL PUB-02 2/3
+PASS PUB-03 3/3
+PASS PUB-04 3/3
+FAIL PUB-05 1/3
+PASS PUB-06 3/3
+PASS PUB-07 3/3
+PASS PUB-08 3/3
+PASS PUB-09 3/3
+PASS PUB-10 3/3
+
+8 / 10 passed (bank records and conversation checks), a customer counts with 3 of 3 runs. Last simulation 82136dcf-5514-42ef-a055-052fa78ea3e3, status completed, 383 s.

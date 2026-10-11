@@ -1,0 +1,10 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]
+       - conversation: The conversation failed on two success criteria: 1. The date of birth was asked again in [Message 4] after the user questioned the necessity in [Message 3], violating the requirement that it not be asked again. 2. The assistant made two collectio
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 6 s, worst 7 s. Failed calls where the customer hung up: 0.
+
+1 / 3 passed (bank records and conversation checks). Last simulation 705a2136-3cff-4405-8754-d5f692089d82, status completed, 76 s.

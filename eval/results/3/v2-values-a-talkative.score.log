@@ -1,0 +1,22 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+FAIL PUB-03 medium Identity       | verify > verify > verify > close_call
+       - outcome (None, None), expected ('not_verified', 'failed')
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('no_promise', 'hardship')
+       - conversation: - The assistant did not express any sympathy toward the customer's situation (job loss, stress). - The assistant never offered the support team. - The assistant offered a partial payment plan of 260.00 in [Message 20], violating the requirement t
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-11-02')]
+       - conversation: The agent failed to meet several success criteria. While the agent did offer the minimum payment with the note that the rest stays overdue in [Message 8], it offered the date of Monday 26 October 2026 instead of the required Monday 2 November. As
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+FAIL PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+       - outcome (None, None), expected ('transferred', 'restructuring')
+FAIL PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+       - conversation: The conversation failed to meet the first success criterion because the assistant's first proposal (Attempt 1) was for payment 'today' rather than 'Wednesday 23 December'. According to the transcript, Message 8 contains the first payment proposal
+
+slowest agent turn per call: median 5 s, worst 14 s. Failed calls where the customer hung up: 1.
+
+5 / 10 passed (bank records and conversation checks). Last simulation 53693120-81b5-4b1b-889e-496431000d63, status completed, 196 s.

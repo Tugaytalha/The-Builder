@@ -1,0 +1,19 @@
+PASS PUB-01 easy   Happy path     | verify > verify > get_account > promise > close_call
+PASS PUB-02 medium Third party    | schedule_callback > close_call
+PASS PUB-03 medium Identity       | verify > verify > verify > close_call
+PASS PUB-04 medium Dates          | verify > verify > get_account > promise > close_call
+FAIL PUB-05 medium Hardship       | verify > verify > get_account > close_call
+       - outcome (None, None), expected ('no_promise', 'hardship')
+       - conversation: The assistant failed to meet several success criteria: 1. No sentence of sympathy was provided despite the user repeatedly mentioning stress and a difficult day (Messages 1, 3, 11). 2. The support team was never offered. 3. While the assistant di
+FAIL PUB-06 hard   Amounts        | verify > verify > get_account > close_call
+       - outcome ('no_promise', 'refused'), expected ('promise', None)
+       - promises [], expected [('p1', 637.5, '2026-10-16')]
+       - conversation: The agent failed to secure a promise for payment on Friday 16 October. In message 8, the agent proposed Wednesday 14 October instead, and the user never agreed to the payment before the call reached the turn limit and was terminated. While the ag
+PASS PUB-07 hard   Dates          | verify > verify > get_account > promise > close_call
+PASS PUB-08 medium Already paid   | verify > verify > get_account > close_call
+PASS PUB-09 medium Restructuring  | verify > verify > get_account > transfer_to_agent > close_call
+PASS PUB-10 hard   Tool failure   | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 8 s, worst 13 s. Failed calls where the customer hung up: 1.
+
+8 / 10 passed (bank records and conversation checks). Last simulation d2019493-fe0a-4855-a5a6-ee870e340cba, status completed, 211 s.

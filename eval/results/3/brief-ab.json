@@ -1,0 +1,295 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "269d635f-3ba6-4c08-9bc3-c50511a4a434",
+ "iteration_id": "d40213da-0ba1-4cef-aa03-91dac5755590",
+ "seconds": 246,
+ "passed": 1,
+ "total": 3,
+ "runs": 3,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 1,
+   "runs": 3,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 3,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 3,
+   "runs": 3,
+   "pass": true
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "f4252d85-f08b-41c7-82f9-b56dd2c8c8b0",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_3e9616c4-91a",
+   "slowest_turn_s": 13.7,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "conversation: The assistant failed to meet the requirement for the number of collection attempts. While the personal loan (late band) correctly received two attempts ([Message 10] and [Message 12]), the car loan (early band, 7 days late) received two attempts ([Message 14] and [Message 16]) instead of the required one attempt. All other criteria were met: security questions were handled correctly (DOB asked onc"
+   ],
+   "call_id": "3605ef1b-5c7b-431f-a0eb-6c925a500862",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_033bf728-7cb",
+   "slowest_turn_s": 7.0,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": true,
+   "failed": [],
+   "call_id": "7461c7b8-0dc7-4ace-9cab-d679afee9737",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_4ca41b65-445",
+   "slowest_turn_s": 10.9,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]"
+    ],
+    "call_id": "834b2de9-84a5-461d-a4d2-54f8c2db60c1",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_3e039c21-9b2",
+    "slowest_turn_s": 5.9,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]",
+     "conversation: The evaluation failed because the agent made two attempts to collect on the car loan instead of the required one. While the personal loan (late band) correctly received two attempts at [Message 10] and [Message 12], the car loan (early band) also received two attempts at [Message 14] and [Message 16], violating the success criteria. All other conditions were met: the phone question was repeated ex"
+    ],
+    "call_id": "c3541787-c3bc-4383-9c6c-7b0f53ddce06",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_1dbf44f7-a0f",
+    "slowest_turn_s": 7.4,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "472b22cf-efeb-4552-9d13-bbc1cc88d839",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_1f985a20-943",
+    "slowest_turn_s": 5.0,
+    "ended": "assistant-ended-call"
+   }
+  ],
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]"
+    ],
+    "call_id": "10b5c3ee-817e-4a5f-a220-cd8ec73fe2ed",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_a96c1d86-42a",
+    "slowest_turn_s": 4.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: - Security questions: The assistant asked the phone question twice (Message 4, 6) and the date of birth once (Message 2), meeting the criteria. - Promises: Exactly one promise was created for the credit card (p1) via the API and confirmed in Message 20. - Refusal notes: The system events confirm one 'refused' note was added for the personal loan (p2) and one for the car loan (p3). - Product attemp"
+    ],
+    "call_id": "36122dc2-f82a-4751-9b3f-f5cae6f230f0",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_bfe30731-dfe",
+    "slowest_turn_s": 9.3,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "3ebce14a-8826-4582-b96c-60c7807f31c8",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_79db94e5-78e",
+    "slowest_turn_s": 15.7,
+    "ended": "assistant-ended-call"
+   }
+  ],
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "f4252d85-f08b-41c7-82f9-b56dd2c8c8b0",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_3e9616c4-91a",
+    "slowest_turn_s": 13.7,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: The assistant failed to meet the requirement for the number of collection attempts. While the personal loan (late band) correctly received two attempts ([Message 10] and [Message 12]), the car loan (early band, 7 days late) received two attempts ([Message 14] and [Message 16]) instead of the required one attempt. All other criteria were met: security questions were handled correctly (DOB asked onc"
+    ],
+    "call_id": "3605ef1b-5c7b-431f-a0eb-6c925a500862",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_033bf728-7cb",
+    "slowest_turn_s": 7.0,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": true,
+    "failed": [],
+    "call_id": "7461c7b8-0dc7-4ace-9cab-d679afee9737",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_4ca41b65-445",
+    "slowest_turn_s": 10.9,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

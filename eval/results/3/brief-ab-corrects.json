@@ -1,0 +1,176 @@
+{
+ "agent_id": "1916bcfc-a6f6-4775-8d6b-c28d16c867f3",
+ "simulation_id": "d0ec08e0-c17b-4bc2-a53d-ae2b5a07e3dc",
+ "iteration_id": "46e81502-365d-456e-9347-342624e7a0f2",
+ "seconds": 326,
+ "passed": 0,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]"
+   ],
+   "call_id": "72ae8178-7eda-4ce3-9b96-157cad075ef9",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_37525742-eed",
+   "slowest_turn_s": 4.2,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "conversation: The agent failed to meet the specific attempt count for the car loan. The security verification was handled correctly: the date of birth was asked only once (Message 2) and the phone question was asked again exactly once (Message 6) after an incorrect answer. A single promise was recorded for the credit card product (System Events, Message 21) and refused notes were correctly added to the system f"
+   ],
+   "call_id": "3cb8edb5-ae50-4da1-a1ca-cdb0f02b4890",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_0a445630-3b9",
+   "slowest_turn_s": 17.0,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('no_promise', 'refused'), expected ('promise', None)",
+    "promises [], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+    "notes [('p1', 'refused'), ('p2', 'refused')], expected []",
+    "conversation: The assistant failed all success criteria. It repeatedly proposed October 14th for both payments (Message 8 and many others) instead of recording the credit card for October 30th and the loan for October 23rd. Furthermore, the call failed the ending criteria because the assistant got stuck in a loop repeating the same incorrect read-back until the 'max_turns_exceeded' limit for the negotiate node "
+   ],
+   "call_id": "7a91a18f-702a-462c-a845-01420c407f0f",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "add_note",
+    "add_note",
+    "close_call"
+   ],
+   "customer_id": "c_6280a5e2-209",
+   "slowest_turn_s": 17.6,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]"
+    ],
+    "call_id": "72ae8178-7eda-4ce3-9b96-157cad075ef9",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_37525742-eed",
+    "slowest_turn_s": 4.2,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "conversation: The agent failed to meet the specific attempt count for the car loan. The security verification was handled correctly: the date of birth was asked only once (Message 2) and the phone question was asked again exactly once (Message 6) after an incorrect answer. A single promise was recorded for the credit card product (System Events, Message 21) and refused notes were correctly added to the system f"
+    ],
+    "call_id": "3cb8edb5-ae50-4da1-a1ca-cdb0f02b4890",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_0a445630-3b9",
+    "slowest_turn_s": 17.0,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('no_promise', 'refused'), expected ('promise', None)",
+     "promises [], expected [('p1', 300.0, '2026-10-30'), ('p2', 900.0, '2026-10-23')]",
+     "notes [('p1', 'refused'), ('p2', 'refused')], expected []",
+     "conversation: The assistant failed all success criteria. It repeatedly proposed October 14th for both payments (Message 8 and many others) instead of recording the credit card for October 30th and the loan for October 23rd. Furthermore, the call failed the ending criteria because the assistant got stuck in a loop repeating the same incorrect read-back until the 'max_turns_exceeded' limit for the negotiate node "
+    ],
+    "call_id": "7a91a18f-702a-462c-a845-01420c407f0f",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "add_note",
+     "add_note",
+     "close_call"
+    ],
+    "customer_id": "c_6280a5e2-209",
+    "slowest_turn_s": 17.6,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}

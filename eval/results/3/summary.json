@@ -1,0 +1,181 @@
+{
+ "round": "3",
+ "at": "2026-10-11 07:25:52",
+ "rows": [
+  {
+   "name": "brief-a",
+   "set": "dev",
+   "build_exit": 0,
+   "build_s": 686,
+   "passed": 8,
+   "total": 10,
+   "failures": [
+    {
+     "id": "PUB-05",
+     "reasons": [
+      "outcome ('transferred', 'support'), expected ('no_promise', 'hardship')",
+      "transfers [{'queue': 'support'}], expected []",
+      "conversation: The assistant failed to meet the requirement for providing one sentence of sympathy. When the customer stated in [Message 7] that they had lost their job and could not make a payment, the assistant responded in [Message 8] with 'Thank you' and immediately initiated a transfer. This does not constitute sympathy. The other criteria were met: the assistant offered the support team exactly once, did n",
+      "outcome ('transferred', 'support'), expected ('no_promise', 'hardship')",
+      "transfers [{'queue': 'support'}], expected []",
+      "conversation: The agent failed to meet the first success criterion: providing one sentence of sympathy. After the user disclosed losing their job in [Message 7], the agent responded in [Message 8] by immediately transferring the call without expressing any sympathy. All other criteria were met: no persuasion was used, the support team was offered once, and no discount/plan was offered."
+     ]
+    },
+    {
+     "id": "PUB-02",
+     "reasons": [
+      "outcome ('not_reached', 'wrong_number'), expected ('not_reached', 'callback')",
+      "callbacks [], expected [{'date': '2026-10-15', 'time': '11:00'}]",
+      "conversation: The agent followed the privacy protocol by not disclosing the purpose of the call to the husband and avoided using restricted tools. However, it failed to schedule the callback for the next business day at 11:00 as requested by the user in Message 3. Instead of scheduling, the agent ended the call (Message 4), and the system events show the call was closed with a reason of 'wrong_number' and an ou"
+     ]
+    }
+   ],
+   "styles": {
+    "pieces": 9,
+    "corrects": 8,
+    "talkative": 8,
+    "asks_back": 9,
+    "in_words": 10
+   }
+  },
+  {
+   "name": "brief-ab",
+   "set": "dev",
+   "build_exit": 0,
+   "build_s": 801,
+   "passed": 1,
+   "total": 3,
+   "failures": [
+    {
+     "id": "PUB-11",
+     "reasons": [
+      "promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]",
+      "promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]"
+     ]
+    },
+    {
+     "id": "PUB-12",
+     "reasons": [
+      "promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]",
+      "conversation: The evaluation failed because the agent made two attempts to collect on the car loan instead of the required one. While the personal loan (late band) correctly received two attempts at [Message 10] and [Message 12], the car loan (early band) also received two attempts at [Message 14] and [Message 16], violating the success criteria. All other conditions were met: the phone question was repeated ex",
+      "conversation: - Security questions: The assistant asked the phone question twice (Message 4, 6) and the date of birth once (Message 2), meeting the criteria. - Promises: Exactly one promise was created for the credit card (p1) via the API and confirmed in Message 20. - Refusal notes: The system events confirm one 'refused' note was added for the personal loan (p2) and one for the car loan (p3). - Product attemp",
+      "conversation: The assistant failed to meet the requirement for the number of collection attempts. While the personal loan (late band) correctly received two attempts ([Message 10] and [Message 12]), the car loan (early band, 7 days late) received two attempts ([Message 14] and [Message 16]) instead of the required one attempt. All other criteria were met: security questions were handled correctly (DOB asked onc"
+     ]
+    }
+   ],
+   "styles": {
+    "pieces": 1,
+    "corrects": 0,
+    "talkative": 1,
+    "asks_back": 1,
+    "in_words": 1
+   }
+  },
+  {
+   "name": "v2-values-a",
+   "set": "dev",
+   "build_exit": 0,
+   "build_s": 576,
+   "passed": 8,
+   "total": 10,
+   "failures": [
+    {
+     "id": "PUB-03",
+     "reasons": [
+      "outcome (None, None), expected ('not_verified', 'id_failed')",
+      "outcome (None, None), expected ('not_verified', 'id_failed')",
+      "outcome (None, None), expected ('not_verified', 'id_failed')"
+     ]
+    },
+    {
+     "id": "PUB-09",
+     "reasons": [
+      "outcome (None, None), expected ('transferred', 'plan_review')",
+      "outcome (None, None), expected ('transferred', 'plan_review')",
+      "outcome (None, None), expected ('transferred', 'plan_review')"
+     ]
+    }
+   ],
+   "styles": {
+    "pieces": 7,
+    "corrects": 6,
+    "talkative": 5,
+    "asks_back": 8,
+    "in_words": 7
+   }
+  },
+  {
+   "name": "v1-raw-a",
+   "set": "heldout",
+   "build_exit": 0,
+   "build_s": 481,
+   "passed": 8,
+   "total": 10,
+   "failures": [
+    {
+     "id": "PUB-05",
+     "reasons": [
+      "conversation: - The support team was not offered to the customer, which was a required criterion. - There was no clear sentence of sympathy; \"I understand\" acts more as an acknowledgement than a sentence of sympathy for the customer's job loss.",
+      "outcome ('transferred', 'restructuring'), expected ('no_promise', 'hardship')",
+      "transfers [{'queue': 'restructuring'}], expected []",
+      "conversation: The assistant failed to provide a sentence of sympathy in response to the user's disclosure of job loss. While the assistant correctly avoided persuasion, offered the support team once (via transfer), and did not offer any discounts or plans, the requirement for a sympathetic statement was not met. The call ended properly via an assistant-initiated transfer.",
+      "outcome ('transferred', 'restructuring'), expected ('no_promise', 'hardship')",
+      "transfers [{'queue': 'restructuring'}], expected []",
+      "conversation: The assistant failed to express any sympathy after the user disclosed losing their job. While the assistant correctly avoided persuasion, transferred the call to a colleague (support team) once, and did not offer any discounts or plans, the lack of a sympathetic sentence violates the first success criterion."
+     ]
+    },
+    {
+     "id": "PUB-03",
+     "reasons": [
+      "outcome ('not_verified', 'declined'), expected ('not_verified', 'failed')",
+      "conversation: The conversation failed to meet two out of three success criteria: 1. The customer was never instructed to use the app or visit a branch, as the assistant simply ended the call after the customer's refusal. 2. The check did not end after a third wrong answer. The system events show only two API calls for identity verification (after messages 3 and 5). Although the user provided a third date in mes"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "v3-raw-b",
+   "set": "heldout",
+   "build_exit": 0,
+   "build_s": 806,
+   "passed": 0,
+   "total": 3,
+   "failures": [
+    {
+     "id": "PUB-11",
+     "reasons": [
+      "outcome ('no_promise', 'refused'), expected ('promise', None)",
+      "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+      "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []",
+      "conversation: The assistant failed several success criteria. Although it identified all three products in [Message 6], it entered a repetitive loop starting at [Message 8], asking 'Which exact day can you pay?' for 29 consecutive turns. The customer repeatedly provided the date 'Friday, twenty-seventh of November' (e.g., [Message 9], [Message 11]), but the assistant failed to process this, leading to no read-ba",
+      "outcome ('no_promise', 'refused'), expected ('promise', None)",
+      "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+      "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []",
+      "conversation: The agent failed most of the success criteria due to a repetitive loop. While the agent correctly stated all three products before the first ask in [Message 6], it failed to process the user's response in [Message 7]. From [Message 8] to [Message 64], the agent repeated the same question ('Which exact day can you pay?') 29 times despite the user providing the date repeatedly. This loop only ended ",
+      "outcome ('no_promise', 'refused'), expected ('promise', None)",
+      "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+      "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected []",
+      "conversation: The assistant failed several success criteria. While it correctly identified all three products before making an ask in Message 6, it entered a repetitive loop from Message 8 to Message 64, asking for the payment date despite the user repeatedly providing it. Consequently, there was no read-back or confirmation for the products, and no 'create_promise' calls were executed. Furthermore, the call on"
+     ]
+    },
+    {
+     "id": "PUB-12",
+     "reasons": [
+      "conversation: The agent failed to meet the requirement regarding the car loan attempts. While it correctly asked for the 140.00 payment on Friday 30 October (Message 16), it proceeded to make a second attempt for 46.00 on Thursday 12 November (Message 18), violating the 'one attempt' constraint. All other criteria were met: the phone question was asked twice while the DOB was asked once (Messages 2, 4, 6); the ",
+      "outcome ('no_promise', 'refused'), expected ('promise', None)",
+      "promises [], expected [('p1', 510.0, '2026-10-27')]",
+      "notes [('p1', 'refused'), ('p2', 'refused'), ('p3', 'refused')], expected [('p2', 'refused'), ('p3', 'refused')]",
+      "conversation: The agent failed to meet several specific criteria: 1. It did not record a promise for the credit card; although the user agreed in Message 11, system events show a 'refused' note for product p1 and a 'no_promise' call outcome. 2. The agent only made one attempt to collect on the personal loan (Message 12) instead of the required two (1320.00 then 440.00). 3. The car loan attempt in Message 14 pro",
+      "conversation: The agent failed the success criteria because it made two attempts to collect on the car loan ([Message 16] and [Message 18]) instead of the specified one attempt. All other requirements were satisfied: the phone question was asked a second time ([Message 6]), the date of birth was not repeated, the agent correctly redirected the payment date from a holiday to a business day ([Message 10]), and th"
+     ]
+    },
+    {
+     "id": "PUB-13",
+     "reasons": [
+      "conversation: no verdict"
+     ]
+    }
+   ]
+  }
+ ]
+}

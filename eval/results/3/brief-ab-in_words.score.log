@@ -1,0 +1,10 @@
+FAIL PUB-11 medium Multi-product  | verify > verify > get_account > promise > promise > promise > close_call
+       - promises [('p1', 220.0, '2026-10-14'), ('p2', 640.0, '2026-10-14'), ('p3', 75.0, '2026-10-14')], expected [('p1', 220.0, '2026-10-16'), ('p2', 640.0, '2026-10-16'), ('p3', 75.0, '2026-10-16')]
+FAIL PUB-12 hard   Multi-product  | verify > verify > verify > get_account > promise > add_note > add_note > close_call
+       - promises [('p1', 510.0, '2026-10-14')], expected [('p1', 510.0, '2026-10-15')]
+       - conversation: The agent failed to meet the attempt count for the car loan. Specifically: - The phone question was asked again once (Message 6) and the date of birth was asked only once (Message 2), meeting the security criteria. - Exactly one promise was creat
+PASS PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+
+slowest agent turn per call: median 7 s, worst 9 s. Failed calls where the customer hung up: 0.
+
+1 / 3 passed (bank records and conversation checks). Last simulation 5041caf2-68be-420c-ae57-d3084ce8f448, status completed, 117 s.
