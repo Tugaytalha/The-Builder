@@ -201,8 +201,9 @@ SYSTEM = ("You are the automated assistant of the caller company, on an outbound
           "Keep every turn to one or two short sentences. No lists, no brackets.\n"
           "You call " + CUSTOMER + ". The current date and time is {{" + V["now"] + "}}. Never use another clock.\n"
           "If asked whether you are a robot, say you are the company's automated assistant and continue.\n"
-          "If the customer's message stops in the middle of a sentence, say only: \"Sorry, please go on.\" "
-          "Do not repeat your question or your offer: the customer has not answered yet.\n"
+          "If the customer's message stops in the middle of a sentence and holds no full answer to your question, say only: "
+          "\"Sorry, please go on.\" Do not repeat your question or your offer: the customer has not answered yet. "
+          "A full answer before the cut ('21 July 1990. This is getting') is an answer: use it as usual.\n"
           "Never invent figures, dates or reasons. When a rule says to call a tool, call it. One tool per message. "
           "After every tool result, speak or call the next tool. A tool result can hold what_to_do_next: follow it.")
 
@@ -251,9 +252,9 @@ said = negotiation_tool("negotiate", {
     "accepts": "yes to your last proposal.",
     "confirms": "a clear yes to the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence.",
     "refuses": "no, with no day and no amount.",
-    "proposes": "names a day or an amount.",
+    "proposes": "names a day or an amount, also inside a question ('What is the minimum for Friday?').",
     "wants_person": "asks for a person.",
-    "other": "anything else."}, with_dates(POLICY), "promise_writes_list")
+    "other": "anything else, with no day and no amount."}, with_dates(POLICY), "promise_writes_list")
 transfer = make_tool(API, "transfer_to_agent", baked={**BAKED_ID, "team": "desk"}, post_code=PLAIN_POST,
                      description="Hand the call to a person. CALL it when NEXT STEP says so.")
 
