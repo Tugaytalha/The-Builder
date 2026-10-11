@@ -1,106 +1,21 @@
-Traceback (most recent call last):
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1346, in do_open
-    h.request(req.get_method(), req.selector, req.data, headers,
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1257, in request
-    self._send_request(method, url, body, headers, encode_chunked)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1303, in _send_request
-    self.endheaders(body, encode_chunked=encode_chunked)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1252, in endheaders
-    self._send_output(message_body, encode_chunked=encode_chunked)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1012, in _send_output
-    self.send(msg)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 952, in send
-    self.connect()
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1419, in connect
-    super().connect()
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 923, in connect
-    self.sock = self._create_connection(
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py", line 822, in create_connection
-    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py", line 953, in getaddrinfo
-    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
-socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+GET /api/v2/simulations/0198f446-8c39-46d0-9ae8-fad2ea94f03e/iterations/54cebb6b-9f8a-4544-8acd-e73c51dde827 failed (de827 -> 502: error code: 502
+), trying again
+GET /api/v2/simulations/0198f446-8c39-46d0-9ae8-fad2ea94f03e failed (4f03e -> 502: error code: 502
+), trying again
+FAIL PUB-11 medium Multi-product  | close_call
+       - outcome (None, None), expected ('promise', None)
+       - promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]
+       - conversation: The call ended during the security verification phase before any of the success criteria could be addressed. No products were stated, no read-backs occurred, and no payment promises were created.
+FAIL PUB-12 hard   Multi-product  | verify > close_call
+       - outcome ('not_verified', 'declined'), expected ('promise', None)
+       - promises [], expected [('p1', 510.0, '2026-10-27')]
+       - notes [], expected [('p2', 'refused'), ('p3', 'refused')]
+       - conversation: - The phone question was asked a total of four times (Messages 4, 6, 8, 10), violating the requirement that it be asked again only once. - The agent accepted Monday 26 October (a holiday) in Message 22 without offering Tuesday 27 October. - No pr
+FAIL PUB-13 hard   Multi-product  | verify > verify > get_account > promise > promise > close_call
+       - promises [('p1', 300.0, '2026-11-18'), ('p2', 900.0, '2026-11-12')], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]
+       - conversation: The agent failed all success criteria. Specifically: 1) It recorded the credit card for 18 November and the loan for 12 November as shown in the system events and Message 8, rather than recording both on the same day. 2) Only the loan was recorde
 
-During handling of the above exception, another exception occurred:
+slowest agent turn per call: median 56 s, worst 101 s. Failed calls where the customer hung up: 1.
+WARNING: the phone agent was slow in this run. If the same agent is fast in another run, the model was busy and this score is too low.
 
-Traceback (most recent call last):
-  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 81, in <module>
-    main(sys.argv[1:])
-  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 77, in main
-    run_cases.main()
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 67, in main
-    rows, sim_id, it_id, status, took, med = run_once(a.agent_id, cases, ids)
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 86, in run_once
-    sessions = {c["id"]: http("/v1/practice/sessions", {"case": c["id"]})["variables"] for c in cases}
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 86, in <dictcomp>
-    sessions = {c["id"]: http("/v1/practice/sessions", {"case": c["id"]})["variables"] for c in cases}
-  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 21, in wrapped
-    out = http(path, body)
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/score.py", line 14, in http
-    try: return json.load(urllib.request.urlopen(req, timeout=20))
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 214, in urlopen
-    return opener.open(url, data, timeout)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 517, in open
-    response = self._open(req, data)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 534, in _open
-    result = self._call_chain(self.handle_open, protocol, protocol +
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 494, in _call_chain
-    result = func(*args)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1389, in https_open
-    return self.do_open(http.client.HTTPSConnection, req,
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1349, in do_open
-    raise URLError(err)
-urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
-Traceback (most recent call last):
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1346, in do_open
-    h.request(req.get_method(), req.selector, req.data, headers,
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1257, in request
-    self._send_request(method, url, body, headers, encode_chunked)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1303, in _send_request
-    self.endheaders(body, encode_chunked=encode_chunked)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1252, in endheaders
-    self._send_output(message_body, encode_chunked=encode_chunked)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1012, in _send_output
-    self.send(msg)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 952, in send
-    self.connect()
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1419, in connect
-    super().connect()
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 923, in connect
-    self.sock = self._create_connection(
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py", line 822, in create_connection
-    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py", line 953, in getaddrinfo
-    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
-socket.gaierror: [Errno 8] nodename nor servname provided, or not known
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 81, in <module>
-    main(sys.argv[1:])
-  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 77, in main
-    run_cases.main()
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 67, in main
-    rows, sim_id, it_id, status, took, med = run_once(a.agent_id, cases, ids)
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 86, in run_once
-    sessions = {c["id"]: http("/v1/practice/sessions", {"case": c["id"]})["variables"] for c in cases}
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/run_cases.py", line 86, in <dictcomp>
-    sessions = {c["id"]: http("/v1/practice/sessions", {"case": c["id"]})["variables"] for c in cases}
-  File "/Users/resit/orca/workspaces/The-Builder/mola/eval/run_cases_at.py", line 21, in wrapped
-    out = http(path, body)
-  File "/Users/resit/orca/workspaces/The-Builder/mola/kit/tools/score.py", line 14, in http
-    try: return json.load(urllib.request.urlopen(req, timeout=20))
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 214, in urlopen
-    return opener.open(url, data, timeout)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 517, in open
-    response = self._open(req, data)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 534, in _open
-    result = self._call_chain(self.handle_open, protocol, protocol +
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 494, in _call_chain
-    result = func(*args)
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1389, in https_open
-    return self.do_open(http.client.HTTPSConnection, req,
-  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1349, in do_open
-    raise URLError(err)
-urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
+0 / 3 passed (bank records and conversation checks). Last simulation 0198f446-8c39-46d0-9ae8-fad2ea94f03e, status completed, 1834 s.

@@ -1,0 +1,158 @@
+{
+ "agent_id": "e9680d26-43e8-4918-b3f5-e327fe5ded03",
+ "simulation_id": "0198f446-8c39-46d0-9ae8-fad2ea94f03e",
+ "iteration_id": "54cebb6b-9f8a-4544-8acd-e73c51dde827",
+ "seconds": 1834,
+ "passed": 0,
+ "total": 3,
+ "runs": 1,
+ "final": [
+  {
+   "id": "PUB-11",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-12",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  },
+  {
+   "id": "PUB-13",
+   "family": "Multi-product",
+   "passes": 0,
+   "runs": 1,
+   "pass": false
+  }
+ ],
+ "rows": [
+  {
+   "id": "PUB-11",
+   "level": "medium",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome (None, None), expected ('promise', None)",
+    "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+    "conversation: The call ended during the security verification phase before any of the success criteria could be addressed. No products were stated, no read-backs occurred, and no payment promises were created."
+   ],
+   "call_id": "f5488cf7-5679-44b5-b5e8-20b65ef8fb3d",
+   "tools": [
+    "close_call"
+   ],
+   "customer_id": "c_5d946361-043",
+   "slowest_turn_s": 100.5,
+   "ended": "customer-ended-call"
+  },
+  {
+   "id": "PUB-12",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "outcome ('not_verified', 'declined'), expected ('promise', None)",
+    "promises [], expected [('p1', 510.0, '2026-10-27')]",
+    "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+    "conversation: - The phone question was asked a total of four times (Messages 4, 6, 8, 10), violating the requirement that it be asked again only once. - The agent accepted Monday 26 October (a holiday) in Message 22 without offering Tuesday 27 October. - No promise was recorded for the credit card, and no 'refused' notes or attempts were made for the personal loan or car loan as they were never discussed. - The"
+   ],
+   "call_id": "40173950-2ffc-4bf2-b356-7d72ce43aab3",
+   "tools": [
+    "verify_identity",
+    "close_call"
+   ],
+   "customer_id": "c_802196c3-e0b",
+   "slowest_turn_s": 26.8,
+   "ended": "assistant-ended-call"
+  },
+  {
+   "id": "PUB-13",
+   "level": "hard",
+   "family": "Multi-product",
+   "pass": false,
+   "failed": [
+    "promises [('p1', 300.0, '2026-11-18'), ('p2', 900.0, '2026-11-12')], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]",
+    "conversation: The agent failed all success criteria. Specifically: 1) It recorded the credit card for 18 November and the loan for 12 November as shown in the system events and Message 8, rather than recording both on the same day. 2) Only the loan was recorded for 12 November; the credit card was recorded for 18 November. 3) The read-back in Message 8 listed separate dates (18 Nov and 12 Nov) instead of naming"
+   ],
+   "call_id": "4933b364-4341-4003-b0d2-d2f248d253e2",
+   "tools": [
+    "verify_identity",
+    "verify_identity",
+    "get_account",
+    "create_promise",
+    "create_promise",
+    "close_call"
+   ],
+   "customer_id": "c_f826b570-212",
+   "slowest_turn_s": 55.7,
+   "ended": "assistant-ended-call"
+  }
+ ],
+ "all_rows": [
+  [
+   {
+    "id": "PUB-11",
+    "level": "medium",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome (None, None), expected ('promise', None)",
+     "promises [], expected [('p1', 220.0, '2026-11-27'), ('p2', 640.0, '2026-11-27'), ('p3', 75.0, '2026-11-27')]",
+     "conversation: The call ended during the security verification phase before any of the success criteria could be addressed. No products were stated, no read-backs occurred, and no payment promises were created."
+    ],
+    "call_id": "f5488cf7-5679-44b5-b5e8-20b65ef8fb3d",
+    "tools": [
+     "close_call"
+    ],
+    "customer_id": "c_5d946361-043",
+    "slowest_turn_s": 100.5,
+    "ended": "customer-ended-call"
+   },
+   {
+    "id": "PUB-12",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "outcome ('not_verified', 'declined'), expected ('promise', None)",
+     "promises [], expected [('p1', 510.0, '2026-10-27')]",
+     "notes [], expected [('p2', 'refused'), ('p3', 'refused')]",
+     "conversation: - The phone question was asked a total of four times (Messages 4, 6, 8, 10), violating the requirement that it be asked again only once. - The agent accepted Monday 26 October (a holiday) in Message 22 without offering Tuesday 27 October. - No promise was recorded for the credit card, and no 'refused' notes or attempts were made for the personal loan or car loan as they were never discussed. - The"
+    ],
+    "call_id": "40173950-2ffc-4bf2-b356-7d72ce43aab3",
+    "tools": [
+     "verify_identity",
+     "close_call"
+    ],
+    "customer_id": "c_802196c3-e0b",
+    "slowest_turn_s": 26.8,
+    "ended": "assistant-ended-call"
+   },
+   {
+    "id": "PUB-13",
+    "level": "hard",
+    "family": "Multi-product",
+    "pass": false,
+    "failed": [
+     "promises [('p1', 300.0, '2026-11-18'), ('p2', 900.0, '2026-11-12')], expected [('p1', 300.0, '2026-11-12'), ('p2', 900.0, '2026-11-12')]",
+     "conversation: The agent failed all success criteria. Specifically: 1) It recorded the credit card for 18 November and the loan for 12 November as shown in the system events and Message 8, rather than recording both on the same day. 2) Only the loan was recorded for 12 November; the credit card was recorded for 18 November. 3) The read-back in Message 8 listed separate dates (18 Nov and 12 Nov) instead of naming"
+    ],
+    "call_id": "4933b364-4341-4003-b0d2-d2f248d253e2",
+    "tools": [
+     "verify_identity",
+     "verify_identity",
+     "get_account",
+     "create_promise",
+     "create_promise",
+     "close_call"
+    ],
+    "customer_id": "c_f826b570-212",
+    "slowest_turn_s": 55.7,
+    "ended": "assistant-ended-call"
+   }
+  ]
+ ]
+}
