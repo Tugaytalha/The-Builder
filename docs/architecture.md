@@ -99,11 +99,11 @@ flowchart TD
     W -.->|"before 84bdbf2"| B["import fcntl failed<br/>no signal.SIGALRM<br/>cp1254 broke Turkish text"]
     W -->|"fixed by"| F["msvcrt lock<br/>timer timeout<br/>UTF-8 file I/O<br/>short path for the agent shell"]
 
-    style M fill:#dff5e1,stroke:#2e7d32,color:#000
-    style L fill:#dff5e1,stroke:#2e7d32,color:#000
-    style W fill:#dff5e1,stroke:#2e7d32,color:#000
-    style B fill:#fde0dc,stroke:#c62828,color:#000
-    style F fill:#fff4d6,stroke:#b26a00,color:#000
+    style M stroke:#2e7d32,stroke-width:3px
+    style L stroke:#2e7d32,stroke-width:3px
+    style W stroke:#2e7d32,stroke-width:3px
+    style B stroke:#c62828,stroke-width:3px
+    style F stroke:#b26a00,stroke-width:3px
 ```
 
 | OS | Checked | Result |
