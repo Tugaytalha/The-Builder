@@ -95,3 +95,17 @@ def test_a_score_run_is_tried_twice_at_most(tmp_path):
     from run_eval import score_with_retry
     calls = []
     assert not score_with_retry(lambda: calls.append(1), tmp_path / "r.json") and len(calls) == 2
+
+
+def test_a_read_that_fails_on_dns_is_tried_again():
+    # round 6: "nodename nor servname provided" (a short DNS outage) stopped every score run
+    import urllib.error
+    from run_cases_at import retry_reads
+    calls = []
+
+    def api(method, path, body=None, **params):
+        calls.append(method)
+        if len(calls) < 2:
+            raise urllib.error.URLError("[Errno 8] nodename nor servname provided, or not known")
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}

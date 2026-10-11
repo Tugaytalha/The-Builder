@@ -9,6 +9,7 @@ import json
 import re
 import sys
 import time
+import urllib.error
 from pathlib import Path
 
 KIT = Path(__file__).resolve().parents[1] / "kit"
@@ -52,14 +53,16 @@ def unstick(api, now=time.time):
 
 
 def retry_reads(api, wait=time.sleep, tries=6):
-    """Wrap freya.api. A GET that fails with a server error (502, 503, 504: seen in rounds 5b and 5c) is tried again;
+    """Wrap freya.api. A GET that fails with a server error (502, 503, 504: seen in rounds 5b and 5c) or a network
+    error (round 6: DNS) is tried again;
     a write is never repeated."""
     def wrapped(method, path, body=None, **params):
         for i in range(tries):
             try:
                 return api(method, path, body, **params)
-            except RuntimeError as e:
-                if method != "GET" or i == tries - 1 or not re.search(r"-> 50[234]", str(e)):
+            except (RuntimeError, urllib.error.URLError) as e:
+                server_or_dns = isinstance(e, urllib.error.URLError) or re.search(r"-> 50[234]", str(e))
+                if method != "GET" or i == tries - 1 or not server_or_dns:
                     raise
                 print(f"{method} {path} failed ({str(e)[-30:]}), trying again", flush=True)
                 wait(10 * (i + 1))
