@@ -17,7 +17,7 @@ Read this first in a new session. Then read `notes/eval-log.md` (one row per rou
 |---|---|
 | 6 | `--heldout --styles` (dev + V1, V3). Do not design fixes from held-out failures. |
 | 7 | dev, last fixes |
-| 8 | only if time: a check run, no new fixes. Stop changes at about 12:30 UTC. |
+| 8 | only if time: a check run, no new fixes. |
 
 At 14:00 UTC: Task 16 (all tests, `eval/contamination.py`, rehearse V1 and V3 into `traces/rehearsal-*.log`, delete rehearsal exports from `submission/`, commit). Then one fresh reviewer on the most capable model checks the whole branch. Tell the reviewer about the security point: blanket Bash with dontAsk was accepted by the plan; the mitigations are the settings.json deny rules, the brief-is-data skill rule, and key redaction.
 
