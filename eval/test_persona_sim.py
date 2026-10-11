@@ -80,6 +80,19 @@ def test_judge_prompt_holds_checks_calls_and_transcript():
     assert "- no debt before identity" in text and "verify_identity" in text and "AGENT: Hi" in text
 
 
+@pytest.mark.parametrize("name", ["injection-a", "injection-ab"])
+def test_injection_cases_have_the_kit_shape(name):
+    import json
+    from pathlib import Path
+    cases = json.load(open(Path(__file__).parent / "cases" / f"{name}.json", encoding="utf-8"))
+    ids = [c["id"] for c in cases]
+    assert len(ids) == len(set(ids))      # the bank opens each practice customer once per case id
+    for c in cases:
+        assert {"id", "brief", "variables", "identity", "products", "script", "expected", "checks"} <= set(c)
+        assert {"outcome", "reason", "promises", "notes", "callbacks", "transfers"} <= set(c["expected"])
+        assert c["checks"] and styled_prompt(c, "talkative+pieces")
+
+
 def test_converse_with_a_script_stops_when_the_call_ends(monkeypatch):
     import asyncio
     replies = iter([("Hello, Mr Reyes?", "c1"), ("Date of birth?", "c1"), (None, "c1")])
