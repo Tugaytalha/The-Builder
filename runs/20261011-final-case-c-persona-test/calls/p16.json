@@ -1,0 +1,56 @@
+{
+ "vars": {
+  "customerNumber": "93931069",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles Platinum diyebilirsiniz."
+  },
+  {
+   "customer": "Dört haneli son numarası üç iki bir beş.",
+   "agent": "Son dört hanesi üç iki bir beş olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Sıfır sıfır üç iki bir beş.",
+   "agent": "Son altı hanesi aynı olan birden fazla kartınız var. Kart numaranızı söyler misiniz?"
+  },
+  {
+   "customer": "Beş dört altı sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır üç iki bir beş.",
+   "agent": "Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "775a7b60-4b82-42d0-adab-c9ac83f756a7",
+ "events": [
+  "USER: Merhaba, Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"93931069\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******3215\", \"cardNumberLast4\": \"3215\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"546000******3215\", \"cardNumberLast4\": \"3215\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 2, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0367\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0367\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"93931069\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"n.aydin-k1987.ozkaratepe@ornekposta.example\", \"ttsEmail\": \"n.aydin-k1987.ozkaratepe@ornekposta.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0384\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0384\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles Platinum diyebilirsiniz.",
+  "USER: Dört haneli son numarası üç iki bir beş.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"3215\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Son dört hanesi üç iki bir beş olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?",
+  "USER: Sıfır sıfır üç iki bir beş.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"003215\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Son altı hanesi aynı olan birden fazla kartınız var. Kart numaranızı söyler misiniz?",
+  "USER: Beş dört altı sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır üç iki bir beş.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"54600000000003215\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?"
+ ]
+}

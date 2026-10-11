@@ -1,0 +1,60 @@
+{
+ "vars": {
+  "customerNumber": "95110230",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Genç kartımın borcu ne kadar ya?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Genç diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Genç ya, kartımın borcu.",
+   "agent": "Yıldız Genç isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Yedi yedi iki iki.",
+   "agent": "Sonu yedi yedi iki iki ile biten Yıldız Genç kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz üç bin yüz kırk yedi lira seksen kuruş, kalan toplam borcunuz bin iki yüz kırk yedi lira otuz kuruş. Minimum ödemenizi yaptığınız için teşekkür ederiz. Euro borcunuz yüz kırk iki euro altmış beş sent, kalan toplam borcunuz yüz kırk iki euro altmış beş sent, ödenmesi gereken minimum tutar elli yedi euro altı sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, yok.",
+   "agent": "Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  }
+ ],
+ "ended": true,
+ "callId": "15d70e23-b1ac-4606-b6ac-ea89f42b063b",
+ "events": [
+  "USER: Genç kartımın borcu ne kadar ya?",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"95110230\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******7711\", \"cardNumberLast4\": \"7711\", \"productName\": \"Yıldız Genç\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******7722\", \"cardNumberLast4\": \"7722\", \"productName\": \"Yıldız Genç\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 2, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0467\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0467\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"95110230\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"yigit.ekinci@freyabank.example\", \"ttsEmail\": \"yigit.ekinci@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0484\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0484\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Genç diyebilirsiniz.",
+  "USER: Yıldız Genç ya, kartımın borcu.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Yıldız Genç\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Yıldız Genç isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?",
+  "USER: Yedi yedi iki iki.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"7722\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******7722\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********7722\", \"cardNumberLast4\": \"7722\", \"productName\": \"Yıldız Genç\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 3147.8, \"minPayment\": 1259.12, \"remainingDebt\": 1247.3, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 1247.3, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 142.65, \"minPayment\": 57.06, \"remainingDebt\": 142.65, \"remainingMinPayment\": 57.06, \"currentPeriodExpense\": 0, \"totalDebt\": 142.65, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu yedi yedi iki iki ile biten Yıldız Genç kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz üç bin yüz kırk yedi lira seksen kuruş, kalan toplam borcunuz bin iki yüz kırk yedi lira otuz kuruş. Minimum ödemenizi yaptığınız için teşekkür ederiz. Euro borcunuz yüz kırk iki euro altmış beş sent, kalan toplam borcunuz yüz kırk iki euro altmış beş sent, ödenmesi gereken minimum tutar elli yedi euro altı sent. Dolar ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, yok.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"no\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+ ]
+}

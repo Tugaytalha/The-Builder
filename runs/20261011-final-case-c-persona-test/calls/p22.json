@@ -1,0 +1,73 @@
+{
+ "vars": {
+  "customerNumber": "95813998",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Prestij kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Prestij kartımın borcu ne kadar, onu öğrenmek istiyorum.",
+   "agent": "Bu kart için borç sorgulaması yapamıyorum. Lütfen başka bir kartınızı seçin. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Fly kartımın borcunu öğrenebilir miyim?",
+   "agent": "Sonu bir sekiz sıfır iki ile biten Yıldız Fly kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz iki bin dokuz yüz Türk Lirası, kalan toplam borcunuz bin üç yüz Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Evet.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Pratik kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Sonu bir sekiz sıfır dört ile biten Yıldız Pratik kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz sıfır Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "242ea5d7-6fb9-45ec-bea1-1a944f32281d",
+ "events": [
+  "USER: Merhaba, Prestij kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"95813998\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1801\", \"cardNumberLast4\": \"1801\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1802\", \"cardNumberLast4\": \"1802\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1803\", \"cardNumberLast4\": \"1803\", \"productName\": \"Yıldız Miles\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1804\", \"cardNumberLast4\": \"1804\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"541000******1805\", \"cardNumberLast4\": \"1805\", \"productName\": \"Yıldız Prestij\", \"status\": \"A\", \"isMainCard\": false}], \"validCardsCount\": 5, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0556\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0556\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"95813998\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"lale.erim@freyabank.example\", \"ttsEmail\": \"lale.erim@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0597\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0597\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz.",
+  "USER: Prestij kartımın borcu ne kadar, onu öğrenmek istiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Prestij\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Bu kart için borç sorgulaması yapamıyorum. Lütfen başka bir kartınızı seçin. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz.",
+  "USER: Fly kartımın borcunu öğrenebilir miyim?",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Fly\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******1802\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********1802\", \"cardNumberLast4\": \"1802\", \"productName\": \"Yıldız Fly\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 2900, \"minPayment\": 1160, \"remainingDebt\": 1300, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 1300, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu bir sekiz sıfır iki ile biten Yıldız Fly kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz iki bin dokuz yüz Türk Lirası, kalan toplam borcunuz bin üç yüz Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Evet.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"yes\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz.",
+  "USER: Pratik kartımın borcunu öğrenmek istiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Pratik\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******1804\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********1804\", \"cardNumberLast4\": \"1804\", \"productName\": \"Yıldız Pratik\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"NO_DEBT\", \"totalDebtPaymentStatus\": \"NO_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0581\", \"retu",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu bir sekiz sıfır dört ile biten Yıldız Pratik kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz sıfır Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+ ]
+}

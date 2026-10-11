@@ -1,0 +1,65 @@
+{
+ "vars": {
+  "customerNumber": "93261864",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Miles Gold kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Miles Gold kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Sonu yedi bir sıfır iki ile biten Yıldız Miles Gold kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Dolar borcunuz bin iki yüz kırk dolar altmış sent, kalan toplam borcunuz bin iki yüz kırk dolar altmış sent, ödenmesi gereken minimum tutar dört yüz doksan altı dolar yirmi dört sent. Türk Lirası, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, teşekkürler. Ekstremi e-posta ile alabilir miyim?",
+   "agent": "Ekstrenizi m ile başlayan Ornekposta adresinize göndermemi ister misiniz?"
+  },
+  {
+   "customer": "Evet.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "1af2b444-cedc-4f19-b607-6fabb25d2f35",
+ "events": [
+  "USER: Merhaba, Miles Gold kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"93261864\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******7101\", \"cardNumberLast4\": \"7101\", \"productName\": \"Yıldız Miles\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******7102\", \"cardNumberLast4\": \"7102\", \"productName\": \"Yıldız Miles Gold\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******7103\", \"cardNumberLast4\": \"7103\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0413\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0413\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"93261864\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"m.ozkaratepe-1987.k@ornekposta.example\", \"ttsEmail\": \"m.ozkaratepe-1987.k@ornekposta.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0438\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0438\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles veya Yıldız Miles Gold diyebilirsiniz.",
+  "USER: Yıldız Miles Gold kartımın borcunu öğrenmek istiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Yıldız Miles Gold\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******7102\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********7102\", \"cardNumberLast4\": \"7102\", \"productName\": \"Yıldız Miles Gold\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 1240.6, \"minPayment\": 496.24, \"remainingDebt\": 1240.6, \"remainingMinPayment\": 496.24, \"currentPeriodExpense\": 0, \"totalDebt\": 1240.6, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu yedi bir sıfır iki ile biten Yıldız Miles Gold kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Dolar borcunuz bin iki yüz kırk dolar altmış sent, kalan toplam borcunuz bin iki yüz kırk dolar altmış sent, ödenmesi gereken minimum tutar dört yüz doksan altı dolar yirmi dört sent. Türk Lirası, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, teşekkürler. Ekstremi e-posta ile alabilir miyim?",
+  "  [tool] caller_said {\"also\": \"email\", \"digits\": \"\", \"kind\": \"email\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Ekstrenizi m ile başlayan Ornekposta adresinize göndermemi ister misiniz?",
+  "USER: Evet.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"yes\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] send",
+  "  [api] statement.pdf.send {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******7102\", \"customerNo\": \"93261864\", \"currencyType\": \"TL\", \"emailAddress\": \"m.ozkaratepe-1987.k@ornekposta.example\", \"statementDate\": \"05.10.2026\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"exitState\": \"DONE\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0439\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0439\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] send_after",
+  "  [node] close_email_sent",
+  "  [node] close_email_sent_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Ekstreniz kayıtlı e-posta adresinize gönderildi. Sizi ana menüye yönlendiriyorum."
+ ]
+}

@@ -18,6 +18,8 @@ Every call, one by one (caller, expectation, the conversation as said, verdict w
 - Haiku played one Turkish caller per persona through `POST /api/v2/chat/message`. Sonnet then judged each call against the 8 Oct analysis, the 9 Oct recap (which overrides it) and `example-scenarios.md`, with the customer's own service answers from `test-customers.json`.
 - 50 personas on 33 test customers: the six example scenarios as written, card picking, reading rules, odd dates, every service error in the test data, statement week and joint statements, injection and social engineering, angry callers, silence, English, out of scope.
 
+> **Correction (19:50 UTC):** in the real simulation the agent speaks first, so a caller cannot say a card name, ask for an agent or speak English before the agent's first turn. Findings that rest only on the caller's first chat message are mostly artifacts of our chat-route test. See `final-case-c-persona-test.md`, "A test limit that affects all three notes".
+
 ## Result
 
 **17/50 pass (34 %).** This is a direction, not the official score: the callers and the judge are not the event's models.

@@ -8,6 +8,8 @@ For the builder owner. The same 50 callers as in `final-case-persona-test.md`, r
 
 `c752e23` (name matching and the first message) landed after this build, so this test does not cover it. Findings 3 and 4 below may already be fixed there.
 
+> **Correction (19:50 UTC):** in the real simulation the agent speaks first, so a caller cannot say a card name, ask for an agent or speak English before the agent's first turn. Findings that rest only on the caller's first chat message are mostly artifacts of our chat-route test. See `final-case-c-persona-test.md`, "A test limit that affects all three notes".
+
 ## Result
 
 | | final-case (build 1) | final-case-b (build 3) |

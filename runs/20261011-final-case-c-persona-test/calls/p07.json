@@ -1,0 +1,34 @@
+{
+ "vars": {
+  "customerNumber": "92030487",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Yıldız Pratik kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Tasarım diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Pratik kartım.",
+   "agent": "Yıldız Pratik isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Dört iki beş üç.",
+   "agent": "Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Sıfır sıfır dört iki beş üç.",
+   "agent": "Son altı hanesi aynı olan birden fazla kartınız var. Kart numaranızı söyler misiniz?"
+  },
+  {
+   "customer": "Beş dört beş sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+   "agent": "Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?"
+  },
+  {
+   "customer": "...",
+   "agent": "[ERROR POST /api/v2/chat/message -> 504: error code: 504\n]"
+  }
+ ],
+ "ended": false,
+ "callId": "ff5a3d85-8a5b-4e59-a716-c9e17a7e5903"
+}

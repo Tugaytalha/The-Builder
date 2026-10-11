@@ -1,0 +1,51 @@
+{
+ "vars": {
+  "customerNumber": "98814070",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles Platinum diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Yıldız Miles Platinum isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Yirmi dört sıfır iki.",
+   "agent": "Sonu iki dört sıfır iki ile biten Yıldız Miles Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz dört bin üç yüz Türk Lirası, ödenmesi gereken minimum tutar bin yedi yüz yirmi Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "f6f80f9f-2186-4e86-9601-ea5e0247bcc7",
+ "events": [
+  "USER: Merhaba, Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"98814070\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******2401\", \"cardNumberLast4\": \"2401\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2402\", \"cardNumberLast4\": \"2402\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2403\", \"cardNumberLast4\": \"2403\", \"productName\": \"Yıldız Miles Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0486\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0486\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"98814070\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"ayla.celik@freyabank.example\", \"ttsEmail\": \"ayla.celik@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0511\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0511\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Miles Platinum diyebilirsiniz.",
+  "USER: Yıldız Miles Platinum kartımın borcunu öğrenmek istiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Yıldız Miles Platinum\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Yıldız Miles Platinum isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?",
+  "USER: Yirmi dört sıfır iki.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"2402\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******2402\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********2402\", \"cardNumberLast4\": \"2402\", \"productName\": \"Yıldız Miles Platinum\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 4300, \"minPayment\": 1720, \"remainingDebt\": 4300, \"remainingMinPayment\": 1720, \"currentPeriodExpense\": 0, \"totalDebt\": 4300, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a59",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu iki dört sıfır iki ile biten Yıldız Miles Platinum kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz dört bin üç yüz Türk Lirası, ödenmesi gereken minimum tutar bin yedi yüz yirmi Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+ ]
+}

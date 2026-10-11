@@ -1,0 +1,39 @@
+{
+ "vars": {
+  "customerNumber": "97526380",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Hello, I want to know my credit card debt, do you speak English?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Sorry, I don't speak Turkish. Can you speak English, please? I have a credit card, I want to know the debt on it.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "38454f38-a664-4b48-bc9a-e59d4821081a",
+ "events": [
+  "USER: Hello, I want to know my credit card debt, do you speak English?",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97526380\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1101\", \"cardNumberLast4\": \"1101\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1102\", \"cardNumberLast4\": \"1102\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1103\", \"cardNumberLast4\": \"1103\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"97526380\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"elif.toprak@freyabank.example\", \"ttsEmail\": \"elif.toprak@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0212\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0212\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz.",
+  "USER: Sorry, I don't speak Turkish. Can you speak English, please? I have a credit card, I want to know the debt on it.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"not_turkish\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] close_language",
+  "  [node] close_language_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye aktarıyorum."
+ ]
+}

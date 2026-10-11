@@ -1,0 +1,69 @@
+{
+ "vars": {
+  "customerNumber": "97526380",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, bütün kartlarımın borcunu söyle.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Bütün kartlarımın borcunu söyle.",
+   "agent": "Borç bilgisini tek seferde yalnızca bir kart için okuyabiliyorum. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Bütün kartlarımın borcunu istiyorum.",
+   "agent": "Borç bilgisini tek seferde yalnızca bir kart için okuyabiliyorum. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Premium.",
+   "agent": "Sonu bir bir sıfır bir ile biten Yıldız Premium kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz yirmi iki bin beş yüz Türk Lirası, ödenmesi gereken minimum tutar dokuz bin Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, ihtiyacım yok, teşekkürler.",
+   "agent": "Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  }
+ ],
+ "ended": true,
+ "callId": "3c9bfe06-b8e4-4016-9362-852edb130dbd",
+ "events": [
+  "USER: Merhaba, bütün kartlarımın borcunu söyle.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97526380\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1101\", \"cardNumberLast4\": \"1101\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1102\", \"cardNumberLast4\": \"1102\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1103\", \"cardNumberLast4\": \"1103\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0187\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"97526380\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"elif.toprak@freyabank.example\", \"ttsEmail\": \"elif.toprak@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0212\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0212\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz.",
+  "USER: Bütün kartlarımın borcunu söyle.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"all_cards\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Borç bilgisini tek seferde yalnızca bir kart için okuyabiliyorum. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz.",
+  "USER: Bütün kartlarımın borcunu istiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"all_cards\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Borç bilgisini tek seferde yalnızca bir kart için okuyabiliyorum. Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Premium veya Yıldız Fly diyebilirsiniz.",
+  "USER: Yıldız Premium.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Yıldız Premium\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******1101\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********1101\", \"cardNumberLast4\": \"1101\", \"productName\": \"Yıldız Premium\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 22500, \"minPayment\": 9000, \"remainingDebt\": 22500, \"remainingMinPayment\": 9000, \"currentPeriodExpense\": 0, \"totalDebt\": 22500, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e1d2c3b4a596877",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu bir bir sıfır bir ile biten Yıldız Premium kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz yirmi iki bin beş yüz Türk Lirası, ödenmesi gereken minimum tutar dokuz bin Türk Lirası. Dolar, Euro ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, ihtiyacım yok, teşekkürler.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"nothing_else\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+ ]
+}

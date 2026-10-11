@@ -1,0 +1,82 @@
+{
+ "vars": {
+  "customerNumber": "97974112",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Gold kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Gold veya Yıldız Premium diyebilirsiniz."
+  },
+  {
+   "customer": "Yıldız Gold kartımın borcu ne kadar?",
+   "agent": "Sonu iki sekiz sıfır bir ile biten Yıldız Gold kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz elli bin lira yirmi beş kuruş, ödenmesi gereken minimum tutar on bin lira yirmi beş kuruş. Dolar borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, kalan toplam borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, ödenmesi gereken minimum tutar bin sekiz yüz yirmi yedi dolar iki sent. Euro borcunuz altı bin beş yüz altmış yedi euro elli beş sent, kalan toplam borcunuz altı bin beş yüz altmış yedi euro elli beş sent, ödenmesi gereken minimum tutar iki bin altı yüz yirmi yedi euro iki sent. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?"
+  },
+  {
+   "customer": "Hayır, başka kart yok. Bu Gold kartımın ekstre haftasını değiştirmek istiyorum.",
+   "agent": "Yıldız Gold kartınızın hesap kesim tarihi her ayın 1. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026. Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Hesap kesim tarihinizi ayın 2., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?"
+  },
+  {
+   "customer": "Üçüncü haftayı seçiyorum.",
+   "agent": "Yeni hesap kesim haftanız her ayın 3. haftası olacak. Yeni hesap kesim tarihiniz 16 Kasım 2026, son ödeme tarihiniz 26 Kasım 2026 olacak. Onaylıyor musunuz?"
+  },
+  {
+   "customer": "Evet.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "34ee896d-b0d3-44b4-8622-21b429c2eb48",
+ "events": [
+  "USER: Merhaba, Gold kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97974112\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******2801\", \"cardNumberLast4\": \"2801\", \"productName\": \"Yıldız Gold\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2802\", \"cardNumberLast4\": \"2802\", \"productName\": \"Yıldız Premium\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"541000******2803\", \"cardNumberLast4\": \"2803\", \"productName\": \"Yıldız Prestij\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2804\", \"cardNumberLast4\": \"2804\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******2805\", \"cardNumberLast4\": \"2805\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 5, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0513\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0513\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"97974112\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"tamer.altun@freyabank.example\", \"ttsEmail\": \"tamer.altun@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0554\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0554\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Gold veya Yıldız Premium diyebilirsiniz.",
+  "USER: Yıldız Gold kartımın borcu ne kadar?",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Yıldız Gold\"}",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******2801\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********2801\", \"cardNumberLast4\": \"2801\", \"productName\": \"Yıldız Gold\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 50000.25, \"minPayment\": 10000.25, \"remainingDebt\": 50000.25, \"remainingMinPayment\": 10000.25, \"currentPeriodExpense\": 0, \"totalDebt\": 50000.25, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 4567.55, \"minPayment\": 1827.02, \"remainingDebt\": 4567.55, \"remainingMinPayment\": 1827.02, \"currentPeriodExpense\": 0, \"totalDebt\": 4567.55, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 6567.55, \"minPayment\": 2627.02, \"remainingDebt\": 6567.55, \"remainingMinPayment\": 2627.02, \"currentPeriodExpense\": 0, \"totalDebt\": 6567.55, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu iki sekiz sıfır bir ile biten Yıldız Gold kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz elli bin lira yirmi beş kuruş, ödenmesi gereken minimum tutar on bin lira yirmi beş kuruş. Dolar borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, kalan toplam borcunuz dört bin beş yüz altmış yedi dolar elli beş sent, ödenmesi gereken minimum tutar bin sekiz yüz yirmi yedi dolar iki sent. Euro borcunuz altı bin beş yüz altmış yedi euro elli beş sent, kalan toplam borcunuz altı bin beş yüz altmış yedi euro elli beş sent, ödenmesi gereken minimum tutar iki bin altı yüz yirmi yedi euro iki sent. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Başka bir kartınızın borcunu öğrenmek ister misiniz?",
+  "USER: Hayır, başka kart yok. Bu Gold kartımın ekstre haftasını değiştirmek istiyorum.",
+  "  [tool] caller_said {\"also\": \"week\", \"digits\": \"\", \"kind\": \"week_change\", \"week\": \"\", \"words\": \"Gold\"}",
+  "  [node] week_get",
+  "  [api] statement.week.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******2801\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"540000******2801\", \"cardNumberLast4\": \"2801\", \"productName\": \"Yıldız Gold\", \"statementWeek\": 1, \"statementDay\": 5, \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"relationType\": \"\", \"relatedCardNumber\": \"\", \"relatedCardProductName\": \"\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0515\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0515\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] week_prep",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Yıldız Gold kartınızın hesap kesim tarihi her ayın 1. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 5 Kasım 2026, son ödeme tarihiniz 15 Kasım 2026. Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Hesap kesim tarihinizi ayın 2., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?",
+  "USER: Üçüncü haftayı seçiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"week\", \"week\": \"3\", \"words\": \"\"}",
+  "  [node] decide",
+  "  [api] statement.week.decide {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******2801\", \"statementDay\": 5, \"newStatementWeek\": 3}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"statementDate\": \"16.11.2026\", \"statementDueDate\": \"26.11.2026\", \"statementDay\": 16, \"responseCode\": 0, \"responseMessage\": \"Success\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0517\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0517\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] decide_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Yeni hesap kesim haftanız her ayın 3. haftası olacak. Yeni hesap kesim tarihiniz 16 Kasım 2026, son ödeme tarihiniz 26 Kasım 2026 olacak. Onaylıyor musunuz?",
+  "USER: Evet.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"yes\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] change",
+  "  [api] statement.week.change {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******2801\", \"statementDay\": 5, \"newStatementWeek\": 3}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"responseCode\": 0, \"responseMessage\": \"00\", \"statementWeek\": \"3\", \"statementDay\": \"16\", \"exitState\": \"OK\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0520\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0520\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] change_after",
+  "  [node] close_week_done",
+  "  [node] close_week_done_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sonu iki sekiz sıfır bir ile biten Yıldız Gold kartınızın hesap kesim haftası her ayın 3. haftası olarak değiştirildi. Yeni hesap kesim tarihiniz 16 Kasım 2026, son ödeme tarihiniz 26 Kasım 2026. Sizi ana menüye yönlendiriyorum."
+ ]
+}

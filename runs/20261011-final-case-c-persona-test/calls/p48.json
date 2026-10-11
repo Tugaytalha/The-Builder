@@ -1,0 +1,38 @@
+{
+ "vars": {
+  "customerNumber": "97116902",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Seyahat kartımın borcu ne kadar?",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Uçuşla ilgili olan.",
+   "agent": "Bu isimde bir kartınız bulunmuyor. Kartlarınız: Yıldız Pratik, Yıldız Fly. Hangi kartınızın borcunu öğrenmek istersiniz?"
+  }
+ ],
+ "ended": true,
+ "callId": "205dc9f1-efda-4409-87cc-71ac718071b6",
+ "events": [
+  "USER: Seyahat kartımın borcu ne kadar?",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"97116902\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******1601\", \"cardNumberLast4\": \"1601\", \"productName\": \"Yıldız Pratik\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******1602\", \"cardNumberLast4\": \"1602\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 2, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0599\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0599\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"97116902\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"efe.oktay@freyabank.example\", \"ttsEmail\": \"efe.oktay@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0616\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0616\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Pratik veya Yıldız Fly diyebilirsiniz.",
+  "USER: Uçuşla ilgili olan.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Uçuşla ilgili olan\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Bu isimde bir kartınız bulunmuyor. Kartlarınız: Yıldız Pratik, Yıldız Fly. Hangi kartınızın borcunu öğrenmek istersiniz?"
+ ]
+}

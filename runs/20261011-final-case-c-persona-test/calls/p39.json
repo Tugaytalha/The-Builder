@@ -1,0 +1,22 @@
+{
+ "vars": {
+  "customerNumber": "96158684",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcum ne kadar acaba?",
+   "agent": "Sonu bir bir bir sıfır ile biten Yıldız Miles kartınıza ait 9 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz on bin Türk Lirası, kalan toplam borcunuz beş bin Türk Lirası. Minimum ödemenizi yaptığınız için teşekkür ederiz. Dolar ve Euro borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 19 Ekim 2026'dır. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Hesap kesim tarihimi değiştirmek istiyorum.",
+   "agent": "Yıldız Miles kartınızın hesap kesim tarihi her ayın 2. haftası olarak tanımlı. Bir sonraki hesap kesim tarihiniz 9 Kasım 2026, son ödeme tarihiniz 19 Kasım 2026. Hesap kesim tarihinizi yılda bir kez değiştirebilirsiniz. Hesap kesim tarihinizi ayın 1., 3. ya da 4. haftasına alabilirim. Hangisini tercih edersiniz?"
+  },
+  {
+   "customer": "...",
+   "agent": "[ERROR POST /api/v2/chat/message -> 504: error code: 504\n]"
+  }
+ ],
+ "ended": false,
+ "callId": "fb26ad0f-d96a-4e2a-bb2f-5616962d8739"
+}

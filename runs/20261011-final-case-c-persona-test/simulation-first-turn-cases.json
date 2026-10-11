@@ -1,0 +1,44 @@
+{
+ "status": "completed",
+ "ids": {
+  "5e90752c-e9b7-49d2-be92-f7cd9f2013c5": "92311921",
+  "231d957a-5980-44c1-a113-7efe4217f5dd": "92335586",
+  "d1433fa1-790c-4a2b-aee7-617eac94fda5": "93821776",
+  "49aba2b6-a6d1-4387-ae24-1c286464a3a7": "96026000",
+  "12097176-e3c1-4fcd-b01d-1639f74d8e86": "97073972"
+ },
+ "runs": {
+  "49aba2b6-a6d1-4387-ae24-1c286464a3a7": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu bir iki beş sıfır ile biten Yıldız Premium kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz bin iki yüz elli Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Sizi ana menüye yönlendiriyorum."
+   ]
+  },
+  "d1433fa1-790c-4a2b-aee7-617eac94fda5": {
+   "status": null,
+   "messages": [
+    "assistant: Ekstre borcunu sorgulayabileceğiniz uygun bir kredi kartınız bulunmuyor. Sizi ana menüye aktarıyorum."
+   ]
+  },
+  "5e90752c-e9b7-49d2-be92-f7cd9f2013c5": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu bir sekiz dokuz altı ile biten Yıldız Premium kartınızın 5 Ekim 2026 tarihli ekstresinden borcunuz bulunmamaktadır. Gelecek dönemler dahil toplam borcunuz bin sekiz yüz doksan altı Türk Lirası. Son ödeme tarihiniz 15 Ekim 2026 olacaktır. Sizi ana menüye yönlendiriyorum."
+   ]
+  },
+  "231d957a-5980-44c1-a113-7efe4217f5dd": {
+   "status": null,
+   "messages": [
+    "assistant: Sonu sekiz beş sıfır bir ile biten Yıldız Pratik kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Türk Lirası borcunuz on sekiz bin beş yüz Türk Lirası, ödenmesi gereken minimum tutar yedi bin dört yüz Türk Lirası. Dolar borcunuz altı yüz elli Dolar, kalan toplam borcunuz altı yüz elli Dolar, ödenmesi gereken minimum tutar iki yüz altmış Dolar. Euro borcunuz üç yüz seksen Euro, kalan toplam borcunuz üç yüz seksen Euro, ödenmesi gereken minimum tutar yüz elli iki Euro. İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Hesap kesim tarihinizi değiştirebilirim.",
+    "user: Selam, sağ ol bilgi için. Borçlar da bayağı birikmiş bu ay ya, şaşırdım biraz. Şey diyecektim, bu ekstrenin detaylarını bana",
+    "assistant: Şu anda işleminizi gerçekleştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+   ]
+  },
+  "12097176-e3c1-4fcd-b01d-1639f74d8e86": {
+   "status": null,
+   "messages": [
+    "assistant: Şu anda işleminizi gerçekleştiremiyorum, sizi müşteri temsilcimize aktarıyorum."
+   ]
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "vars": {
+  "customerNumber": "92122831",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, borcumu öğrenmek istiyorum.",
+   "agent": "Sonu sıfır dört bir bir ile biten Yıldız Miles kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Dolar borcunuz yüz yirmi Dolar, kalan toplam borcunuz yüz yirmi Dolar, ödenmesi gereken minimum tutar kırk sekiz Dolar. Euro borcunuz iki yüz kırk euro elli sent, kalan toplam borcunuz iki yüz kırk euro elli sent, ödenmesi gereken minimum tutar doksan altı euro yirmi sent. Türk Lirası ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Evet, ekstremi e-posta ile gönderebilir misiniz lütfen?",
+   "agent": "Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim."
+  },
+  {
+   "customer": "Kayıtlı mail adresime gönderin lütfen.",
+   "agent": "Ekstrenizi tulay.erdem@freyabank.example adresine göndermemi ister misiniz?"
+  },
+  {
+   "customer": "Evet, o adrese gönderin.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "5c814895-0fbb-4676-8b73-6ad183c4bd72",
+ "events": [
+  "USER: Merhaba, borcumu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"92122831\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"540000******0411\", \"cardNumberLast4\": \"0411\", \"productName\": \"Yıldız Miles\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 1, \"exitState\": \"1_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0131\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0131\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"92122831\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"tulay.erdem@freyabank.example\", \"ttsEmail\": \"tulay.erdem@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0140\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0140\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] balance",
+  "  [api] cards.balance {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******0411\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cardNumber\": \"5400********0411\", \"cardNumberLast4\": \"0411\", \"productName\": \"Yıldız Miles\", \"statementDate\": \"05.10.2026\", \"lastPayDate\": \"15.10.2026\", \"nextStatementDate\": \"05.11.2026\", \"nextLastPayDate\": \"15.11.2026\", \"debtTL\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 3250, \"minPayment\": 1300, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtUSD\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 120, \"minPayment\": 48, \"remainingDebt\": 120, \"remainingMinPayment\": 48, \"currentPeriodExpense\": 0, \"totalDebt\": 120, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtEUR\": {\"statementPaymentStatus\": \"HAS_DEBT\", \"transferAmount\": 0, \"statementDebt\": 240.5, \"minPayment\": 96.2, \"remainingDebt\": 240.5, \"remainingMinPayment\": 96.2, \"currentPeriodExpense\": 0, \"totalDebt\": 240.5, \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"debtGBP\": {\"statementPaymentStatus\": \"NO_DEBT\", \"transferAmount\": 0, \"statementDebt\": 0, \"minPayment\": 0, \"remainingDebt\": 0, \"remainingMinPayment\": 0, \"currentPeriodExpense\": 0, \"totalDebt\": 0, \"totalDebtPaymentStatus\": \"NO_DEBT\", \"remainAutomaticPaymentAmount\": 0}, \"statementPaymentStatus\": \"HAS_DEBT\", \"totalDebtPaymentStatus\": \"HAS_DEBT\", \"automaticPaymentFlag\": \"N\"}, \"result\": {\"guid\": \"f0e",
+  "  [node] reading",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Sonu sıfır dört bir bir ile biten Yıldız Miles kartınıza ait 5 Ekim 2026 tarihinde kesilen ekstre Dolar borcunuz yüz yirmi Dolar, kalan toplam borcunuz yüz yirmi Dolar, ödenmesi gereken minimum tutar kırk sekiz Dolar. Euro borcunuz iki yüz kırk euro elli sent, kalan toplam borcunuz iki yüz kırk euro elli sent, ödenmesi gereken minimum tutar doksan altı euro yirmi sent. Türk Lirası ve İngiliz Sterlini borcunuz bulunmamaktadır. Borçlarınız için son ödeme tarihiniz 15 Ekim 2026'dır. Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Evet, ekstremi e-posta ile gönderebilir misiniz lütfen?",
+  "  [tool] caller_said {\"also\": \"email\", \"digits\": \"\", \"kind\": \"yes\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hesap kesim tarihinizi değiştirebilirim ya da ekstrenizi kayıtlı mail adresinize gönderebilirim.",
+  "USER: Kayıtlı mail adresime gönderin lütfen.",
+  "  [tool] caller_said {\"also\": \"email\", \"digits\": \"\", \"kind\": \"email\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Ekstrenizi tulay nokta erdem et freyabank nokta example adresine göndermemi ister misiniz?",
+  "USER: Evet, o adrese gönderin.",
+  "  [tool] caller_said {\"also\": \"email\", \"digits\": \"\", \"kind\": \"yes\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] send",
+  "  [api] statement.pdf.send {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"cardNumber\": \"540000******0411\", \"customerNo\": \"92122831\", \"currencyType\": \"TL\", \"emailAddress\": \"tulay.erdem@freyabank.example\", \"statementDate\": \"05.10.2026\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"exitState\": \"DONE\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0141\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0141\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] send_after",
+  "  [node] close_email_sent",
+  "  [node] close_email_sent_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Ekstreniz kayıtlı e-posta adresinize gönderildi. Sizi ana menüye yönlendiriyorum."
+ ]
+}

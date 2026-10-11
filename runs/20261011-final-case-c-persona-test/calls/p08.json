@@ -1,0 +1,75 @@
+{
+ "vars": {
+  "customerNumber": "94030575",
+  "now": "2026-10-12T10:30:00+03:00"
+ },
+ "turns": [
+  {
+   "customer": "Merhaba, Platinum kartımın borcunu öğrenmek istiyorum.",
+   "agent": "Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz."
+  },
+  {
+   "customer": "Platinum kartımın borcu ne kadar, onu öğrenmek istiyorum.",
+   "agent": "Yıldız Platinum isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Kırk iki elli üç.",
+   "agent": "Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?"
+  },
+  {
+   "customer": "Sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+   "agent": "Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?"
+  },
+  {
+   "customer": "Pardon, yanlış söyledim. Tam numara: beş dört yedi sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+   "agent": "Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?"
+  },
+  {
+   "customer": "Hayır, başka kartım yok.",
+   "agent": "[CALL ENDED BY AGENT]"
+  }
+ ],
+ "ended": true,
+ "callId": "efff5fac-f339-4b05-96b9-93d85235116e",
+ "events": [
+  "USER: Merhaba, Platinum kartımın borcunu öğrenmek istiyorum.",
+  "  [node] setup",
+  "  [node] cards_list",
+  "  [api] cards.list {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"aiFlow\": \"CardOps\", \"customerNo\": \"94030575\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"cards\": [{\"cardNumber\": \"548000******4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"547000******4253\", \"cardNumberLast4\": \"4253\", \"productName\": \"Yıldız Platinum\", \"status\": \"A\", \"isMainCard\": true}, {\"cardNumber\": \"540000******5501\", \"cardNumberLast4\": \"5501\", \"productName\": \"Yıldız Fly\", \"status\": \"A\", \"isMainCard\": true}], \"validCardsCount\": 3, \"exitState\": \"MULTI_CARD\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0386\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0386\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] prep_cards",
+  "  [node] contact",
+  "  [api] contact.email.get {\"call\": {\"ani\": \"\", \"lang\": \"tr\"}, \"data\": {\"customerNo\": \"94030575\", \"intAddressInfoType\": \"E\"}}",
+  "  [api-result] {\"status\": \"success\", \"data\": {\"data\": {\"communicationType\": \"Both\", \"ibanCountryCode\": \"90\", \"ibanAreaCode\": \"500\", \"ibanPhoneNum\": \"0000000\", \"ibanEmail\": \"pinar.turan@freyabank.example\", \"ttsEmail\": \"pinar.turan@freyabank.example\", \"commGramType\": \"A\", \"exitState\": \"Done\"}, \"result\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0411\", \"returnCode\": \"1\", \"messageText\": \"Success\", \"code\": \"1\", \"message\": \"Success\", \"type\": null, \"details\": {\"guid\": \"f0e1d2c3b4a5968778695a4b3c2d0411\", \"rootCause\": null, \"errorOrigin\": null}}}, \"message\": \"Successfully executed POST request\", \"status_code\": 200}",
+  "  [node] contact_after",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Hangi kartınızın borcunu öğrenmek istersiniz? Örneğin, Yıldız Platinum veya Yıldız Fly diyebilirsiniz.",
+  "USER: Platinum kartımın borcu ne kadar, onu öğrenmek istiyorum.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"card\", \"week\": \"\", \"words\": \"Platinum\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Yıldız Platinum isimli birden fazla kartınız var. Kartınızın son dört hanesini söyler misiniz?",
+  "USER: Kırk iki elli üç.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"4253\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Son dört hanesi dört iki beş üç olan birden fazla kartınız var. Kartınızın son altı hanesini söyler misiniz?",
+  "USER: Sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"00000000000004253\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?",
+  "USER: Pardon, yanlış söyledim. Tam numara: beş dört yedi sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır sıfır dört iki beş üç.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"54700000000004253\", \"kind\": \"digits\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] talk_say",
+  "  [node] talk",
+  "ASSISTANT: Bu numarayla eşleşen bir kartınız bulunmuyor. Hangi kartınızın borcunu öğrenmek istersiniz?",
+  "USER: Hayır, başka kartım yok.",
+  "  [tool] caller_said {\"also\": \"\", \"digits\": \"\", \"kind\": \"no\", \"week\": \"\", \"words\": \"\"}",
+  "  [node] close_menu",
+  "  [node] close_menu_end",
+  "  [tool] end_call null",
+  "ASSISTANT: Sizi ana menüye yönlendiriyorum."
+ ]
+}
