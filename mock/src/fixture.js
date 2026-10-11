@@ -1,35 +1,26 @@
-// Answers a service call from the test customers file: customers[].services[service], then the card key, then the
-// week key. `keys` names the request fields that hold the customer, the card and the week.
-const notFound = (message) => ({
-  status: 404,
-  data: { result: { returnCode: "FB_IVR_CHANNEL_404", messageText: message, code: "FB_IVR_CHANNEL_404", message, type: "WARNING" } },
+// Answers a service call from the test customers file, as section 6 of the service contract says: the listed status
+// and body for a known customer or card, the service's `missing` error otherwise, and a 400 for an empty field.
+const error = ({ status, code, type, message }) => ({
+  status,
+  data: { result: { guid: crypto.randomUUID().replaceAll("-", ""), returnCode: code, messageText: message, code, message, type, details: { guid: null, rootCause: null, errorOrigin: "the-builder-mock" } } },
+  delay: 0,
 });
 
-const digits = (s) => String(s ?? "").replace(/\D/g, "");
-
-// The card's key in the file. A different mask of the same card ("5400********1234" for "540000******1234") or only
-// its last digits also finds it, when exactly one card ends with those digits.
-function cardKey(entries, value) {
-  if (value in entries) return value;
-  const want = digits(value).slice(-4);
-  if (want.length < 4) return null;
-  const hits = Object.keys(entries).filter((k) => digits(k).endsWith(want));
-  return hits.length === 1 ? hits[0] : null;
+// The file entry for this call: customers[].services[name], keyed by customer number, or by card number for the card
+// services (card numbers are unique across customers), then by the requested week.
+function entry(fixture, spec, name, data) {
+  if (spec.key === "customer") return fixture.customers.find((c) => c.customerNo === String(data.customerNo))?.services[name];
+  for (const c of fixture.customers) {
+    const byCard = c.services[name]?.[data.cardNumber];
+    if (byCard) return spec.week ? byCard[String(data.newStatementWeek)] : byCard;
+  }
 }
 
-export function answer(fixture, service, keys, body) {
-  const customer = fixture.customers.find((c) => c.customerNo === String(body[keys.customer] ?? ""));
-  if (!customer) return notFound("Müşteri bulunamadı.");
-  let entry = customer.services[service];
-  if (!entry) return notFound("Kayıt bulunamadı.");
-  if (keys.card) {
-    const key = cardKey(entry, body[keys.card]);
-    if (!key) return notFound("Kart bulunamadı.");
-    entry = entry[key];
-  }
-  if (keys.week) {
-    entry = entry[String(body[keys.week] ?? "")];
-    if (!entry) return notFound("Kayıt bulunamadı.");
-  }
-  return { status: entry.http, data: entry.response };
+export function answer(fixture, spec, name, data) {
+  for (const field of spec.required)
+    if (data[field] === undefined || data[field] === null || String(data[field]).trim() === "")
+      return error({ status: 400, code: "INVALID_ARGUMENTS_ERROR", type: "ERROR", message: `${field} cannot be empty` });
+  const found = entry(fixture, spec, name, data);
+  if (!found) return error(spec.missing);
+  return { status: found.http, data: found.response, delay: found.delaySeconds ?? 0 };
 }

@@ -1,50 +1,43 @@
-// The mock of the bank's services for the final case. One Durable Object holds the whole state, so a write is seen
-// by the next read. Routes and data come from the case's service contract and test customers (src/routes.js,
-// src/data.js, src/openapi.js). /openapi.json is what builder/build.py reads; /__log and /__reset are ours only.
+// The mock of the bank's services for the final case (src/routes.js). The answers are fixed by the test customers file,
+// so the Durable Object only keeps the request log. /openapi.json is what builder/build.py reads; /__log and /__reset
+// are ours only. /oauth2/token answers like the bank's gateway; the test environment does not check the token.
 import { DurableObject } from "cloudflare:workers";
 import { OPENAPI } from "./openapi.js";
 import { ROUTES } from "./routes.js";
-import { seed } from "./data.js";
-import { match } from "./match.js";
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8" } });
 
 export class Bank extends DurableObject {
-  async handle(method, path, body) {
-    const state = (await this.ctx.storage.get("state")) ?? seed();
+  async log(entry) {
     const log = (await this.ctx.storage.get("log")) ?? [];
-    if (path === "/__log") return { status: 200, data: log };
-    if (path === "/__reset") {
-      await this.ctx.storage.put({ state: seed(), log: [] });
-      return { status: 200, data: { ok: true } };
-    }
-    const found = match(ROUTES, method, path);
-    let status = 404, data = { ok: false, error: "unknown route" };
-    if (found) {
-      try {
-        ({ status = 200, data } = found.route(state, { ...(body ?? {}), ...found.params }));
-      } catch (err) {
-        status = 500;
-        data = { ok: false, error: String(err) };
-      }
-    }
-    log.push({ at: new Date().toISOString(), method, path, body, status, data });
-    await this.ctx.storage.put({ state, log: log.slice(-2000) });
-    return { status, data };
+    log.push(entry);
+    await this.ctx.storage.put("log", log.slice(-2000));
+  }
+  async read() {
+    return (await this.ctx.storage.get("log")) ?? [];
+  }
+  async reset() {
+    await this.ctx.storage.delete("log");
   }
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const bank = env.BANK.get(env.BANK.idFromName("bank"));
     if (url.pathname === "/openapi.json") return json({ ...OPENAPI, servers: [{ url: url.origin }] });
     if (url.pathname === "/health") return json({ ok: true });
-    let body = null;
-    if (request.method !== "GET") body = await request.json().catch(() => null);
-    else if (url.search) body = Object.fromEntries(url.searchParams);
-    const bank = env.BANK.get(env.BANK.idFromName("bank"));
-    const { status, data } = await bank.handle(request.method, url.pathname, body);
-    return json(data, status);
+    if (url.pathname === "/__log") return json(await bank.read());
+    if (url.pathname === "/__reset") return json((await bank.reset(), { ok: true }));
+    if (url.pathname === "/oauth2/token") return json({ access_token: "test-token", token_type: "Bearer", expires_in: 1800 });
+    const route = ROUTES[`${request.method} ${url.pathname}`];
+    const body = await request.json().catch(() => null);
+    // The contract's envelope puts the fields in `data`; a flat body is read the same way.
+    const data = body && typeof body.data === "object" && body.data !== null ? body.data : (body ?? {});
+    const { status, data: out, delay } = route ? route(data) : { status: 404, data: { ok: false, error: "unknown route" }, delay: 0 };
+    if (delay) await new Promise((resolve) => setTimeout(resolve, delay * 1000));
+    await bank.log({ at: new Date().toISOString(), method: request.method, path: url.pathname, body, status, data: out });
+    return json(out, status);
   },
 };
