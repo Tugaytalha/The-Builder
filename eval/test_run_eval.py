@@ -143,3 +143,24 @@ def test_a_read_is_tried_again_after_a_socket_timeout():
             raise socket.timeout("The read operation timed out")
         return {"ok": True}
     assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}
+
+
+def test_a_read_is_tried_again_after_a_cut_body():
+    # review: an IncompleteRead or a cut JSON body was not tried again
+    import http.client
+    from run_cases_at import retry_reads
+    errors = [http.client.IncompleteRead(b"{"), ValueError("Expecting value: line 1 column 2")]
+
+    def api(method, path, body=None, **params):
+        if errors:
+            raise errors.pop(0)
+        return {"ok": True}
+    assert retry_reads(api, wait=lambda s: None)("GET", "/x") == {"ok": True}
+
+
+def test_contamination_reads_the_hidden_briefs(tmp_path, monkeypatch):
+    import contamination
+    (tmp_path / "briefs").mkdir()
+    (tmp_path / "briefs" / "hidden-1.md").write_text("x")
+    monkeypatch.setattr(contamination, "REPO", tmp_path)
+    assert tmp_path / "briefs" / "hidden-1.md" in contamination.brief_files()
