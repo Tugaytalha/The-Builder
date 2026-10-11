@@ -27,7 +27,7 @@ flowchart TB
 
     GATE["blocks/deploy.py<br/>the gate"]
     FREYA["Freya platform<br/>kit/freya.py"]
-    OUT["submission/&lt;slot&gt;.workflow.json<br/>traces/&lt;slot&gt;-&lt;time&gt;.jsonl"]
+    OUT["submission/SLOT.workflow.json<br/>traces/SLOT-TIME.jsonl"]
 
     CASE --> DOCS --> SKILL
     MOCK -->|tool API| SKILL
