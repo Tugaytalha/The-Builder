@@ -28,7 +28,7 @@ The run prints its trace to stdout and also writes it as JSON lines to `traces/<
 | `builder/blocks/` | The tested building blocks: case folder to text (`docs.py`), tools from any API file, node factories, proven patterns, date helpers, linter, loop-1 checks, deploy gate, chat smoke tests. |
 | `builder/.claude/skills/build-phone-agent/` | The skill the agent follows, the platform knowledge (`freya.md`) and a worked example on an invented brief. |
 | `builder/.claude/agents/reviewer.md` | The independent reviewer the agent asks before it hands off. |
-| `mock/` | The bank mock for the final case, a Cloudflare Worker with one Durable Object (`npx wrangler deploy`). `/openapi.json` gives the tool API; `/__log` and `/__reset` are for us. |
+| `mock/` | The bank mock for the final case, a Cloudflare Worker with one Durable Object (`npx wrangler deploy`), live at `https://the-builder-mock.the-builder-freya.workers.dev`. `/health` answers `{"ok":true}`; `/openapi.json` gives the tool API; `/__log` (every request) and `/__reset` (back to the test customers) are for us. |
 | `eval/` | Our evaluation loop: variant briefs and cases, the runner, the contamination check, the edge-case generator. |
 | `notes/` | Platform spike results, baseline, evaluation log, the hidden-brief runbook. |
 
