@@ -155,11 +155,15 @@ def finish(items, confirmed):
 """
 
 
+ANSWER_GUIDE = ("No new line. If the customer asked something, answer in one sentence from ACCOUNT. "
+                "Name no amount and no day.")
+
+
 def _neg_call(v, turn, answers):
     import json as _json
     from builder.blocks.coderun import run_tool
     from builder.blocks.patterns import negotiation_tool
-    tool = negotiation_tool("talk", {"yes": "agrees", "no": "refuses", "human": "wants a person"}, POLICY, "writes_list")
+    tool = negotiation_tool({"yes": "agrees", "no": "refuses", "human": "wants a person"}, POLICY, "writes_list")
     code = tool["function"]["parameters"]["properties"]["code"]["default"]
     if "neg_state" not in v:
         v = {"neg_state": _json.dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}, {"id": "b", "status": "open"}]})}
@@ -181,7 +185,7 @@ def test_negotiation_two_answers_in_one_call_say_the_first_product_first():
 def test_negotiation_never_says_a_line_twice_and_finishes_with_writes():
     v = _neg({}, 1, item="a", kind="no")
     v = _neg(v, 2, item="a", kind="human_question")    # an answer that changes nothing
-    assert v["guide"] == 'SAY: "Could you answer with a yes or a no?"'
+    assert v["guide"] == ANSWER_GUIDE and v["say_turn"] == "no"
     v = _neg(v, 3, item="a", kind="yes")
     assert v["guide"] == 'SAY: "Could you pay b?"'    # b was never asked
     v = _neg(v, 4, item="b", kind="no")
@@ -215,7 +219,7 @@ def test_negotiation_final_read_back_waits_for_one_confirmation():
 def test_negotiation_unfinished_message_changes_nothing():
     v = _neg({}, 1, item="a", kind="no")
     v = _neg(v, 2, item="a", kind="unfinished")
-    assert v["guide"] == 'SAY: "Sorry, please go on."' 
+    assert v["say_now"] == "Sorry, please go on." and v["say_turn"] == "yes"
     v = _neg(v, 3, item="a", kind="no")                 # the second refusal still counts as the second, not the third
     assert v["guide"] == 'SAY: "Could you pay b?"'
 
@@ -235,7 +239,7 @@ def test_negotiation_uses_one_answer_per_product_in_one_call():
 def test_negotiation_answer_entry_requires_every_field():
     # round 3 PUB-11: with only item and kind required, the model left out the day for "this Friday"
     from builder.blocks.patterns import negotiation_tool
-    tool = negotiation_tool("talk", {"yes": "agrees"}, POLICY, "writes_list")
+    tool = negotiation_tool({"yes": "agrees"}, POLICY, "writes_list")
     entry = tool["function"]["parameters"]["properties"]["answers"]["items"]
     assert sorted(entry["required"]) == sorted(entry["properties"])
 
@@ -243,3 +247,41 @@ def test_negotiation_answer_entry_requires_every_field():
 def test_negotiation_takes_answers_as_a_json_string():
     v = _neg_call({}, 1, '[{"item": "a", "kind": "no"}]')
     assert v["guide"] == 'SAY: "Could you pay half for a?"'
+
+
+def test_negotiation_puts_the_chosen_line_in_say_now_for_the_code_to_speak():
+    # round 4 PUB-12: NEXT STEP held the read-back, and the model said its own offer instead
+    v = _neg({}, 1, item="a", kind="no")
+    assert v["say_turn"] == "yes" and v["say_now"] == "Could you pay half for a?"
+    v = _neg(v, 2, item="a", kind="human_question")    # no line: the model answers in its own words
+    assert v["say_turn"] == "no" and v["guide"] == ANSWER_GUIDE
+
+
+def test_negotiation_nodes_speak_say_now_with_fixed_text():
+    from builder.blocks.nodes import always, end_node, workflow
+    from builder.blocks.patterns import negotiation_nodes, start
+    from builder.blocks.lint import lint
+    nodes = negotiation_nodes("talk", "Task.", [], "Hello.", [always("bye")], 30, "bye")
+    by = {n["name"]: n for n in nodes}
+    assert sorted(by) == ["talk", "talk_next", "talk_say"]
+    assert by["talk"]["on_enter"] == {"type": "tts", "text": "Hello."}
+    assert by["talk_next"]["on_enter"] == {"type": "tts", "text": "{{say_now}}"}
+    for n in ("talk", "talk_next"):
+        first = by[n]["transitions"][0]
+        assert first["target_node"] == "talk_say" and first["condition"]["conditions"][0]["variable"] == "say_turn"
+    w = workflow("start", "Be brief.", [start("talk"), *nodes, end_node("bye", "done")])
+    assert lint(w, {}, {}) == []
+
+
+def test_negotiation_says_the_reply_to_a_question_before_the_line():
+    # chat test after round 4: "No, I can't today. Why is it so late?" got the offer and no answer
+    from builder.blocks.coderun import run_tool
+    from builder.blocks.patterns import negotiation_tool
+    tool = negotiation_tool({"no": "refuses", "other": "else"}, POLICY, "writes_list")
+    code = tool["function"]["parameters"]["properties"]["code"]["default"]
+    assert "reply" in tool["function"]["parameters"]["required"]
+    v = {"neg_state": __import__("json").dumps({"items": [{"id": "a", "status": "open", "asked": "yes"}]})}
+    v = run_tool(code, v, {"answers": [{"item": "a", "kind": "no", "date": "", "amount": ""}], "reply": "It is 6 days late."})
+    assert v["say_now"] == "It is 6 days late. Could you pay half for a?"
+    v = run_tool(code, v, {"answers": [{"item": "a", "kind": "other", "date": "", "amount": ""}], "reply": "Yes, it is."})
+    assert v["say_now"] == "Yes, it is." and v["say_turn"] == "yes"

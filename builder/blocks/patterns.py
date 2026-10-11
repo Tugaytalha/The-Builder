@@ -1,5 +1,5 @@
 """Sub-graphs and tool shapes that the platform spikes proved (notes/platform-spikes.md)."""
-from builder.blocks.nodes import any_of, api_node, code_node, cond, end_node, go, is_true
+from builder.blocks.nodes import any_of, api_node, code_node, cond, conversation, end_node, go, is_true, tts
 from builder.blocks.tools import make_tool
 
 BLOCKED_URL = "https://blocked.invalid/refused-by-guard"
@@ -177,12 +177,12 @@ NEGOTIATION_ENGINE = r'''
 import json
 st = json.loads(vars.get('neg_state'))
 items = st['items']
-turn = str(vars.get(%(turns)r))
-for x in items:
-    if x.get('shown') and x.get('shown') != turn:
-        x['line'], x['shown'] = '', ''      # shown in an earlier turn: it was said
-    elif x.get('shown') == turn:
-        x['shown'] = ''                     # chosen earlier in this turn: plan again
+vars['say_turn'] = 'no'
+reply = str(params.get('reply') or '').strip()
+def speak_line(text):
+    text = (reply + ' ' + text).strip()     # the model's answer to a question, then the code's line
+    vars['guide'] = 'SAY: "' + text + '"'
+    vars['say_now'], vars['say_turn'] = text, 'yes'     # the next node speaks it with fixed text
 answers = params.get('answers') or []
 answers = json.loads(answers) if isinstance(answers, str) else answers
 answers = [answers] if isinstance(answers, dict) else answers
@@ -203,32 +203,34 @@ for a, kind in zip(answers, kinds):
     amount = float(amount) if str(amount or '').strip() not in ('', 'None') else None
     line = decide(it, kind, amount, str(a.get('date') or '')[:10])
     it['line'] = line or ''
-    it['shown'] = ''
     if vars.get('close_key') or vars.get('negotiation_action'):
         break
 if unfinished:
-    vars['guide'] = 'SAY: "Sorry, please go on."'     # a message cut off mid-sentence changes nothing
+    speak_line('Sorry, please go on.')     # a message cut off mid-sentence changes nothing
 elif vars.get('close_key') or vars.get('negotiation_action'):
     pass
 else:
     open_items = [x for x in items if x.get('status') == 'open']
     todo = [x for x in open_items if x.get('line')]
     if todo:
-        todo[0]['shown'] = turn
-        vars['guide'] = 'SAY: "' + todo[0]['line'] + '"'
+        speak_line(todo[0]['line'])
+        todo[0]['line'] = ''                # said now
     elif open_items:
         nx = open_items[0]
         if not nx.get('asked'):
-            nx['asked'], nx['line'], nx['shown'] = 'yes', first_ask(nx), turn
-            vars['guide'] = 'SAY: "' + nx['line'] + '"'
+            nx['asked'] = 'yes'
+            speak_line(first_ask(nx))
+        elif reply:
+            speak_line('')
         else:
-            vars['guide'] = 'SAY: "Could you answer with a yes or a no?"'
+            vars['guide'] = ('No new line. If the customer asked something, answer in one sentence from ACCOUNT. '
+                             'Name no amount and no day.')
     else:
         confirmed = 'confirms' in kinds and bool(st.get('final_shown'))
         end = finish(items, confirmed)
         if isinstance(end, dict) and end.get('say'):
-            st['final_shown'] = turn
-            vars['guide'] = 'SAY: "' + end['say'] + '"'
+            st['final_shown'] = 'yes'
+            speak_line(end['say'])
         elif isinstance(end, list) and end:
             vars[%(list_var)r] = json.dumps([dict(fields=f, status='pending') for f in end])
             vars['record_now'] = 'yes'
@@ -239,7 +241,7 @@ vars['neg_state'] = json.dumps(st)
 '''
 
 
-def negotiation_tool(node, kinds, policy, list_var):
+def negotiation_tool(kinds, policy, list_var):
     """The state tool of the negotiation node. The model reports what the customer said about one product; the brief's
     policy decides for that product; the engine plans the next line from the whole state.
 
@@ -256,10 +258,11 @@ def negotiation_tool(node, kinds, policy, list_var):
     The state is vars['neg_state'] = JSON {"items": [...]}; each item has "id" and "status" ("open" at the start) and the
     one asked about in the debt statement has "asked": "yes". One message can answer for several products: the model calls
     the tool once with one entry per product in `answers`; a second entry for the same product is ignored. Two calls in one message run at the same time and only the
-    last write is kept (round 2, PUB-13), so the tool must never need two calls. A line shown in an earlier turn of `node` counts as
-    spoken (spike S12), so no line is said twice. The guide holds only words in quotes. The engine adds the kind
+    last write is kept (round 2, PUB-13), so the tool must never need two calls. A chosen line goes to vars['say_now'] with
+    vars['say_turn'] = 'yes', and `negotiation_nodes` speaks it with fixed text, so it is said once and word for word (round 4:
+    the model said its own offer instead of NEXT STEP). The guide holds only words in quotes. The engine adds the kind
     "unfinished" (a message cut off mid-sentence): it changes nothing and asks the customer to go on."""
-    engine = NEGOTIATION_ENGINE % {"turns": node + ".total_turns", "list_var": list_var}
+    engine = NEGOTIATION_ENGINE % {"list_var": list_var}
     answer = {"type": "object", "required": ["item", "kind", "date", "amount"], "properties": {
         "item": {"type": "string", "description": "The product id this answer is about, or empty for the one you asked about."},
         "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
@@ -273,5 +276,20 @@ def negotiation_tool(node, kinds, policy, list_var):
     return state_tool("customer_said", "CALL it ONCE every time the customer answers about paying. Put one entry in "
                       "answers for each product the customer talked about in this message.", {
         "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about, "
-                    "never two for the same product: pick the kind of the main point."}},
+                    "never two for the same product: pick the kind of the main point."},
+        "reply": {"type": "string", "description": "If the customer asked a question in this message, your answer in one "
+                  "sentence from ACCOUNT, with no amount and no day; else empty. The call says it before the next line."}},
         policy + "\n" + engine)
+
+
+def negotiation_nodes(name, task, tools, statement, transitions, max_turns, max_turn_target):
+    """The negotiation node `name` (first entry speaks `statement`) and its loop: after each call of the negotiation tool
+    that chose a line, `name`_say marks it spoken and `name`_next speaks vars['say_now'] with fixed text, so the model
+    cannot change an offer. With no line chosen, the model answers in its own words. `transitions` go first, on both nodes."""
+    to_say = go(name + "_say", any_of(cond("say_turn", "equals", "yes")), "the code chose the next line")
+    done = "vars['say_turn'] = 'no'\nvars['guide'] = 'The line was said. Wait for the answer.'"
+    return [conversation(name, task, tools=tools, on_enter=tts(statement), first_entry_only=True, max_turns=max_turns,
+                         max_turn_target=max_turn_target, transitions=[to_say, *transitions]),
+            code_node(name + "_say", done, name + "_next"),
+            conversation(name + "_next", task, tools=tools, on_enter=tts("{{say_now}}"), max_turns=max_turns,
+                         max_turn_target=max_turn_target, transitions=[to_say, *transitions])]

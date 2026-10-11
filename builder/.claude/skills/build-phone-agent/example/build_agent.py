@@ -8,8 +8,8 @@ import json
 from builder.blocks.coderun import with_dates
 from builder.blocks.nodes import (all_of, always, any_of, cond, conversation, field, go, intent, is_true, tts,
                                   workflow, api_node, code_node)
-from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, negotiation_tool,
-                                     start, state_tool, write_loop)
+from builder.blocks.patterns import (answer_tool, close_sequence, close_tool, guard_hook, identity_check, negotiation_nodes,
+                                     negotiation_tool, start, state_tool, write_loop)
 from builder.blocks.tools import load_api, make_tool
 
 SPEC = json.load(open("spec.json"))
@@ -229,11 +229,11 @@ IDENTITY_TASK = ("NEXT STEP (obey it): {{id_guide}}\n\n"
 
 NEGOTIATE_TASK = ("NEXT STEP: {{guide}}\n\n"
                   "Identity is verified. You stated the bill. Every time the customer answers about paying, call "
-                  "customer_said with the item and the kind. A message that stops in the middle of a sentence is kind "
-                  "unfinished. If one message answers for several items, call customer_said "
-                  "once, with one entry per item in answers. Then say the words in NEXT STEP after SAY, word for word, and nothing else about amounts "
-                  "or days. Never name an amount or a day that is not in NEXT STEP, also when NEXT STEP moves to "
-                  "another item: the code chose it. Never say that something is recorded: the call says it at the end.\n\n"
+                  "customer_said FIRST, before you say anything, with the item and the kind. A message that stops in the "
+                  "middle of a sentence is kind unfinished. If one message answers for several items, call customer_said "
+                  "once, with one entry per item in answers. The call then speaks the next line itself. "
+                  "If NEXT STEP has no line, follow it. Never name an amount or a day yourself: the code chose them. "
+                  "Never say that something is recorded: the call says it at the end.\n\n"
                   "ACCOUNT\n{{account_facts}}\n\nDATES\n{{date_facts}}")
 
 # ---------------------------------------------------------------- tools
@@ -248,7 +248,7 @@ callback = make_tool(API, "schedule_callback", baked=BAKED_ID, post_code=PLAIN_P
 callback["pre_process_code"] = guard_hook(
     "not (str(body.get('day')) in str(vars.get('callback_days')).split(',') and %r <= str(body.get('at'))[:5] <= %r)"
     % (SPEC["callback"]["from"], SPEC["callback"]["to"]))
-said = negotiation_tool("negotiate", {
+said = negotiation_tool({
     "accepts": "yes to your last proposal.",
     "confirms": "a clear yes to the read-back, with no change, no correction word such as sorry or I mean, and not cut off mid-sentence.",
     "refuses": "no, with no day and no amount; also a goodbye or a wish to end the call.",
@@ -299,11 +299,11 @@ nodes = [
     code_node("prepare", with_dates(PREPARE), "negotiate", fallbacks={"item_count": "0", "account_facts": "No data.",
               "debt_statement": "Thank you.", "guide": "Say you cannot see the account now."},
               transitions=[go("close_system_down", any_of(cond("item_count", "equals", "0")), "no account data")]),
-    conversation("negotiate", NEGOTIATE_TASK, tools=[said, transfer], on_enter=tts("{{debt_statement}}"),
-                 first_entry_only=True, max_turns=30, max_turn_target="end_router", transitions=[
-                     go("promise_writes", any_of(cond("record_now", "equals", "yes")), "every item is agreed or stopped"),
-                     go("close_handed_over", is_true("transfer_to_agent_response.data.ok"), "transferred"),
-                     go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up")]),
+    # The code speaks each line it chose (negotiate_next); the model speaks only to answer a question.
+    *negotiation_nodes("negotiate", NEGOTIATE_TASK, [said, transfer], "{{debt_statement}}", [
+        go("promise_writes", any_of(cond("record_now", "equals", "yes")), "every item is agreed or stopped"),
+        go("close_handed_over", is_true("transfer_to_agent_response.data.ok"), "transferred"),
+        go("close_said_no", any_of(cond("close_key", "equals", "close_said_no")), "attempts used up")], 30, "end_router"),
     # No intent route here (lint rule 12): a goodbye is the kind refuses, and the policy closes the call.
     # The engine writes each agreed promise (spike S10). 1 attempt: the example brief closes on a failure; a brief that
     # allows a retry gets attempts=2.
