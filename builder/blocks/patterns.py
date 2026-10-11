@@ -265,8 +265,11 @@ def negotiation_tool(node, kinds, policy, list_var):
         "kind": {"type": "string", "enum": list(kinds) + ["unfinished"],
                  "description": "What the customer said. " + " ".join(f"{k}: {d}" for k, d in kinds.items())
                  + " unfinished: the message stops in the middle of a sentence; nothing is decided yet."},
-        "date": {"type": "string", "description": "The day the customer named, YYYY-MM-DD, or empty."},
-        "amount": {"type": "string", "description": "The amount the customer named, digits only, or empty."}}}
+        "date": {"type": "string", "description": "The day the customer named in full in this message, YYYY-MM-DD, "
+                 "or empty. Never a day from an earlier message that was cut off."},
+        "amount": {"type": "string", "description": "The amount the customer named in full in this message, digits only, "
+                   "or empty. Never an amount from an earlier message that was cut off: '120' from 'I can pay the 120' "
+                   "can be the start of 1250."}}}
     return state_tool("customer_said", "CALL it ONCE every time the customer answers about paying. Put one entry in "
                       "answers for each product the customer talked about in this message.", {
         "answers": {"type": "array", "items": answer, "description": "One entry per product the message is about, "
