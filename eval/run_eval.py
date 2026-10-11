@@ -66,6 +66,11 @@ def _failures(result_file):
     return data.get("passed"), data.get("total"), [{"id": k, "reasons": v} for k, v in out.items()]
 
 
+def slot_of(entry):
+    """The slot a suite row scores: its own, or the one named in `uses` (a row of extra cases has no build)."""
+    return entry.get("uses", entry["name"])
+
+
 def _move_kit_results():
     src = REPO / "kit" / "results"
     if src.exists():
@@ -91,7 +96,7 @@ def main():
     if not a.no_build:
         _move_kit_results()
         procs = {}
-        for e in suite:
+        for e in (e for e in suite if "uses" not in e):
             log = open(out / f"{e['name']}.build.log", "w")
             procs[e["name"]] = (subprocess.Popen([PYTHON, "builder/build.py", e["brief"], e["api"]], cwd=REPO, stdout=log,
                                                  stderr=subprocess.STDOUT), time.time())
@@ -102,11 +107,11 @@ def main():
             time.sleep(5)
 
     for e in suite:
-        export = REPO / "submission" / f"{e['name']}.workflow.json"
+        export = REPO / "submission" / f"{slot_of(e)}.workflow.json"
         if not export.exists():
             continue
         agent_id = json.load(open(export))["agent_id"]
-        runs = [("", ["--reps", "3"])] + ([(f"-{s}", ["--style", s]) for s in STYLES] if a.styles and e["set"] == "dev" else [])
+        runs = [("", ["--reps", "3"])] + ([(f"-{s}", ["--style", s]) for s in STYLES] if a.styles and e["set"] == "dev" and "uses" not in e else [])
         for suffix, extra in runs:
             result = out / f"{e['name']}{suffix}.json"
             with open(out / f"{e['name']}{suffix}.score.log", "w") as log:

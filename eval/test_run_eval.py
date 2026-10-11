@@ -1,5 +1,5 @@
 from run_cases_at import wrap
-from run_eval import classify, report
+from run_eval import classify, report, slot_of
 
 
 def test_now_override():
@@ -49,3 +49,8 @@ def test_unstick_completes_a_simulation_whose_runs_ended():
     clock[0] = STUCK_S + 1
     assert wrapped("GET", "/api/v2/simulations/s1")["simulation"]["status"] == "completed"
     assert ("PUT", "/api/v2/simulations/s1") in calls
+
+
+def test_a_row_that_uses_another_slot_scores_that_slot():
+    assert slot_of({"name": "brief-a"}) == "brief-a"
+    assert slot_of({"name": "edge-a", "uses": "brief-a"}) == "brief-a"
