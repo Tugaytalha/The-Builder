@@ -24,3 +24,9 @@ python3 builder/build.py {brief_path} {tool_api_path}     # a practice brief and
 | `notes/` | Platform spike results, baseline, evaluation log, the hidden-brief runbook. |
 
 Tests: `python3 -m pytest builder/tests eval` (run `eval` tests from `eval/`).
+
+## Team
+
+Built by **Reşit Aydın** ([@resitaydin](https://github.com/resitaydin)) and **Tugay Talha İçen** ([@Tugaytalha](https://github.com/Tugaytalha)) for the Freya "Build the Builder" hackathon.
+
+Tugay worked on the evaluation side: the `persona_sim` customer simulator (LLM and scripted callers, an LLM judge for the case checks, a parallel runner), the final-case persona tests on the built agent (pass rate 17/50 for the first build, 6/50 for build 3 and 27/50 for build 4, with the causes of each failure written up in `notes/`), Windows support for the builder, the architecture diagrams and the jury presentation.
